@@ -14,12 +14,12 @@
   --ink:#121214;
   --paper:#e8e6e1;
   --dim:#8b8a86;
-  --seal:#b23b29;       /* Pat Lau seal red */
+  --seal:#b23b29;
   --seal-bright:#cd4a35;
   --line:#26262a;
-  --bar-h:112px;        /* sticky banner height (desktop) */
-  --col:1200px;         /* central column: banner, text */
-  --col-wide:1680px;    /* central column: artwork galleries */
+  --bar-h:112px;
+  --col:1200px;
+  --col-wide:1680px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -136,10 +136,12 @@ section.page{padding-top:calc(var(--bar-h) + 48px);scroll-margin-top:0}
 .shots.two{grid-template-columns:repeat(2,1fr)}
 .shots.three{grid-template-columns:repeat(3,1fr)}
 .shots.thumbs{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+.shots.storyboard-scaled{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 @media(max-width:700px){.shots.two,.shots.three{grid-template-columns:1fr}}
 .shots a{position:relative;overflow:hidden;background:var(--ink)}
 .shots img{transition:transform .6s ease,opacity .6s ease;opacity:.96}
 .shots a:hover img{transform:scale(1.02);opacity:1}
+.shots.storyboard-scaled img{max-width:75%;margin:0 auto;display:block;width:auto}
 .video{position:relative;width:100%;aspect-ratio:16/9;background:var(--ink)}
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .caption{margin:8px 0;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
@@ -153,9 +155,9 @@ section.page{padding-top:calc(var(--bar-h) + 48px);scroll-margin-top:0}
 @media(max-width:700px){.exp{grid-template-columns:1fr}}
 .exp .studio{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--seal-bright)}
 .exp .credits{font-size:13px;color:var(--paper)}
-.logos{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:28px}
-.logos img{background:var(--ink);opacity:.85;transition:opacity .3s ease}
-.logos img:hover{opacity:1}
+.logos{display:grid;grid-template-columns:repeat(25,1fr);gap:8px;margin-top:28px}
+.logos img{background:var(--ink);opacity:.85;transition:opacity .3s ease,transform .3s ease;cursor:pointer}
+.logos img:hover{opacity:1;transform:scale(1.12)}
 h4.block{
   margin:64px 0 18px;text-align:center;
   font-family:'Cinzel',serif;font-weight:500;font-size:18px;letter-spacing:.18em;text-transform:uppercase;
@@ -171,10 +173,12 @@ footer{
   :root{--bar-h:150px}
   .contact{justify-content:center;font-size:10px;gap:10px}
   .btn{padding:7px 11px;font-size:10px}
+  .logos{grid-template-columns:repeat(12,1fr)}
 }
 @media (prefers-reduced-motion: reduce){
   .hero .frame{animation:none}
   .shots img{transition:none}
+  .logos img{transition:none}
   html{scroll-behavior:auto}
 }
 </style>
@@ -190,7 +194,6 @@ footer{
         <span><span class="label">e&nbsp;:&nbsp;</span><a href="mailto:patlau.com@gmail.com">patlau.com@gmail.com</a></span>
         <span><span class="label">t&nbsp;:&nbsp;</span><a href="tel:+16479218241">(647) 921-8241</a></span>
         <a href="https://twitter.com/PATLAUVFX" target="_blank" rel="noopener">Twitter/X</a>
-        <!-- TODO: paste your profile URLs into the two href values below -->
         <a href="#" target="_blank" rel="noopener">LinkedIn</a>
         <a href="#" target="_blank" rel="noopener">Facebook</a>
       </div>
@@ -208,7 +211,7 @@ footer{
 
 <!-- ============ HERO ============ -->
 <div class="hero">
-  <div class="frame" role="img" aria-label="New Asia City at night — matte painting from The Creator"></div>
+  <div class="frame" role="img" aria-label="New Asia City at night — matte painting"></div>
   <div class="veil"></div>
   <div class="title">
     <h2>The Art of Pat Lau</h2>
@@ -226,7 +229,16 @@ footer{
     </div>
 
     <article class="project">
-      <div class="slate"><span class="num">001</span><h3>The Creator</h3><span class="meta">New Asia City Night · Dir. Gareth Edwards · MARZ VFX</span></div>
+      <div class="slate"><span class="num">001</span><h3>New Projects</h3><span class="meta">Recent Work</span></div>
+      <div class="shots three">
+        <a href="https://patlau.com/projects/" target="_blank" rel="noopener"><img src="https://patlau.com/projects/" alt="New project 1" loading="lazy"></a>
+        <a href="https://patlau.com/projects/" target="_blank" rel="noopener"><img src="https://patlau.com/projects/" alt="New project 2" loading="lazy"></a>
+        <a href="https://patlau.com/projects/" target="_blank" rel="noopener"><img src="https://patlau.com/projects/" alt="New project 3" loading="lazy"></a>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="slate"><span class="num">002</span><h3>The Creator</h3><span class="meta">New Asia City Night · Dir. Gareth Edwards · MARZ VFX</span></div>
       <div class="shots">
         <a href="https://patlau.com/matte/tl.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/tl.jpg" alt="The Creator — New Asia City night matte painting" loading="lazy"></a>
         <a href="https://patlau.com/matte/tl.gif" target="_blank" rel="noopener"><img src="https://patlau.com/matte/tl.gif" alt="The Creator — New Asia City breakdown animation" loading="lazy"></a>
@@ -234,17 +246,17 @@ footer{
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">002</span><h3>The Walking Dead: Dead City</h3><span class="meta">MARZ VFX</span></div>
+      <div class="slate"><span class="num">003</span><h3>The Walking Dead: Dead City</h3><span class="meta">MARZ VFX</span></div>
       <div class="shots"><a href="https://patlau.com/matte/dc.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/dc.jpg" alt="The Walking Dead: Dead City matte painting" loading="lazy"></a></div>
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">003</span><h3>Azul</h3><span class="meta">Short Film · Dir. David Karlak</span></div>
+      <div class="slate"><span class="num">004</span><h3>Azul</h3><span class="meta">Short Film · Dir. David Karlak</span></div>
       <div class="shots"><a href="https://patlau.com/matte/azul.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/azul.jpg" alt="Azul short film matte painting" loading="lazy"></a></div>
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">004</span><h3>Law Zero</h3><span class="meta">Short Film · Dir. McGregor</span></div>
+      <div class="slate"><span class="num">005</span><h3>Law Zero</h3><span class="meta">Short Film · Dir. McGregor</span></div>
       <div class="shots"><a href="https://patlau.com/matte/kore1.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/kore1.jpg" alt="Law Zero matte painting" loading="lazy"></a></div>
       <div class="video"><iframe src="https://player.vimeo.com/video/105955063" title="Law Zero" allow="fullscreen" loading="lazy"></iframe></div>
       <div class="shots"><a href="https://patlau.com/matte/kore3.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/kore3.jpg" alt="Law Zero environment" loading="lazy"></a></div>
@@ -259,12 +271,12 @@ footer{
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">005</span><h3>Crouching Tiger, Hidden Dragon: Sword of Destiny</h3><span class="meta">Pixomondo</span></div>
+      <div class="slate"><span class="num">006</span><h3>Crouching Tiger, Hidden Dragon: Sword of Destiny</h3><span class="meta">Pixomondo</span></div>
       <div class="shots"><a href="https://patlau.com/matte/ct2-03.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/ct2-03.jpg" alt="Crouching Tiger Hidden Dragon: Sword of Destiny matte painting" loading="lazy"></a></div>
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">006</span><h3>Garm Wars: The Last Druid</h3><span class="meta">Dir. Mamoru Oshii · Intelligent Creatures</span></div>
+      <div class="slate"><span class="num">007</span><h3>Garm Wars: The Last Druid</h3><span class="meta">Dir. Mamoru Oshii · Intelligent Creatures</span></div>
       <div class="shots two">
         <a href="https://patlau.com/matte/druid_matte_11.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/druid_matte_11.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
         <a href="https://patlau.com/matte/druid_matte_09.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/druid_matte_09.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
@@ -280,7 +292,7 @@ footer{
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">007</span><h3>Star Wars: Uprising</h3><span class="meta">Goldtooth Creative</span></div>
+      <div class="slate"><span class="num">008</span><h3>Star Wars: Uprising</h3><span class="meta">Goldtooth Creative</span></div>
       <div class="shots">
         <a href="https://patlau.com/matte/sw_hoth.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/sw_hoth.jpg" alt="Star Wars Uprising — Hoth environment" loading="lazy"></a>
         <a href="https://patlau.com/matte/sw_cloud_city.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/sw_cloud_city.jpg" alt="Star Wars Uprising — Cloud City environment" loading="lazy"></a>
@@ -289,7 +301,7 @@ footer{
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">008</span><h3>Star Wars: Commander</h3><span class="meta">Goldtooth Creative</span></div>
+      <div class="slate"><span class="num">009</span><h3>Star Wars: Commander</h3><span class="meta">Goldtooth Creative</span></div>
       <div class="shots">
         <a href="https://patlau.com/matte/sw_erkt.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/sw_erkt.jpg" alt="Star Wars Commander environment" loading="lazy"></a>
         <a href="https://patlau.com/matte/sw_hoth2.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/sw_hoth2.jpg" alt="Star Wars Commander — Hoth environment" loading="lazy"></a>
@@ -298,7 +310,7 @@ footer{
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">009</span><h3>Nuit Blanche</h3><span class="meta">Short Film · Dir. Arev Manoukian · Stellar Scene</span></div>
+      <div class="slate"><span class="num">010</span><h3>Nuit Blanche</h3><span class="meta">Short Film · Dir. Arev Manoukian · Stellar Scene</span></div>
       <div class="shots"><a href="https://patlau.com/matte/nuit_blanche.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/nuit_blanche.jpg" alt="Nuit Blanche matte painting" loading="lazy"></a></div>
       <div class="video"><iframe src="https://player.vimeo.com/video/9078364" title="Nuit Blanche" allow="fullscreen" loading="lazy"></iframe></div>
       <p class="caption">Making of — VFX by Marc-André Gray · Matte painting and additional compositing by Pat Lau</p>
@@ -306,7 +318,7 @@ footer{
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">010</span><h3>Orphan Black</h3><span class="meta">Intelligent Creatures</span></div>
+      <div class="slate"><span class="num">011</span><h3>Orphan Black</h3><span class="meta">Intelligent Creatures</span></div>
       <div class="shots">
         <a href="https://patlau.com/matte/orphan_black_1.1.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/orphan_black_1.1.jpg" alt="Orphan Black matte painting" loading="lazy"></a>
         <a href="https://patlau.com/matte/orphan_black_2.1.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/orphan_black_2.1.jpg" alt="Orphan Black matte painting" loading="lazy"></a>
@@ -314,7 +326,7 @@ footer{
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">011</span><h3>Resident Evil: Retribution 3D</h3><span class="meta">Dir. Paul W. S. Anderson · Mr. X</span></div>
+      <div class="slate"><span class="num">012</span><h3>Resident Evil: Retribution 3D</h3><span class="meta">Dir. Paul W. S. Anderson · Mr. X</span></div>
       <div class="shots">
         <a href="https://patlau.com/matte/re1.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/re1.jpg" alt="Resident Evil: Retribution matte painting" loading="lazy"></a>
         <a href="https://patlau.com/matte/re3.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/re3.jpg" alt="Resident Evil: Retribution matte painting" loading="lazy"></a>
@@ -323,7 +335,7 @@ footer{
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">012</span><h3>Hyundai Genesis</h3><span class="meta">Commercial · Dashing</span></div>
+      <div class="slate"><span class="num">013</span><h3>Hyundai Genesis</h3><span class="meta">Commercial · Dashing</span></div>
       <div class="video"><iframe src="https://player.vimeo.com/video/123069685" title="Hyundai Genesis" allow="fullscreen" loading="lazy"></iframe></div>
       <div class="shots two">
         <a href="https://patlau.com/matte/genesisa1.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/matte/genesisa1.jpg" alt="Hyundai Genesis environment" loading="lazy"></a>
@@ -336,12 +348,12 @@ footer{
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">013</span><h3>Maple Leaf Canadian Craft</h3><span class="meta">Commercial · 3D by Dominic Cheung · POPBOX VFX</span></div>
+      <div class="slate"><span class="num">014</span><h3>Maple Leaf Canadian Craft</h3><span class="meta">Commercial · 3D by Dominic Cheung · POPBOX VFX</span></div>
       <div class="video"><iframe src="https://player.vimeo.com/video/171968441" title="Maple Leaf Canadian Craft" allow="fullscreen" loading="lazy"></iframe></div>
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">014</span><h3>Nissan Versa Note</h3><span class="meta">Commercial · The Vanity</span></div>
+      <div class="slate"><span class="num">015</span><h3>Nissan Versa Note</h3><span class="meta">Commercial · The Vanity</span></div>
       <div class="shots"><a href="https://patlau.com/matte/nissan.gif" target="_blank" rel="noopener"><img src="https://patlau.com/matte/nissan.gif" alt="Nissan Versa Note matte painting breakdown" loading="lazy"></a></div>
     </article>
   </div>
@@ -554,14 +566,16 @@ footer{
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">017</span><h3>Armor &amp; Weapon Design</h3><span class="meta">Seven Swords · Dir. Tsui Hark</span></div>
+      <div class="slate"><span class="num">017</span><h3>Armor &amp; Weapon Design</h3><span class="meta">Seven Swords · Dir. Tsui Hark · Film Workshop 25th Anniversary Exhibition at Agnès B. Hong Kong</span></div>
       <div class="shots"><a href="https://patlau.com/concept/horses.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/concept/horses.jpg" alt="Armor design" loading="lazy"></a></div>
       <div class="shots two">
         <a href="https://patlau.com/concept/swords3.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/concept/swords3.jpg" alt="Seven Swords sword design" loading="lazy"></a>
         <a href="https://patlau.com/concept/props.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/concept/props.jpg" alt="Prop design" loading="lazy"></a>
       </div>
-      <div class="shots"><a href="https://patlau.com/concept/7swords.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/concept/7swords.jpg" alt="Seven Swords exhibition" loading="lazy"></a></div>
-      <p class="caption">Film Workshop 25th anniversary exhibition at Agnès B. Hong Kong</p>
+      <div class="shots two">
+        <a href="https://patlau.com/concept/7swords.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/concept/7swords.jpg" alt="Seven Swords exhibition" loading="lazy"></a>
+        <a href="https://patlau.com/concept/agnes-b.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/concept/agnes-b.jpg" alt="Agnès B. Hong Kong exhibition" loading="lazy"></a>
+      </div>
     </article>
   </div>
 </section>
@@ -585,32 +599,32 @@ footer{
 
     <article class="project">
       <div class="slate"><span class="num">002</span><h3>Nokia — The Passenger</h3><span class="meta">Commercial</span></div>
-      <div class="shots"><a href="https://patlau.com/storyboard/nokia.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/storyboard/nokia.jpg" alt="Nokia The Passenger storyboard" loading="lazy"></a></div>
+      <div class="shots storyboard-scaled"><a href="https://patlau.com/storyboard/nokia.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/storyboard/nokia.jpg" alt="Nokia The Passenger storyboard" loading="lazy"></a></div>
     </article>
 
     <article class="project">
       <div class="slate"><span class="num">003</span><h3>"500"</h3><span class="meta">Music Video</span></div>
-      <div class="shots"><a href="https://patlau.com/storyboard/500.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/storyboard/500.jpg" alt="500 music video storyboard" loading="lazy"></a></div>
+      <div class="shots storyboard-scaled"><a href="https://patlau.com/storyboard/500.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/storyboard/500.jpg" alt="500 music video storyboard" loading="lazy"></a></div>
     </article>
 
     <article class="project">
       <div class="slate"><span class="num">004</span><h3>Twins Effect 2</h3><span class="meta">Feature Film</span></div>
-      <div class="shots"><a href="https://patlau.com/storyboard/twins.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/storyboard/twins.jpg" alt="Twins Effect 2 storyboard" loading="lazy"></a></div>
+      <div class="shots storyboard-scaled"><a href="https://patlau.com/storyboard/twins.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/storyboard/twins.jpg" alt="Twins Effect 2 storyboard" loading="lazy"></a></div>
     </article>
 
     <article class="project">
       <div class="slate"><span class="num">005</span><h3>Untitled Action Short</h3><span class="meta">Rough Internal Boards</span></div>
-      <div class="shots"><a href="https://patlau.com/storyboard/action.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/storyboard/action.jpg" alt="Action short storyboard" loading="lazy"></a></div>
+      <div class="shots storyboard-scaled"><a href="https://patlau.com/storyboard/action.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/storyboard/action.jpg" alt="Action short storyboard" loading="lazy"></a></div>
     </article>
 
     <article class="project">
       <div class="slate"><span class="num">006</span><h3>TextEd.ca</h3><span class="meta">Storyboard</span></div>
-      <div class="shots"><a href="https://patlau.com/storyboard/texted.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/storyboard/texted.jpg" alt="TextEd.ca storyboard" loading="lazy"></a></div>
+      <div class="shots storyboard-scaled"><a href="https://patlau.com/storyboard/texted.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/storyboard/texted.jpg" alt="TextEd.ca storyboard" loading="lazy"></a></div>
     </article>
 
     <article class="project">
       <div class="slate"><span class="num">007</span><h3>Msheireb Properties — Downtown Doha</h3><span class="meta">Storyboard</span></div>
-      <div class="shots"><a href="https://patlau.com/storyboard/msheireb.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/storyboard/msheireb.jpg" alt="Msheireb Downtown Doha storyboard" loading="lazy"></a></div>
+      <div class="shots storyboard-scaled"><a href="https://patlau.com/storyboard/msheireb.jpg" target="_blank" rel="noopener"><img src="https://patlau.com/storyboard/msheireb.jpg" alt="Msheireb Downtown Doha storyboard" loading="lazy"></a></div>
     </article>
   </div>
 </section>
@@ -655,7 +669,7 @@ footer{
 
     <h4 class="block">Clients &amp; Projects</h4>
     <div class="logos">
-      <img src="https://patlau.com/projects/marz.jpg" alt="MARZ" loading="lazy"><img src="https://patlau.com/projects/tc.jpg" alt="The Creator" loading="lazy"><img src="https://patlau.com/projects/moon.jpg" alt="Moonhaven" loading="lazy"><img src="https://patlau.com/projects/wefx.jpg" alt="WeFX" loading="lazy"><img src="https://patlau.com/projects/jw4.jpg" alt="John Wick 4" loading="lazy"><img src="https://patlau.com/projects/fubar.jpg" alt="FUBAR" loading="lazy"><img src="https://patlau.com/projects/gdt.jpg" alt="Guillermo del Toro" loading="lazy"><img src="https://patlau.com/projects/pixomondo.jpg" alt="Pixomondo" loading="lazy"><img src="https://patlau.com/projects/wonder.jpg" alt="Wonder Woman" loading="lazy"><img src="https://patlau.com/projects/cthd2.jpg" alt="Crouching Tiger Hidden Dragon 2" loading="lazy"><img src="https://patlau.com/projects/goldtooth.jpg" alt="Goldtooth Creative" loading="lazy"><img src="https://patlau.com/projects/sw-uprising.jpg" alt="Star Wars Uprising" loading="lazy"><img src="https://patlau.com/projects/sw_commander.jpg" alt="Star Wars Commander" loading="lazy"><img src="https://patlau.com/projects/skrillex.jpg" alt="Skrillex" loading="lazy"><img src="https://patlau.com/projects/heroes.jpg" alt="Heroes Reborn" loading="lazy"><img src="https://patlau.com/projects/eidos.jpg" alt="Eidos" loading="lazy"><img src="https://patlau.com/projects/bp.jpg" alt="Bedford Productions" loading="lazy"><img src="https://patlau.com/projects/mrx.jpg" alt="Mr. X" loading="lazy"><img src="https://patlau.com/projects/re.jpg" alt="Resident Evil" loading="lazy"><img src="https://patlau.com/projects/dsf.jpg" alt="DSF" loading="lazy"><img src="https://patlau.com/projects/alesso.jpg" alt="Alesso" loading="lazy"><img src="https://patlau.com/projects/ct.jpg" alt="CT" loading="lazy"><img src="https://patlau.com/projects/mcdonalds.jpg" alt="McDonald's" loading="lazy"><img src="https://patlau.com/projects/ic.jpg" alt="Intelligent Creatures" loading="lazy"><img src="https://patlau.com/projects/discovery.jpg" alt="Discovery Channel" loading="lazy"><img src="https://patlau.com/projects/orphan.jpg" alt="Orphan Black" loading="lazy"><img src="https://patlau.com/projects/druid.jpg" alt="Garm Wars" loading="lazy"><img src="https://patlau.com/projects/ice.jpg" alt="Ice Road" loading="lazy"><img src="https://patlau.com/projects/dshng.jpg" alt="Dashing" loading="lazy"><img src="https://patlau.com/projects/hyndai.jpg" alt="Hyundai" loading="lazy"><img src="https://patlau.com/projects/sony.jpg" alt="Sony" loading="lazy"><img src="https://patlau.com/projects/sl.jpg" alt="Secret Location" loading="lazy"><img src="https://patlau.com/projects/history.jpg" alt="History" loading="lazy"><img src="https://patlau.com/projects/dolphin.jpg" alt="Dolphin Tale 2" loading="lazy"><img src="https://patlau.com/projects/hoc.jpg" alt="HOC" loading="lazy"><img src="https://patlau.com/projects/sasktel.jpg" alt="SaskTel" loading="lazy"><img src="https://patlau.com/projects/alvh.jpg" alt="Abraham Lincoln Vampire Hunter" loading="lazy"><img src="https://patlau.com/projects/gus.jpg" alt="GUS" loading="lazy"><img src="https://patlau.com/projects/igloo.jpg" alt="Igloo VFX" loading="lazy"><img src="https://patlau.com/projects/cbc.jpg" alt="CBC" loading="lazy"><img src="https://patlau.com/projects/spy.jpg" alt="Spy Films" loading="lazy"><img src="https://patlau.com/projects/cineplex.jpg" alt="Cineplex" loading="lazy"><img src="https://patlau.com/projects/suneeva.jpg" alt="Suneeva" loading="lazy"><img src="https://patlau.com/projects/virgin.jpg" alt="Virgin" loading="lazy"><img src="https://patlau.com/projects/thornleyfallis.jpg" alt="Thornley Fallis" loading="lazy"><img src="https://patlau.com/projects/bb.jpg" alt="BB" loading="lazy"><img src="https://patlau.com/projects/juggernaut.jpg" alt="Juggernaut" loading="lazy"><img src="https://patlau.com/projects/rogers.jpg" alt="Rogers" loading="lazy"><img src="https://patlau.com/projects/bud.jpg" alt="Budweiser" loading="lazy"><img src="https://patlau.com/projects/michelinas.jpg" alt="Michelina's" loading="lazy"><img src="https://patlau.com/projects/klp.jpg" alt="KLP" loading="lazy"><img src="https://patlau.com/projects/jna.jpg" alt="JNA" loading="lazy"><img src="https://patlau.com/projects/rocket.jpg" alt="Rocket" loading="lazy"><img src="https://patlau.com/projects/copper.jpg" alt="Copper" loading="lazy"><img src="https://patlau.com/projects/parktown.jpg" alt="Parktown Productions" loading="lazy"><img src="https://patlau.com/projects/avs.jpg" alt="AVS" loading="lazy"><img src="https://patlau.com/projects/cgc.jpg" alt="CGC" loading="lazy"><img src="https://patlau.com/projects/cwta.jpg" alt="CWTA" loading="lazy"><img src="https://patlau.com/projects/ops.jpg" alt="OPS" loading="lazy"><img src="https://patlau.com/projects/dundas.jpg" alt="Dundas" loading="lazy"><img src="https://patlau.com/projects/vanity.jpg" alt="The Vanity" loading="lazy"><img src="https://patlau.com/projects/marks.jpg" alt="Mark's" loading="lazy"><img src="https://patlau.com/projects/nissan.jpg" alt="Nissan" loading="lazy"><img src="https://patlau.com/projects/fuel.jpg" alt="Fuel Industries" loading="lazy"><img src="https://patlau.com/projects/nokia.jpg" alt="Nokia" loading="lazy"><img src="https://patlau.com/projects/inteldell.jpg" alt="Intel Dell" loading="lazy"><img src="https://patlau.com/projects/dirt2.jpg" alt="DiRT 2" loading="lazy"><img src="https://patlau.com/projects/fws.jpg" alt="FWS" loading="lazy"><img src="https://patlau.com/projects/slf.jpg" alt="Secret Level Films" loading="lazy"><img src="https://patlau.com/projects/erupt.jpg" alt="ERUPT" loading="lazy"><img src="https://patlau.com/projects/natures.jpg" alt="The Nature of Things" loading="lazy"><img src="https://patlau.com/projects/nexen.jpg" alt="Nexen" loading="lazy"><img src="https://patlau.com/projects/nfb.jpg" alt="NFB" loading="lazy"><img src="https://patlau.com/projects/ac.jpg" alt="AC" loading="lazy"><img src="https://patlau.com/projects/dainty.jpg" alt="Dainty" loading="lazy"><img src="https://patlau.com/projects/ford.jpg" alt="Ford" loading="lazy"><img src="https://patlau.com/projects/sector81.jpg" alt="Sector 81" loading="lazy"><img src="https://patlau.com/projects/oracle.jpg" alt="Oracle" loading="lazy"><img src="https://patlau.com/projects/ibc.jpg" alt="IBC" loading="lazy"><img src="https://patlau.com/projects/codemasters.jpg" alt="Codemasters" loading="lazy"><img src="https://patlau.com/projects/mp.jpg" alt="MP" loading="lazy"><img src="https://patlau.com/projects/panam.jpg" alt="Pan Am" loading="lazy"><img src="https://patlau.com/projects/specialk.jpg" alt="Special K" loading="lazy"><img src="https://patlau.com/projects/thinktank.jpg" alt="Think Tank" loading="lazy"><img src="https://patlau.com/projects/tims.jpg" alt="Tim Hortons" loading="lazy"><img src="https://patlau.com/projects/tvfactory.jpg" alt="TV Factory" loading="lazy"><img src="https://patlau.com/projects/cp.jpg" alt="CP" loading="lazy"><img src="https://patlau.com/projects/baileys.jpg" alt="Baileys" loading="lazy"><img src="https://patlau.com/projects/logitech.jpg" alt="Logitech" loading="lazy"><img src="https://patlau.com/projects/mavericks.jpg" alt="Mavericks VFX" loading="lazy"><img src="https://patlau.com/projects/1188.jpg" alt="1188" loading="lazy"><img src="https://patlau.com/projects/gls.jpg" alt="GLS" loading="lazy"><img src="https://patlau.com/projects/archivum.jpg" alt="Archivum" loading="lazy"><img src="https://patlau.com/projects/unikron.jpg" alt="Unikron" loading="lazy"><img src="https://patlau.com/projects/airhogs.jpg" alt="Air Hogs" loading="lazy"><img src="https://patlau.com/projects/westside.jpg" alt="Westside" loading="lazy"><img src="https://patlau.com/projects/dulux.jpg" alt="Dulux" loading="lazy"><img src="https://patlau.com/projects/msheireb.jpg" alt="Msheireb" loading="lazy">
+      <img src="https://patlau.com/projects/marz.jpg" alt="MARZ" loading="lazy"><img src="https://patlau.com/projects/tc.jpg" alt="The Creator" loading="lazy"><img src="https://patlau.com/projects/moon.jpg" alt="Moonhaven" loading="lazy"><img src="https://patlau.com/projects/wefx.jpg" alt="WeFX" loading="lazy"><img src="https://patlau.com/projects/jw4.jpg" alt="John Wick 4" loading="lazy"><img src="https://patlau.com/projects/fubar.jpg" alt="FUBAR" loading="lazy"><img src="https://patlau.com/projects/gdt.jpg" alt="Guillermo del Toro" loading="lazy"><img src="https://patlau.com/projects/pixomondo.jpg" alt="Pixomondo" loading="lazy"><img src="https://patlau.com/projects/wonder.jpg" alt="Wonder Woman" loading="lazy"><img src="https://patlau.com/projects/cthd2.jpg" alt="Crouching Tiger Hidden Dragon 2" loading="lazy"><img src="https://patlau.com/projects/goldtooth.jpg" alt="Goldtooth Creative" loading="lazy"><img src="https://patlau.com/projects/sw-uprising.jpg" alt="Star Wars Uprising" loading="lazy"><img src="https://patlau.com/projects/sw_commander.jpg" alt="Star Wars Commander" loading="lazy"><img src="https://patlau.com/projects/skrillex.jpg" alt="Skrillex" loading="lazy"><img src="https://patlau.com/projects/heroes.jpg" alt="Heroes Reborn" loading="lazy"><img src="https://patlau.com/projects/eidos.jpg" alt="Eidos" loading="lazy"><img src="https://patlau.com/projects/bp.jpg" alt="Bedford Productions" loading="lazy"><img src="https://patlau.com/projects/mrx.jpg" alt="Mr. X" loading="lazy"><img src="https://patlau.com/projects/re.jpg" alt="Resident Evil" loading="lazy"><img src="https://patlau.com/projects/dsf.jpg" alt="DSF" loading="lazy"><img src="https://patlau.com/projects/alesso.jpg" alt="Alesso" loading="lazy"><img src="https://patlau.com/projects/ct.jpg" alt="CT" loading="lazy"><img src="https://patlau.com/projects/mcdonalds.jpg" alt="McDonald's" loading="lazy"><img src="https://patlau.com/projects/ic.jpg" alt="Intelligent Creatures" loading="lazy"><img src="https://patlau.com/projects/discovery.jpg" alt="Discovery Channel" loading="lazy"><img src="https://patlau.com/projects/orphan.jpg" alt="Orphan Black" loading="lazy"><img src="https://patlau.com/projects/druid.jpg" alt="Garm Wars" loading="lazy"><img src="https://patlau.com/projects/ice.jpg" alt="Ice Road" loading="lazy"><img src="https://patlau.com/projects/dshng.jpg" alt="Dashing" loading="lazy"><img src="https://patlau.com/projects/hyndai.jpg" alt="Hyundai" loading="lazy"><img src="https://patlau.com/projects/sony.jpg" alt="Sony" loading="lazy"><img src="https://patlau.com/projects/sl.jpg" alt="Secret Location" loading="lazy"><img src="https://patlau.com/projects/history.jpg" alt="History" loading="lazy"><img src="https://patlau.com/projects/dolphin.jpg" alt="Dolphin Tale 2" loading="lazy"><img src="https://patlau.com/projects/hoc.jpg" alt="HOC" loading="lazy"><img src="https://patlau.com/projects/sasktel.jpg" alt="SaskTel" loading="lazy"><img src="https://patlau.com/projects/alvh.jpg" alt="Abraham Lincoln Vampire Hunter" loading="lazy"><img src="https://patlau.com/projects/gus.jpg" alt="GUS" loading="lazy"><img src="https://patlau.com/projects/igloo.jpg" alt="Igloo VFX" loading="lazy"><img src="https://patlau.com/projects/cbc.jpg" alt="CBC" loading="lazy"><img src="https://patlau.com/projects/spy.jpg" alt="Spy Films" loading="lazy"><img src="https://patlau.com/projects/cineplex.jpg" alt="Cineplex" loading="lazy"><img src="https://patlau.com/projects/suneeva.jpg" alt="Suneeva" loading="lazy"><img src="https://patlau.com/projects/virgin.jpg" alt="Virgin" loading="lazy"><img src="https://patlau.com/projects/thornleyfallis.jpg" alt="Thornley Fallis" loading="lazy"><img src="https://patlau.com/projects/bb.jpg" alt="BB" loading="lazy"><img src="https://patlau.com/projects/juggernaut.jpg" alt="Juggernaut" loading="lazy"><img src="https://patlau.com/projects/rogers.jpg" alt="Rogers" loading="lazy"><img src="https://patlau.com/projects/bud.jpg" alt="Budweiser" loading="lazy"><img src="https://patlau.com/projects/michelinas.jpg" alt="Michelina's" loading="lazy"><img src="https://patlau.com/projects/klp.jpg" alt="KLP" loading="lazy"><img src="https://patlau.com/projects/jna.jpg" alt="JNA" loading="lazy"><img src="https://patlau.com/projects/rocket.jpg" alt="Rocket" loading="lazy"><img src="https://patlau.com/projects/copper.jpg" alt="Copper" loading="lazy"><img src="https://patlau.com/projects/parktown.jpg" alt="Parktown Productions" loading="lazy"><img src="https://patlau.com/projects/avs.jpg" alt="AVS" loading="lazy"><img src="https://patlau.com/projects/cgc.jpg" alt="CGC" loading="lazy"><img src="https://patlau.com/projects/cwta.jpg" alt="CWTA" loading="lazy"><img src="https://patlau.com/projects/ops.jpg" alt="OPS" loading="lazy"><img src="https://patlau.com/projects/dundas.jpg" alt="Dundas" loading="lazy"><img src="https://patlau.com/projects/vanity.jpg" alt="The Vanity" loading="lazy"><img src="https://patlau.com/projects/marks.jpg" alt="Mark's" loading="lazy"><img src="https://patlau.com/projects/nissan.jpg" alt="Nissan" loading="lazy"><img src="https://patlau.com/projects/fuel.jpg" alt="Fuel Industries" loading="lazy"><img src="https://patlau.com/projects/nokia.jpg" alt="Nokia" loading="lazy"><img src="https://patlau.com/projects/inteldell.jpg" alt="Intel Dell" loading="lazy"><img src="https://patlau.com/projects/dirt2.jpg" alt="DiRT 2" loading="lazy"><img src="https://patlau.com/projects/fws.jpg" alt="FWS" loading="lazy"><img src="https://patlau.com/projects/slf.jpg" alt="Secret Level Films" loading="lazy"><img src="https://patlau.com/projects/erupt.jpg" alt="ERUPT" loading="lazy"><img src="https://patlau.com/projects/natures.jpg" alt="The Nature of Things" loading="lazy"><img src="https://patlau.com/projects/nexen.jpg" alt="Nexen" loading="lazy"><img src="https://patlau.com/projects/nfb.jpg" alt="NFB" loading="lazy"><img src="https://patlau.com/projects/ac.jpg" alt="AC" loading="lazy"><img src="https://patlau.com/projects/ford.jpg" alt="Ford" loading="lazy"><img src="https://patlau.com/projects/sector81.jpg" alt="Sector 81" loading="lazy"><img src="https://patlau.com/projects/oracle.jpg" alt="Oracle" loading="lazy"><img src="https://patlau.com/projects/ibc.jpg" alt="IBC" loading="lazy"><img src="https://patlau.com/projects/codemasters.jpg" alt="Codemasters" loading="lazy"><img src="https://patlau.com/projects/mp.jpg" alt="MP" loading="lazy"><img src="https://patlau.com/projects/panam.jpg" alt="Pan Am" loading="lazy"><img src="https://patlau.com/projects/specialk.jpg" alt="Special K" loading="lazy"><img src="https://patlau.com/projects/thinktank.jpg" alt="Think Tank" loading="lazy"><img src="https://patlau.com/projects/tims.jpg" alt="Tim Hortons" loading="lazy"><img src="https://patlau.com/projects/tvfactory.jpg" alt="TV Factory" loading="lazy"><img src="https://patlau.com/projects/cp.jpg" alt="CP" loading="lazy"><img src="https://patlau.com/projects/baileys.jpg" alt="Baileys" loading="lazy"><img src="https://patlau.com/projects/logitech.jpg" alt="Logitech" loading="lazy"><img src="https://patlau.com/projects/mavericks.jpg" alt="Mavericks VFX" loading="lazy"><img src="https://patlau.com/projects/1188.jpg" alt="1188" loading="lazy"><img src="https://patlau.com/projects/gls.jpg" alt="GLS" loading="lazy"><img src="https://patlau.com/projects/archivum.jpg" alt="Archivum" loading="lazy"><img src="https://patlau.com/projects/unikron.jpg" alt="Unikron" loading="lazy"><img src="https://patlau.com/projects/airhogs.jpg" alt="Air Hogs" loading="lazy"><img src="https://patlau.com/projects/westside.jpg" alt="Westside" loading="lazy"><img src="https://patlau.com/projects/dulux.jpg" alt="Dulux" loading="lazy"><img src="https://patlau.com/projects/msheireb.jpg" alt="Msheireb" loading="lazy">
     </div>
   </div>
 </section>
