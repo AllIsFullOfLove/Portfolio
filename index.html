@@ -111,7 +111,8 @@ section.page{padding-top:calc(var(--bar-h) + 48px);scroll-margin-top:0}
   position:relative;height:62vh;min-height:420px;overflow:hidden;
   margin-top:var(--bar-h);
 }
-.hero .frame{position:absolute;inset:0;background:url('https://patlau.com/matte/True%20Love03.jpg') center/cover no-repeat;animation:drift 28s ease-in-out infinite alternate}
+.hero .frame{position:absolute;inset:0;background-position:center;background-size:cover;background-repeat:no-repeat;opacity:0;transition:opacity 2s ease-in-out;animation:drift 28s ease-in-out infinite alternate}
+.hero .frame.show{opacity:1}
 @keyframes drift{from{transform:scale(1)}to{transform:scale(1.06)}}
 .hero .veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,11,1) 0%,rgba(10,10,11,.05) 50%)}
 .hero .title{
@@ -210,7 +211,8 @@ footer{
 
 <!-- ============ HERO ============ -->
 <div class="hero">
-  <div class="frame" role="img" aria-label="New Asia City at night — matte painting"></div>
+  <div class="frame" id="splashA" role="img" aria-label="Matte painting splash"></div>
+  <div class="frame" id="splashB" role="img" aria-hidden="true"></div>
   <div class="veil"></div>
   <div class="title">
     <h2>The Art of Pat Lau</h2>
@@ -667,6 +669,40 @@ footer{
   <p>All images on this site are copyright Pat Lau or their respective owners.</p>
 </footer>
 
+<script>
+(function(){
+  var imgs = [];
+  for (var i=1;i<=9;i++) imgs.push('https://patlau.com/splash0'+i+'.jpg');
+
+  var idx = Math.floor(Math.random()*imgs.length);  // random START point only
+  function next(){
+    var src = imgs[idx];
+    idx = (idx + 1) % imgs.length;                   // step through in order, wrap around
+    return src;
+  }
+
+  var a = document.getElementById('splashA');
+  var b = document.getElementById('splashB');
+  var front = a, back = b;
+  function load(src, cb){ var im = new Image(); im.onload = cb; im.onerror = cb; im.src = src; }
+
+  var first = next();
+  load(first, function(){
+    front.style.backgroundImage = 'url("'+first+'")';
+    front.classList.add('show');
+  });
+
+  setInterval(function(){
+    var src = next();
+    load(src, function(){
+      back.style.backgroundImage = 'url("'+src+'")';
+      back.classList.add('show');
+      front.classList.remove('show');
+      var tmp = front; front = back; back = tmp;
+    });
+  }, 10000);
+})();
+</script>
 <script>
 (function(){
   var links = Array.prototype.slice.call(document.querySelectorAll('.nav-row a[href^="#"]'));
