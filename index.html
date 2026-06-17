@@ -704,36 +704,54 @@ footer{
 
 <script>
 (function(){
-  var imgs = [];
-  for (var i=1;i<=9;i++) imgs.push('https://patlau.com/splash0'+i+'.jpg');
-
-  var idx = Math.floor(Math.random()*imgs.length);  // random START point only
-  function next(){
-    var src = imgs[idx];
-    idx = (idx + 1) % imgs.length;                   // step through in order, wrap around
-    return src;
-  }
-
   var a = document.getElementById('splashA');
   var b = document.getElementById('splashB');
   var front = a, back = b;
-  function load(src, cb){ var im = new Image(); im.onload = cb; im.onerror = cb; im.src = src; }
+  var imgs = [], idx = 0, timer = null;
 
-  var first = next();
-  load(first, function(){
-    front.style.backgroundImage = 'url("'+first+'")';
-    front.classList.add('show');
-  });
+  function pad(n){ return (n<10?'0':'') + n; }
+  function url(n){ return 'https://patlau.com/splash'+pad(n)+'.jpg'; }
 
-  setInterval(function(){
-    var src = next();
-    load(src, function(){
+  function show(src, first){
+    if (first){
+      front.style.backgroundImage = 'url("'+src+'")';
+      front.classList.add('show');
+    } else {
       back.style.backgroundImage = 'url("'+src+'")';
       back.classList.add('show');
       front.classList.remove('show');
-      var tmp = front; front = back; back = tmp;
-    });
-  }, 10000);
+      var t = front; front = back; back = t;
+    }
+  }
+  function next(){
+    var src = imgs[idx];
+    idx = (idx + 1) % imgs.length;   // wrap from last back to first
+    return src;
+  }
+  function start(){
+    if (!imgs.length) return;
+    idx = Math.floor(Math.random()*imgs.length);  // random starting frame
+    var first = imgs[idx];
+    idx = (idx + 1) % imgs.length;
+    var im = new Image();
+    im.onload = im.onerror = function(){ show(first, true); };
+    im.src = first;
+    timer = setInterval(function(){
+      var src = next();
+      var pre = new Image();
+      pre.onload = pre.onerror = function(){ show(src, false); };
+      pre.src = src;
+    }, 10000);
+  }
+
+  // discover how many splash images exist: probe splash01, 02, ... until one is missing
+  function probe(n){
+    var im = new Image();
+    im.onload = function(){ imgs.push(url(n)); probe(n+1); };   // found -> keep going
+    im.onerror = function(){ start(); };                        // missing -> list complete
+    im.src = url(n);
+  }
+  probe(1);
 })();
 </script>
 <script>
