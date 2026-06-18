@@ -173,9 +173,10 @@ section.page{padding-top:calc(var(--bar-h) + 48px);scroll-margin-top:0}
 .shots+.shots,.shots+.video,.video+.shots,.video+.video{margin-top:10px}
 .shots.two{grid-template-columns:repeat(2,1fr)}
 .shots.three{grid-template-columns:repeat(3,1fr)}
-.shots.thumbs{grid-template-columns:repeat(18,1fr);max-width:1400px;margin:0 auto}
+.shots.thumbs{grid-template-columns:repeat(18,1fr);gap:10px}
 .shots.thumbs a{grid-column:span 2}
 .shots.thumbs a:nth-child(10){grid-column:4 / span 2}
+.shots.thumbs img{width:100%;height:auto}
 .shots.storyboard-scaled{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 @media(max-width:700px){.shots.two,.shots.three{grid-template-columns:1fr}}
 .shots a{position:relative;overflow:hidden;background:var(--black)}
@@ -809,7 +810,7 @@ footer{
       setActive(i);
       hold = performance.now() + 900;
       glideTo(sec);
-      history.replaceState(null,'','#'+sec.id);
+      try{ history.replaceState(null,'','#'+sec.id); }catch(e){}
     });
   });
 
