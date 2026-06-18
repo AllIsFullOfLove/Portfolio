@@ -143,7 +143,7 @@ section.page{padding-top:calc(var(--bar-h) + 48px);scroll-margin-top:0}
 /* hero */
 .hero{
   position:relative;height:62vh;min-height:420px;overflow:hidden;
-  margin-top:var(--bar-h);cursor:pointer;
+  margin-top:var(--bar-h);
 }
 .hero .frame{position:absolute;inset:0;background-position:center;background-size:cover;background-repeat:no-repeat;opacity:0;transition:opacity 2s ease-in-out;animation:drift 28s ease-in-out infinite alternate}
 .hero .frame.show{opacity:1}
@@ -260,13 +260,6 @@ footer{
 }
 .rail a:hover .tip{opacity:1}
 @media(max-width:760px){ .rail{display:none} }
-
-/* ---- lightbox ---- */
-.lb{display:none;position:fixed;inset:0;z-index:999;background:#000;cursor:zoom-out;align-items:center;justify-content:center}
-.lb.open{display:flex}
-.lb img{max-width:100%;max-height:100%;object-fit:contain;display:block}
-.lb-close{position:absolute;top:18px;right:24px;font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.14em;color:rgba(255,255,255,.5);cursor:pointer;text-transform:uppercase}
-.lb-close:hover{color:#fff}
 </style>
 </head>
 <body>
@@ -318,7 +311,7 @@ footer{
     <article class="project">
       <div class="slate"><span class="num">460</span><h3>The Creator</h3><span class="meta">New Asia City Night · Dir. Gareth Edwards · MARZ VFX</span></div>
       <div class="shots">
-        <span class="clip"><img width="1600" height="400" src="https://patlau.com/matte/tl.jpg" alt="The Creator — New Asia City night matte painting" loading="lazy"></span>
+        <a href="https://patlau.com/matte/tl.jpg" target="_blank" rel="noopener"><img width="1600" height="400" src="https://patlau.com/matte/tl.jpg" alt="The Creator — New Asia City night matte painting" loading="lazy"></a>
         <span class="clip"><img width="1600" height="580" src="https://patlau.com/matte/tl.gif" alt="The Creator — New Asia City breakdown animation" loading="lazy"></span>
       </div>
     </article>
@@ -892,27 +885,5 @@ footer{
 })();
 </script>
 
-
-<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Full image">
-  <span class="lb-close" id="lb-close">Close ×</span>
-  <img id="lb-img" src="" alt="Full resolution">
-</div>
-
-<script>
-(function(){
-  var hero = document.querySelector('.hero');
-  var lb   = document.getElementById('lb');
-  var img  = document.getElementById('lb-img');
-  var close= document.getElementById('lb-close');
-  var src  = 'https://patlau.com/matte/True%20Love03.jpg';
-  var loaded= false;
-  function open(){ lb.classList.add('open'); document.body.style.overflow='hidden'; if(!loaded){ img.src=src; loaded=true; } }
-  function shut(){ lb.classList.remove('open'); document.body.style.overflow=''; }
-  if(hero) hero.addEventListener('click', open);
-  lb.addEventListener('click', shut);
-  close.addEventListener('click', function(e){ e.stopPropagation(); shut(); });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape') shut(); });
-})();
-</script>
 </body>
 </html>
