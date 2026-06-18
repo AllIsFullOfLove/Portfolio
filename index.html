@@ -173,7 +173,9 @@ section.page{padding-top:calc(var(--bar-h) + 48px);scroll-margin-top:0}
 .shots+.shots,.shots+.video,.video+.shots,.video+.video{margin-top:10px}
 .shots.two{grid-template-columns:repeat(2,1fr)}
 .shots.three{grid-template-columns:repeat(3,1fr)}
-.shots.thumbs{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+.shots.thumbs{grid-template-columns:repeat(18,1fr);max-width:1400px;margin:0 auto}
+.shots.thumbs a{grid-column:span 2}
+.shots.thumbs a:nth-child(10){grid-column:4 / span 2}
 .shots.storyboard-scaled{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 @media(max-width:700px){.shots.two,.shots.three{grid-template-columns:1fr}}
 .shots a{position:relative;overflow:hidden;background:var(--black)}
@@ -432,7 +434,6 @@ footer{
       <div class="slate"><span class="num">204</span><h3>ERUPT — Art of Beat-Making</h3><span class="meta">Music Video · Secret Level Films</span></div>
       <div class="video"><iframe src="https://player.vimeo.com/video/31743927?title=0&byline=0&portrait=0" title="ERUPT — Art of Beat-Making" allow="fullscreen" loading="lazy"></iframe></div>
       <div class="shots"><a href="https://patlau.com/aobm/erupt.jpg" target="_blank" rel="noopener"><img width="1646" height="344" src="https://patlau.com/aobm/erupt.jpg" alt="ERUPT music video VFX" loading="lazy"></a></div>
-      <p class="caption">Click thumbnails for full frames</p>
       <div class="shots thumbs">
         <a href="https://patlau.com/aobm/005.5.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/005.5icon.jpg" alt="ERUPT frame" loading="lazy"></a>
         <a href="https://patlau.com/aobm/005.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/005icon.jpg" alt="ERUPT frame" loading="lazy"></a>
