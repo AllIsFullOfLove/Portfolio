@@ -263,10 +263,10 @@ footer{
 
 /* ---- lightbox ---- */
 .lb{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.75);
-    align-items:center;justify-content:center;cursor:zoom-out;flex-direction:column;gap:20px}
+    align-items:center;justify-content:center;cursor:pointer}
+.lb.open{cursor:pointer}
 .lb.open{display:flex}
-.lb img{width:100%;height:auto;max-height:100vh;object-fit:contain;display:block;cursor:default}
-@media(max-width:760px){.lb img{width:100vw;height:auto;max-height:none}}
+.lb img{width:100vw;height:100vh;object-fit:contain;display:block;cursor:pointer}
 
 </style>
 </head>
