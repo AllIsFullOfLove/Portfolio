@@ -260,6 +260,17 @@ footer{
 }
 .rail a:hover .tip{opacity:1}
 @media(max-width:760px){ .rail{display:none} }
+
+/* ---- lightbox ---- */
+.lb{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.96);
+    align-items:center;justify-content:center;cursor:zoom-out}
+.lb.open{display:flex}
+.lb img{max-width:100%;max-height:100%;object-fit:contain;display:block;cursor:default}
+.lb-close{position:fixed;top:16px;right:20px;
+    font-family:"IBM Plex Mono",monospace;font-size:15px;letter-spacing:.1em;
+    color:rgba(255,255,255,.6);cursor:pointer;text-transform:uppercase;
+    background:none;border:none;padding:8px;z-index:1000;line-height:1}
+.lb-close:hover{color:#fff}
 </style>
 </head>
 <body>
@@ -311,14 +322,14 @@ footer{
     <article class="project">
       <div class="slate"><span class="num">460</span><h3>The Creator</h3><span class="meta">New Asia City Night · Dir. Gareth Edwards · MARZ VFX</span></div>
       <div class="shots">
-        <a href="https://patlau.com/matte/tl.jpg" target="_blank" rel="noopener"><img width="1600" height="400" src="https://patlau.com/matte/tl.jpg" alt="The Creator — New Asia City night matte painting" loading="lazy"></a>
+        <a href="https://patlau.com/matte/tl.jpg"><img width="1600" height="400" src="https://patlau.com/matte/tl.jpg" alt="The Creator — New Asia City night matte painting" loading="lazy"></a>
         <span class="clip"><img width="1600" height="580" src="https://patlau.com/matte/tl.gif" alt="The Creator — New Asia City breakdown animation" loading="lazy"></span>
       </div>
     </article>
 
     <article class="project">
       <div class="slate"><span class="num">164</span><h3>The Walking Dead: Dead City</h3><span class="meta">MARZ VFX</span></div>
-      <div class="shots"><a href="https://patlau.com/matte/dc.jpg" target="_blank" rel="noopener" class="roll"><span class="inner"><img width="1600" height="830" src="https://patlau.com/matte/dc-a.jpg" alt="The Walking Dead: Dead City matte painting" loading="lazy" class="a"><img width="1600" height="830" class="b" src="https://patlau.com/matte/dc-b.jpg" alt="" loading="lazy"></span></a></div>
+      <div class="shots"><a href="https://patlau.com/matte/dc.jpg" class="roll"><span class="inner"><img width="1600" height="830" src="https://patlau.com/matte/dc-a.jpg" alt="The Walking Dead: Dead City matte painting" loading="lazy" class="a"><img width="1600" height="830" class="b" src="https://patlau.com/matte/dc-b.jpg" alt="" loading="lazy"></span></a></div>
     </article>
 
     <article class="project">
@@ -332,12 +343,12 @@ footer{
       <div class="video"><iframe src="https://player.vimeo.com/video/105955063" title="Law Zero" allow="fullscreen" loading="lazy"></iframe></div>
       <div class="shots"><span class="clip"><img width="1600" height="694" src="https://patlau.com/matte/kore3.jpg" alt="Law Zero environment" loading="lazy"></span></div>
       <div class="shots two">
-        <a href="https://patlau.com/matte/kore5a.jpg" target="_blank" rel="noopener" class="roll"><span class="inner"><img width="600" height="250" src="https://patlau.com/matte/kore5a.jpg" alt="Law Zero breakdown" loading="lazy" class="a"><img width="600" height="250" class="b" src="https://patlau.com/matte/kore5b.jpg" alt="" loading="lazy"></span></a>
-        <a href="https://patlau.com/matte/kore4a.jpg" target="_blank" rel="noopener" class="roll"><span class="inner"><img width="600" height="250" src="https://patlau.com/matte/kore4a.jpg" alt="Law Zero breakdown" loading="lazy" class="a"><img width="600" height="250" class="b" src="https://patlau.com/matte/kore4b.jpg" alt="" loading="lazy"></span></a>
-        <a href="https://patlau.com/matte/kore6a.jpg" target="_blank" rel="noopener" class="roll"><span class="inner"><img width="600" height="250" src="https://patlau.com/matte/kore6a.jpg" alt="Law Zero breakdown" loading="lazy" class="a"><img width="600" height="250" class="b" src="https://patlau.com/matte/kore6b.jpg" alt="" loading="lazy"></span></a>
-        <a href="https://patlau.com/matte/kore3a.jpg" target="_blank" rel="noopener" class="roll"><span class="inner"><img width="600" height="250" src="https://patlau.com/matte/kore3a.jpg" alt="Law Zero breakdown" loading="lazy" class="a"><img width="600" height="250" class="b" src="https://patlau.com/matte/kore3b.jpg" alt="" loading="lazy"></span></a>
-        <a href="https://patlau.com/matte/kore1a.jpg" target="_blank" rel="noopener" class="roll"><span class="inner"><img width="600" height="250" src="https://patlau.com/matte/kore1a.jpg" alt="Law Zero breakdown" loading="lazy" class="a"><img width="600" height="250" class="b" src="https://patlau.com/matte/kore1b.jpg" alt="" loading="lazy"></span></a>
-        <a href="https://patlau.com/matte/kore2a.jpg" target="_blank" rel="noopener" class="roll"><span class="inner"><img width="600" height="250" src="https://patlau.com/matte/kore2a.jpg" alt="Law Zero breakdown" loading="lazy" class="a"><img width="600" height="250" class="b" src="https://patlau.com/matte/kore2b.jpg" alt="" loading="lazy"></span></a>
+        <a href="https://patlau.com/matte/kore5a.jpg" class="roll"><span class="inner"><img width="600" height="250" src="https://patlau.com/matte/kore5a.jpg" alt="Law Zero breakdown" loading="lazy" class="a"><img width="600" height="250" class="b" src="https://patlau.com/matte/kore5b.jpg" alt="" loading="lazy"></span></a>
+        <a href="https://patlau.com/matte/kore4a.jpg" class="roll"><span class="inner"><img width="600" height="250" src="https://patlau.com/matte/kore4a.jpg" alt="Law Zero breakdown" loading="lazy" class="a"><img width="600" height="250" class="b" src="https://patlau.com/matte/kore4b.jpg" alt="" loading="lazy"></span></a>
+        <a href="https://patlau.com/matte/kore6a.jpg" class="roll"><span class="inner"><img width="600" height="250" src="https://patlau.com/matte/kore6a.jpg" alt="Law Zero breakdown" loading="lazy" class="a"><img width="600" height="250" class="b" src="https://patlau.com/matte/kore6b.jpg" alt="" loading="lazy"></span></a>
+        <a href="https://patlau.com/matte/kore3a.jpg" class="roll"><span class="inner"><img width="600" height="250" src="https://patlau.com/matte/kore3a.jpg" alt="Law Zero breakdown" loading="lazy" class="a"><img width="600" height="250" class="b" src="https://patlau.com/matte/kore3b.jpg" alt="" loading="lazy"></span></a>
+        <a href="https://patlau.com/matte/kore1a.jpg" class="roll"><span class="inner"><img width="600" height="250" src="https://patlau.com/matte/kore1a.jpg" alt="Law Zero breakdown" loading="lazy" class="a"><img width="600" height="250" class="b" src="https://patlau.com/matte/kore1b.jpg" alt="" loading="lazy"></span></a>
+        <a href="https://patlau.com/matte/kore2a.jpg" class="roll"><span class="inner"><img width="600" height="250" src="https://patlau.com/matte/kore2a.jpg" alt="Law Zero breakdown" loading="lazy" class="a"><img width="600" height="250" class="b" src="https://patlau.com/matte/kore2b.jpg" alt="" loading="lazy"></span></a>
       </div>
     </article>
 
@@ -349,16 +360,16 @@ footer{
     <article class="project">
       <div class="slate"><span class="num">684</span><h3>Garm Wars: The Last Druid</h3><span class="meta">Dir. Mamoru Oshii · Intelligent Creatures</span></div>
       <div class="shots two druidgrid">
-        <a href="https://patlau.com/matte/druid_matte_11.jpg" target="_blank" rel="noopener"><img width="1920" height="800" src="https://patlau.com/matte/druid_matte_11.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
-        <a href="https://patlau.com/matte/druid_matte_09.jpg" target="_blank" rel="noopener"><img width="1600" height="900" src="https://patlau.com/matte/druid_matte_09.jpg" alt="Garm Wars matte painting" loading="lazy" style="object-position:top"></a>
-        <a href="https://patlau.com/matte/druid_matte_04.jpg" target="_blank" rel="noopener"><img width="1600" height="600" src="https://patlau.com/matte/druid_matte_04.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
-        <a href="https://patlau.com/matte/druid_matte_06.jpg" target="_blank" rel="noopener"><img width="1600" height="600" src="https://patlau.com/matte/druid_matte_06.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
-        <a href="https://patlau.com/matte/druid_matte_01.jpg" target="_blank" rel="noopener"><img width="1600" height="681" src="https://patlau.com/matte/druid_matte_01.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
-        <a href="https://patlau.com/matte/druid_matte_08.jpg" target="_blank" rel="noopener"><img width="1600" height="600" src="https://patlau.com/matte/druid_matte_08.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
-        <a href="https://patlau.com/matte/druid_matte_05.jpg" target="_blank" rel="noopener"><img width="1600" height="600" src="https://patlau.com/matte/druid_matte_05.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
-        <a href="https://patlau.com/matte/druid_matte_07.jpg" target="_blank" rel="noopener"><img width="1600" height="600" src="https://patlau.com/matte/druid_matte_07.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
-        <a href="https://patlau.com/matte/druid_matte_03.jpg" target="_blank" rel="noopener"><img width="1600" height="600" src="https://patlau.com/matte/druid_matte_03.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
-        <a href="https://patlau.com/matte/druid_matte_02.jpg" target="_blank" rel="noopener"><img width="1600" height="600" src="https://patlau.com/matte/druid_matte_02.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
+        <a href="https://patlau.com/matte/druid_matte_11.jpg"><img width="1920" height="800" src="https://patlau.com/matte/druid_matte_11.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
+        <a href="https://patlau.com/matte/druid_matte_09.jpg"><img width="1600" height="900" src="https://patlau.com/matte/druid_matte_09.jpg" alt="Garm Wars matte painting" loading="lazy" style="object-position:top"></a>
+        <a href="https://patlau.com/matte/druid_matte_04.jpg"><img width="1600" height="600" src="https://patlau.com/matte/druid_matte_04.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
+        <a href="https://patlau.com/matte/druid_matte_06.jpg"><img width="1600" height="600" src="https://patlau.com/matte/druid_matte_06.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
+        <a href="https://patlau.com/matte/druid_matte_01.jpg"><img width="1600" height="681" src="https://patlau.com/matte/druid_matte_01.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
+        <a href="https://patlau.com/matte/druid_matte_08.jpg"><img width="1600" height="600" src="https://patlau.com/matte/druid_matte_08.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
+        <a href="https://patlau.com/matte/druid_matte_05.jpg"><img width="1600" height="600" src="https://patlau.com/matte/druid_matte_05.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
+        <a href="https://patlau.com/matte/druid_matte_07.jpg"><img width="1600" height="600" src="https://patlau.com/matte/druid_matte_07.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
+        <a href="https://patlau.com/matte/druid_matte_03.jpg"><img width="1600" height="600" src="https://patlau.com/matte/druid_matte_03.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
+        <a href="https://patlau.com/matte/druid_matte_02.jpg"><img width="1600" height="600" src="https://patlau.com/matte/druid_matte_02.jpg" alt="Garm Wars matte painting" loading="lazy"></a>
       </div>
     </article>
 
@@ -390,8 +401,8 @@ footer{
     <article class="project">
       <div class="slate"><span class="num">495</span><h3>Orphan Black</h3><span class="meta">Intelligent Creatures</span></div>
       <div class="shots">
-        <a href="https://patlau.com/matte/orphan_black_1.1.jpg" target="_blank" rel="noopener" class="roll"><span class="inner"><img width="1600" height="900" src="https://patlau.com/matte/orphan_black_1.1.jpg" alt="Orphan Black matte painting" loading="lazy" class="a"><img width="1600" height="900" class="b" src="https://patlau.com/matte/orphan_black_1.0.jpg" alt="" loading="lazy"></span></a>
-        <a href="https://patlau.com/matte/orphan_black_2.1.jpg" target="_blank" rel="noopener" class="roll"><span class="inner"><img width="1600" height="900" src="https://patlau.com/matte/orphan_black_2.1.jpg" alt="Orphan Black matte painting" loading="lazy" class="a"><img width="1600" height="900" class="b" src="https://patlau.com/matte/orphan_black_2.0.jpg" alt="" loading="lazy"></span></a>
+        <a href="https://patlau.com/matte/orphan_black_1.1.jpg" class="roll"><span class="inner"><img width="1600" height="900" src="https://patlau.com/matte/orphan_black_1.1.jpg" alt="Orphan Black matte painting" loading="lazy" class="a"><img width="1600" height="900" class="b" src="https://patlau.com/matte/orphan_black_1.0.jpg" alt="" loading="lazy"></span></a>
+        <a href="https://patlau.com/matte/orphan_black_2.1.jpg" class="roll"><span class="inner"><img width="1600" height="900" src="https://patlau.com/matte/orphan_black_2.1.jpg" alt="Orphan Black matte painting" loading="lazy" class="a"><img width="1600" height="900" class="b" src="https://patlau.com/matte/orphan_black_2.0.jpg" alt="" loading="lazy"></span></a>
       </div>
     </article>
 
@@ -408,12 +419,12 @@ footer{
       <div class="slate"><span class="num">730</span><h3>Hyundai Genesis</h3><span class="meta">Commercial · Dashing</span></div>
       <div class="video"><iframe src="https://player.vimeo.com/video/123069685" title="Hyundai Genesis" allow="fullscreen" loading="lazy"></iframe></div>
       <div class="shots two">
-        <a href="https://patlau.com/matte/genesisa1.jpg" target="_blank" rel="noopener"><img width="600" height="338" src="https://patlau.com/matte/genesisa1.jpg" alt="Hyundai Genesis environment" loading="lazy"></a>
-        <a href="https://patlau.com/matte/genesisa2.jpg" target="_blank" rel="noopener"><img width="600" height="338" src="https://patlau.com/matte/genesisa2.jpg" alt="Hyundai Genesis environment" loading="lazy"></a>
-        <a href="https://patlau.com/matte/genesisa3.jpg" target="_blank" rel="noopener"><img width="600" height="338" src="https://patlau.com/matte/genesisa3.jpg" alt="Hyundai Genesis environment" loading="lazy"></a>
-        <a href="https://patlau.com/matte/genesisa4.jpg" target="_blank" rel="noopener"><img width="600" height="338" src="https://patlau.com/matte/genesisa4.jpg" alt="Hyundai Genesis environment" loading="lazy"></a>
-        <a href="https://patlau.com/matte/genesisa5.jpg" target="_blank" rel="noopener"><img width="600" height="338" src="https://patlau.com/matte/genesisa5.jpg" alt="Hyundai Genesis environment" loading="lazy"></a>
-        <a href="https://patlau.com/matte/genesisa6.jpg" target="_blank" rel="noopener"><img width="600" height="338" src="https://patlau.com/matte/genesisa6.jpg" alt="Hyundai Genesis environment" loading="lazy"></a>
+        <a href="https://patlau.com/matte/genesisa1.jpg"><img width="600" height="338" src="https://patlau.com/matte/genesisa1.jpg" alt="Hyundai Genesis environment" loading="lazy"></a>
+        <a href="https://patlau.com/matte/genesisa2.jpg"><img width="600" height="338" src="https://patlau.com/matte/genesisa2.jpg" alt="Hyundai Genesis environment" loading="lazy"></a>
+        <a href="https://patlau.com/matte/genesisa3.jpg"><img width="600" height="338" src="https://patlau.com/matte/genesisa3.jpg" alt="Hyundai Genesis environment" loading="lazy"></a>
+        <a href="https://patlau.com/matte/genesisa4.jpg"><img width="600" height="338" src="https://patlau.com/matte/genesisa4.jpg" alt="Hyundai Genesis environment" loading="lazy"></a>
+        <a href="https://patlau.com/matte/genesisa5.jpg"><img width="600" height="338" src="https://patlau.com/matte/genesisa5.jpg" alt="Hyundai Genesis environment" loading="lazy"></a>
+        <a href="https://patlau.com/matte/genesisa6.jpg"><img width="600" height="338" src="https://patlau.com/matte/genesisa6.jpg" alt="Hyundai Genesis environment" loading="lazy"></a>
       </div>
     </article>
 
@@ -446,10 +457,10 @@ footer{
       <div class="slate"><span class="num">774</span><h3>Meteor Project</h3><span class="meta">VFX Breakdown</span></div>
       <div class="video"><iframe src="https://player.vimeo.com/video/123136125?title=0&byline=0&portrait=0" title="Meteor project" allow="fullscreen" loading="lazy"></iframe></div>
       <div class="shots two">
-        <a href="https://patlau.com/vfx/meteor1.jpg" target="_blank" rel="noopener"><img width="900" height="384" src="https://patlau.com/vfx/meteor1.jpg" alt="Meteor project still" loading="lazy"></a>
-        <a href="https://patlau.com/vfx/meteor2.jpg" target="_blank" rel="noopener"><img width="900" height="384" src="https://patlau.com/vfx/meteor2.jpg" alt="Meteor project still" loading="lazy"></a>
-        <a href="https://patlau.com/vfx/meteor3.jpg" target="_blank" rel="noopener"><img width="900" height="384" src="https://patlau.com/vfx/meteor3.jpg" alt="Meteor project still" loading="lazy"></a>
-        <a href="https://patlau.com/vfx/meteor4.jpg" target="_blank" rel="noopener"><img width="900" height="384" src="https://patlau.com/vfx/meteor4.jpg" alt="Meteor project still" loading="lazy"></a>
+        <a href="https://patlau.com/vfx/meteor1.jpg"><img width="900" height="384" src="https://patlau.com/vfx/meteor1.jpg" alt="Meteor project still" loading="lazy"></a>
+        <a href="https://patlau.com/vfx/meteor2.jpg"><img width="900" height="384" src="https://patlau.com/vfx/meteor2.jpg" alt="Meteor project still" loading="lazy"></a>
+        <a href="https://patlau.com/vfx/meteor3.jpg"><img width="900" height="384" src="https://patlau.com/vfx/meteor3.jpg" alt="Meteor project still" loading="lazy"></a>
+        <a href="https://patlau.com/vfx/meteor4.jpg"><img width="900" height="384" src="https://patlau.com/vfx/meteor4.jpg" alt="Meteor project still" loading="lazy"></a>
       </div>
     </article>
 
@@ -457,12 +468,12 @@ footer{
       <div class="slate"><span class="num">124</span><h3>Skrillex ft. Wolfgang Gartner — The Devil's Den</h3><span class="meta">Music Video · Spy Films</span></div>
       <div class="shots"><span class="clip"><img width="1600" height="500" src="https://patlau.com/vfx/devilsden.jpg" alt="The Devil's Den music video VFX" loading="lazy"></span></div>
       <div class="shots three">
-        <a href="https://patlau.com/vfx/skrillex1a.jpg" target="_blank" rel="noopener"><img width="480" height="210" src="https://patlau.com/vfx/skrillex1a.jpg" alt="Devil's Den VFX still" loading="lazy"></a>
-        <a href="https://patlau.com/vfx/skrillex2a.jpg" target="_blank" rel="noopener"><img width="480" height="210" src="https://patlau.com/vfx/skrillex2a.jpg" alt="Devil's Den VFX still" loading="lazy"></a>
-        <a href="https://patlau.com/vfx/skrillex3a.jpg" target="_blank" rel="noopener"><img width="480" height="210" src="https://patlau.com/vfx/skrillex3a.jpg" alt="Devil's Den VFX still" loading="lazy"></a>
-        <a href="https://patlau.com/vfx/skrillex4a.jpg" target="_blank" rel="noopener"><img width="480" height="210" src="https://patlau.com/vfx/skrillex4a.jpg" alt="Devil's Den VFX still" loading="lazy"></a>
-        <a href="https://patlau.com/vfx/skrillex5a.jpg" target="_blank" rel="noopener"><img width="480" height="210" src="https://patlau.com/vfx/skrillex5a.jpg" alt="Devil's Den VFX still" loading="lazy"></a>
-        <a href="https://patlau.com/vfx/skrillex6a.jpg" target="_blank" rel="noopener"><img width="480" height="210" src="https://patlau.com/vfx/skrillex6a.jpg" alt="Devil's Den VFX still" loading="lazy"></a>
+        <a href="https://patlau.com/vfx/skrillex1a.jpg"><img width="480" height="210" src="https://patlau.com/vfx/skrillex1a.jpg" alt="Devil's Den VFX still" loading="lazy"></a>
+        <a href="https://patlau.com/vfx/skrillex2a.jpg"><img width="480" height="210" src="https://patlau.com/vfx/skrillex2a.jpg" alt="Devil's Den VFX still" loading="lazy"></a>
+        <a href="https://patlau.com/vfx/skrillex3a.jpg"><img width="480" height="210" src="https://patlau.com/vfx/skrillex3a.jpg" alt="Devil's Den VFX still" loading="lazy"></a>
+        <a href="https://patlau.com/vfx/skrillex4a.jpg"><img width="480" height="210" src="https://patlau.com/vfx/skrillex4a.jpg" alt="Devil's Den VFX still" loading="lazy"></a>
+        <a href="https://patlau.com/vfx/skrillex5a.jpg"><img width="480" height="210" src="https://patlau.com/vfx/skrillex5a.jpg" alt="Devil's Den VFX still" loading="lazy"></a>
+        <a href="https://patlau.com/vfx/skrillex6a.jpg"><img width="480" height="210" src="https://patlau.com/vfx/skrillex6a.jpg" alt="Devil's Den VFX still" loading="lazy"></a>
       </div>
     </article>
 
@@ -471,21 +482,21 @@ footer{
       <div class="video"><iframe src="https://player.vimeo.com/video/31743927?title=0&byline=0&portrait=0" title="ERUPT — Art of Beat-Making" allow="fullscreen" loading="lazy"></iframe></div>
       <div class="shots"><span class="clip"><img width="1646" height="344" src="https://patlau.com/aobm/erupt.jpg" alt="ERUPT music video VFX" loading="lazy"></span></div>
       <div class="shots thumbs">
-        <a href="https://patlau.com/aobm/005.5.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/005.5icon.jpg" alt="ERUPT frame" loading="lazy"></a>
-        <a href="https://patlau.com/aobm/005.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/005icon.jpg" alt="ERUPT frame" loading="lazy"></a>
-        <a href="https://patlau.com/aobm/073.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/073icon.jpg" alt="ERUPT frame" loading="lazy"></a>
-        <a href="https://patlau.com/aobm/018.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/018icon.jpg" alt="ERUPT frame" loading="lazy"></a>
-        <a href="https://patlau.com/aobm/023.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/023icon.jpg" alt="ERUPT frame" loading="lazy"></a>
-        <a href="https://patlau.com/aobm/025.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/025icon.jpg" alt="ERUPT frame" loading="lazy"></a>
-        <a href="https://patlau.com/aobm/060.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/060icon.jpg" alt="ERUPT frame" loading="lazy"></a>
-        <a href="https://patlau.com/aobm/006.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/006icon.jpg" alt="ERUPT frame" loading="lazy"></a>
-        <a href="https://patlau.com/aobm/137.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/137icon.jpg" alt="ERUPT frame" loading="lazy"></a>
-        <a href="https://patlau.com/aobm/179.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/179icon.jpg" alt="ERUPT frame" loading="lazy"></a>
-        <a href="https://patlau.com/aobm/172.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/172icon.jpg" alt="ERUPT frame" loading="lazy"></a>
-        <a href="https://patlau.com/aobm/088.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/088icon.jpg" alt="ERUPT frame" loading="lazy"></a>
-        <a href="https://patlau.com/aobm/009.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/009icon.jpg" alt="ERUPT frame" loading="lazy"></a>
-        <a href="https://patlau.com/aobm/011.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/011icon.jpg" alt="ERUPT frame" loading="lazy"></a>
-        <a href="https://patlau.com/aobm/143.jpg" target="_blank" rel="noopener"><img width="192" height="108" src="https://patlau.com/aobm/143icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/005.5.jpg"><img width="192" height="108" src="https://patlau.com/aobm/005.5icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/005.jpg"><img width="192" height="108" src="https://patlau.com/aobm/005icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/073.jpg"><img width="192" height="108" src="https://patlau.com/aobm/073icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/018.jpg"><img width="192" height="108" src="https://patlau.com/aobm/018icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/023.jpg"><img width="192" height="108" src="https://patlau.com/aobm/023icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/025.jpg"><img width="192" height="108" src="https://patlau.com/aobm/025icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/060.jpg"><img width="192" height="108" src="https://patlau.com/aobm/060icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/006.jpg"><img width="192" height="108" src="https://patlau.com/aobm/006icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/137.jpg"><img width="192" height="108" src="https://patlau.com/aobm/137icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/179.jpg"><img width="192" height="108" src="https://patlau.com/aobm/179icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/172.jpg"><img width="192" height="108" src="https://patlau.com/aobm/172icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/088.jpg"><img width="192" height="108" src="https://patlau.com/aobm/088icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/009.jpg"><img width="192" height="108" src="https://patlau.com/aobm/009icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/011.jpg"><img width="192" height="108" src="https://patlau.com/aobm/011icon.jpg" alt="ERUPT frame" loading="lazy"></a>
+        <a href="https://patlau.com/aobm/143.jpg"><img width="192" height="108" src="https://patlau.com/aobm/143icon.jpg" alt="ERUPT frame" loading="lazy"></a>
       </div>
     </article>
   </div>
@@ -501,16 +512,16 @@ footer{
 
     <article class="project">
       <div class="slate"><span class="num">100</span><h3>Cyberpunk Apartment Interior</h3><span class="meta">Film · Dir. Joseph Procopio</span></div>
-      <div class="shots"><a href="https://patlau.com/concept/shut-in.jpg" target="_blank" rel="noopener"><img width="1600" height="675" src="https://patlau.com/concept/shut-in.jpg" alt="Cyberpunk apartment interior concept" loading="lazy"></a></div>
+      <div class="shots"><a href="https://patlau.com/concept/shut-in.jpg"><img width="1600" height="675" src="https://patlau.com/concept/shut-in.jpg" alt="Cyberpunk apartment interior concept" loading="lazy"></a></div>
     </article>
 
     <article class="project">
       <div class="slate"><span class="num">370</span><h3>Æon Flux — City Design</h3><span class="meta">MARZ</span></div>
       <div class="shots two uniform">
-        <a href="https://patlau.com/concept/ae01.jpg" target="_blank" rel="noopener"><img width="1600" height="600" src="https://patlau.com/concept/ae01.jpg" alt="Aeon Flux city concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/ae02.jpg" target="_blank" rel="noopener"><img width="1600" height="600" src="https://patlau.com/concept/ae02.jpg" alt="Aeon Flux city concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/ae03.jpg" target="_blank" rel="noopener"><img width="1600" height="600" src="https://patlau.com/concept/ae03.jpg?v=2" alt="Aeon Flux city concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/ae04.jpg" target="_blank" rel="noopener"><img width="1600" height="600" src="https://patlau.com/concept/ae04.jpg" alt="Aeon Flux city concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/ae01.jpg"><img width="1600" height="600" src="https://patlau.com/concept/ae01.jpg" alt="Aeon Flux city concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/ae02.jpg"><img width="1600" height="600" src="https://patlau.com/concept/ae02.jpg" alt="Aeon Flux city concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/ae03.jpg"><img width="1600" height="600" src="https://patlau.com/concept/ae03.jpg?v=2" alt="Aeon Flux city concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/ae04.jpg"><img width="1600" height="600" src="https://patlau.com/concept/ae04.jpg" alt="Aeon Flux city concept" loading="lazy"></a>
       </div>
       <div class="shots"><span class="clip"><img width="1600" height="900" src="https://patlau.com/concept/ae05.jpg" alt="Aeon Flux city concept" loading="lazy"></span></div>
     </article>
@@ -518,8 +529,8 @@ footer{
     <article class="project">
       <div class="slate"><span class="num">911</span><h3>DC Titans — Starfire</h3><span class="meta">TV</span></div>
       <div class="shots two">
-        <a href="https://patlau.com/concept/titan1.jpg" target="_blank" rel="noopener"><img width="1600" height="680" src="https://patlau.com/concept/titan1.jpg" alt="Titans Starfire concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/titan2.jpg" target="_blank" rel="noopener"><img width="1600" height="680" src="https://patlau.com/concept/titan2.jpg" alt="Titans Starfire concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/titan1.jpg"><img width="1600" height="680" src="https://patlau.com/concept/titan1.jpg" alt="Titans Starfire concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/titan2.jpg"><img width="1600" height="680" src="https://patlau.com/concept/titan2.jpg" alt="Titans Starfire concept" loading="lazy"></a>
       </div>
     </article>
 
@@ -531,9 +542,9 @@ footer{
     <article class="project">
       <div class="slate"><span class="num">841</span><h3>Colossal</h3><span class="meta">MARZ</span></div>
       <div class="shots three">
-        <a href="https://patlau.com/concept/collosal03.jpg" target="_blank" rel="noopener"><img width="1600" height="900" src="https://patlau.com/concept/collosal03.jpg" alt="Colossal concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/collosal02.jpg" target="_blank" rel="noopener"><img width="1600" height="900" src="https://patlau.com/concept/collosal02.jpg" alt="Colossal concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/collosal01.jpg" target="_blank" rel="noopener"><img width="1600" height="900" src="https://patlau.com/concept/collosal01.jpg" alt="Colossal concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/collosal03.jpg"><img width="1600" height="900" src="https://patlau.com/concept/collosal03.jpg" alt="Colossal concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/collosal02.jpg"><img width="1600" height="900" src="https://patlau.com/concept/collosal02.jpg" alt="Colossal concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/collosal01.jpg"><img width="1600" height="900" src="https://patlau.com/concept/collosal01.jpg" alt="Colossal concept" loading="lazy"></a>
       </div>
     </article>
 
@@ -545,12 +556,12 @@ footer{
     <article class="project">
       <div class="slate"><span class="num">109</span><h3>Garm Wars: The Last Druid</h3><span class="meta">Dir. Mamoru Oshii · Intelligent Creatures</span></div>
       <div class="shots two">
-        <a href="https://patlau.com/concept/druid_concept_01.jpg" target="_blank" rel="noopener"><img width="1600" height="600" src="https://patlau.com/concept/druid_concept_01.jpg" alt="Garm Wars concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/druid_concept_06.jpg" target="_blank" rel="noopener"><img width="1600" height="600" src="https://patlau.com/concept/druid_concept_06.jpg" alt="Garm Wars concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/druid_concept_03.jpg" target="_blank" rel="noopener"><img width="1600" height="662" src="https://patlau.com/concept/druid_concept_03.jpg" alt="Garm Wars concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/druid_concept_02.jpg" target="_blank" rel="noopener"><img width="1600" height="667" src="https://patlau.com/concept/druid_concept_02.jpg" alt="Garm Wars concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/druid_concept_08.jpg" target="_blank" rel="noopener"><img width="1600" height="664" src="https://patlau.com/concept/druid_concept_08.jpg" alt="Garm Wars concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/druid_concept_10.jpg" target="_blank" rel="noopener"><img width="1000" height="1200" src="https://patlau.com/concept/druid_concept_10.jpg" alt="Garm Wars concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/druid_concept_01.jpg"><img width="1600" height="600" src="https://patlau.com/concept/druid_concept_01.jpg" alt="Garm Wars concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/druid_concept_06.jpg"><img width="1600" height="600" src="https://patlau.com/concept/druid_concept_06.jpg" alt="Garm Wars concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/druid_concept_03.jpg"><img width="1600" height="662" src="https://patlau.com/concept/druid_concept_03.jpg" alt="Garm Wars concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/druid_concept_02.jpg"><img width="1600" height="667" src="https://patlau.com/concept/druid_concept_02.jpg" alt="Garm Wars concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/druid_concept_08.jpg"><img width="1600" height="664" src="https://patlau.com/concept/druid_concept_08.jpg" alt="Garm Wars concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/druid_concept_10.jpg"><img width="1000" height="1200" src="https://patlau.com/concept/druid_concept_10.jpg" alt="Garm Wars concept" loading="lazy"></a>
       </div>
     </article>
 
@@ -562,29 +573,29 @@ footer{
     <article class="project">
       <div class="slate"><span class="num">423</span><h3>In Contempt</h3><span class="meta">TV</span></div>
       <div class="shots three">
-        <a href="https://patlau.com/concept/in_contempt_1.jpg" target="_blank" rel="noopener"><img width="3840" height="1608" src="https://patlau.com/concept/in_contempt_1.jpg" alt="In Contempt concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/in_contempt_2.jpg" target="_blank" rel="noopener"><img width="3840" height="1609" src="https://patlau.com/concept/in_contempt_2.jpg" alt="In Contempt concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/in_contempt_3.jpg" target="_blank" rel="noopener"><img width="3840" height="1606" src="https://patlau.com/concept/in_contempt_3.jpg" alt="In Contempt concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/in_contempt_1.jpg"><img width="3840" height="1608" src="https://patlau.com/concept/in_contempt_1.jpg" alt="In Contempt concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/in_contempt_2.jpg"><img width="3840" height="1609" src="https://patlau.com/concept/in_contempt_2.jpg" alt="In Contempt concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/in_contempt_3.jpg"><img width="3840" height="1606" src="https://patlau.com/concept/in_contempt_3.jpg" alt="In Contempt concept" loading="lazy"></a>
       </div>
     </article>
 
     <article class="project">
       <div class="slate"><span class="num">681</span><h3>Heroes Reborn</h3><span class="meta">TV</span></div>
       <div class="shots two herogrid">
-        <a href="https://patlau.com/concept/heroes01.jpg" target="_blank" rel="noopener"><img width="1600" height="694" src="https://patlau.com/concept/heroes01.jpg" alt="Heroes Reborn concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/heroes04.jpg" target="_blank" rel="noopener"><img width="1600" height="693" src="https://patlau.com/concept/heroes04.jpg" alt="Heroes Reborn concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/heroes03.jpg" target="_blank" rel="noopener"><img width="1600" height="800" src="https://patlau.com/concept/heroes03.jpg" alt="Heroes Reborn concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/heroes02.jpg" target="_blank" rel="noopener"><img width="1600" height="900" src="https://patlau.com/concept/heroes02.jpg" alt="Heroes Reborn concept" loading="lazy" style="object-position:top"></a>
+        <a href="https://patlau.com/concept/heroes01.jpg"><img width="1600" height="694" src="https://patlau.com/concept/heroes01.jpg" alt="Heroes Reborn concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/heroes04.jpg"><img width="1600" height="693" src="https://patlau.com/concept/heroes04.jpg" alt="Heroes Reborn concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/heroes03.jpg"><img width="1600" height="800" src="https://patlau.com/concept/heroes03.jpg" alt="Heroes Reborn concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/heroes02.jpg"><img width="1600" height="900" src="https://patlau.com/concept/heroes02.jpg" alt="Heroes Reborn concept" loading="lazy" style="object-position:top"></a>
       </div>
     </article>
 
     <article class="project">
       <div class="slate"><span class="num">537</span><h3>Project Scorpion</h3><span class="meta">XBOX</span></div>
       <div class="shots two">
-        <a href="https://patlau.com/concept/xbox1.jpg" target="_blank" rel="noopener"><img width="1600" height="800" src="https://patlau.com/concept/xbox1.jpg" alt="Project Scorpion concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/xbox2.jpg" target="_blank" rel="noopener"><img width="1600" height="800" src="https://patlau.com/concept/xbox2.jpg" alt="Project Scorpion concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/xbox3.jpg" target="_blank" rel="noopener"><img width="1600" height="800" src="https://patlau.com/concept/xbox3.jpg" alt="Project Scorpion concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/xbox4.jpg" target="_blank" rel="noopener"><img width="1600" height="800" src="https://patlau.com/concept/xbox4.jpg" alt="Project Scorpion concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/xbox1.jpg"><img width="1600" height="800" src="https://patlau.com/concept/xbox1.jpg" alt="Project Scorpion concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/xbox2.jpg"><img width="1600" height="800" src="https://patlau.com/concept/xbox2.jpg" alt="Project Scorpion concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/xbox3.jpg"><img width="1600" height="800" src="https://patlau.com/concept/xbox3.jpg" alt="Project Scorpion concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/xbox4.jpg"><img width="1600" height="800" src="https://patlau.com/concept/xbox4.jpg" alt="Project Scorpion concept" loading="lazy"></a>
       </div>
       <div class="shots"><span class="clip"><img width="1600" height="800" src="https://patlau.com/concept/xbox5.jpg" alt="Project Scorpion concept" loading="lazy"></span></div>
     </article>
@@ -598,18 +609,18 @@ footer{
       <div class="slate"><span class="num">343</span><h3>Untitled Short Film</h3><span class="meta">Concept Art · Dir. Arev Manoukian</span></div>
       <div class="video"><iframe src="https://player.vimeo.com/video/47680022?badge=0&autopause=0" title="Untitled short film" allow="fullscreen" loading="lazy"></iframe></div>
       <div class="shots two">
-        <a href="https://patlau.com/concept/cc_comp3a.jpg" target="_blank" rel="noopener"><img width="960" height="400" src="https://patlau.com/concept/cc_comp3a.jpg" alt="Short film concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/cc_comp4a.jpg" target="_blank" rel="noopener"><img width="960" height="400" src="https://patlau.com/concept/cc_comp4a.jpg" alt="Short film concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/cc_comp5a.jpg" target="_blank" rel="noopener"><img width="960" height="400" src="https://patlau.com/concept/cc_comp5a.jpg" alt="Short film concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/cc_comp6a.jpg" target="_blank" rel="noopener"><img width="960" height="400" src="https://patlau.com/concept/cc_comp6a.jpg" alt="Short film concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/cc_comp3a.jpg"><img width="960" height="400" src="https://patlau.com/concept/cc_comp3a.jpg" alt="Short film concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/cc_comp4a.jpg"><img width="960" height="400" src="https://patlau.com/concept/cc_comp4a.jpg" alt="Short film concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/cc_comp5a.jpg"><img width="960" height="400" src="https://patlau.com/concept/cc_comp5a.jpg" alt="Short film concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/cc_comp6a.jpg"><img width="960" height="400" src="https://patlau.com/concept/cc_comp6a.jpg" alt="Short film concept" loading="lazy"></a>
       </div>
     </article>
 
     <article class="project">
       <div class="slate"><span class="num">635</span><h3>Brain City</h3><span class="meta">TV</span></div>
       <div class="shots two">
-        <a href="https://patlau.com/concept/brain_city_1.jpg" target="_blank" rel="noopener"><img width="1600" height="650" src="https://patlau.com/concept/brain_city_1.jpg" alt="Brain City concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/brain_city_2.jpg" target="_blank" rel="noopener"><img width="1600" height="650" src="https://patlau.com/concept/brain_city_2.jpg" alt="Brain City concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/brain_city_1.jpg"><img width="1600" height="650" src="https://patlau.com/concept/brain_city_1.jpg" alt="Brain City concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/brain_city_2.jpg"><img width="1600" height="650" src="https://patlau.com/concept/brain_city_2.jpg" alt="Brain City concept" loading="lazy"></a>
       </div>
     </article>
 
@@ -617,20 +628,20 @@ footer{
       <div class="slate"><span class="num">626</span><h3>The Monkey King</h3><span class="meta">Feature Film · Dir. Tsui Hark</span></div>
       <div class="shots"><span class="clip"><img width="1000" height="229" src="https://patlau.com/concept/buddha.jpg" alt="Monkey King — Buddha concept" loading="lazy"></span></div>
       <div class="shots two">
-        <a href="https://patlau.com/concept/underwater.jpg" target="_blank" rel="noopener"><img width="600" height="600" src="https://patlau.com/concept/underwater.jpg" alt="Monkey King — underwater concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/heaven.jpg" target="_blank" rel="noopener"><img width="600" height="600" src="https://patlau.com/concept/heaven.jpg" alt="Monkey King — heaven concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/underwater.jpg"><img width="600" height="600" src="https://patlau.com/concept/underwater.jpg" alt="Monkey King — underwater concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/heaven.jpg"><img width="600" height="600" src="https://patlau.com/concept/heaven.jpg" alt="Monkey King — heaven concept" loading="lazy"></a>
       </div>
       <div class="shots two">
-        <a href="https://patlau.com/concept/buddha2.jpg" target="_blank" rel="noopener"><img width="800" height="400" src="https://patlau.com/concept/buddha2.jpg" alt="Monkey King — Buddha concept" loading="lazy"></a>
-        <a href="https://patlau.com/concept/dragon.jpg" target="_blank" rel="noopener"><img width="800" height="520" src="https://patlau.com/concept/dragon.jpg" alt="Monkey King — dragon concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/buddha2.jpg"><img width="800" height="400" src="https://patlau.com/concept/buddha2.jpg" alt="Monkey King — Buddha concept" loading="lazy"></a>
+        <a href="https://patlau.com/concept/dragon.jpg"><img width="800" height="520" src="https://patlau.com/concept/dragon.jpg" alt="Monkey King — dragon concept" loading="lazy"></a>
       </div>
     </article>
 
     <article class="project">
       <div class="slate"><span class="num">467</span><h3>Character Design</h3><span class="meta">Feature Film</span></div>
       <div class="shots two">
-        <a href="https://patlau.com/concept/Era%20of%20Vampires%202%201.jpg" target="_blank" rel="noopener"><img width="1000" height="450" src="https://patlau.com/concept/Era%20of%20Vampires%202%201.jpg" alt="Era of Vampires character design" loading="lazy"></a>
-        <a href="https://patlau.com/concept/tong.jpg" target="_blank" rel="noopener"><img width="1000" height="448" src="https://patlau.com/concept/tong.jpg" alt="Character design" loading="lazy"></a>
+        <a href="https://patlau.com/concept/Era%20of%20Vampires%202%201.jpg"><img width="1000" height="450" src="https://patlau.com/concept/Era%20of%20Vampires%202%201.jpg" alt="Era of Vampires character design" loading="lazy"></a>
+        <a href="https://patlau.com/concept/tong.jpg"><img width="1000" height="448" src="https://patlau.com/concept/tong.jpg" alt="Character design" loading="lazy"></a>
       </div>
     </article>
 
@@ -638,8 +649,8 @@ footer{
       <div class="slate"><span class="num">552</span><h3>Armor &amp; Weapon Design</h3><span class="meta">Seven Swords · Dir. Tsui Hark · Film Workshop 25th Anniversary Exhibition at Agnès B. Hong Kong</span></div>
       <div class="shots"><span class="clip"><img width="1000" height="448" src="https://patlau.com/concept/horses.jpg" alt="Armor design" loading="lazy"></span></div>
       <div class="shots two">
-        <a href="https://patlau.com/concept/swords3.jpg" target="_blank" rel="noopener"><img width="1000" height="625" src="https://patlau.com/concept/swords3.jpg" alt="Seven Swords sword design" loading="lazy"></a>
-        <a href="https://patlau.com/concept/swords4.jpg" target="_blank" rel="noopener"><img width="1000" height="365" src="https://patlau.com/concept/swords4.jpg" alt="Seven Swords sword design — detailed" loading="lazy"></a>
+        <a href="https://patlau.com/concept/swords3.jpg"><img width="1000" height="625" src="https://patlau.com/concept/swords3.jpg" alt="Seven Swords sword design" loading="lazy"></a>
+        <a href="https://patlau.com/concept/swords4.jpg"><img width="1000" height="365" src="https://patlau.com/concept/swords4.jpg" alt="Seven Swords sword design — detailed" loading="lazy"></a>
       </div>
       <div class="shots"><span class="clip"><img width="600" height="350" src="https://patlau.com/concept/swords5.jpg" alt="Seven Swords exhibition display" loading="lazy" style="width:600px;max-width:100%;height:auto;margin:0 auto"></span></div>
     </article>
@@ -657,8 +668,8 @@ footer{
     <article class="project">
       <div class="slate"><span class="num">347</span><h3>Sony 3D — Two Worlds</h3><span class="meta">Commercial</span></div>
       <div class="shots two">
-        <a href="https://patlau.com/storyboard/sony1.jpg" target="_blank" rel="noopener"><img width="878" height="1293" src="https://patlau.com/storyboard/sony1.jpg" alt="Sony Two Worlds storyboard" loading="lazy"></a>
-        <a href="https://patlau.com/storyboard/sony2.jpg" target="_blank" rel="noopener"><img width="878" height="1291" src="https://patlau.com/storyboard/sony2.jpg" alt="Sony Two Worlds storyboard" loading="lazy"></a>
+        <a href="https://patlau.com/storyboard/sony1.jpg"><img width="878" height="1293" src="https://patlau.com/storyboard/sony1.jpg" alt="Sony Two Worlds storyboard" loading="lazy"></a>
+        <a href="https://patlau.com/storyboard/sony2.jpg"><img width="878" height="1291" src="https://patlau.com/storyboard/sony2.jpg" alt="Sony Two Worlds storyboard" loading="lazy"></a>
       </div>
       <div class="video"><iframe src="https://player.vimeo.com/video/30402087?title=0&byline=0&portrait=0" title="Sony 3D — Two Worlds" allow="fullscreen" loading="lazy"></iframe></div>
     </article>
@@ -885,5 +896,58 @@ footer{
 })();
 </script>
 
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Full image view">
+  <button class="lb-close" id="lb-close" aria-label="Close">Close ✕</button>
+  <img id="lb-img" src="" alt="">
+</div>
+
+<script>
+(function(){
+  var lb    = document.getElementById('lb');
+  var lbImg = document.getElementById('lb-img');
+  var lbClose = document.getElementById('lb-close');
+  var loaded = {};
+
+  function open(src, alt){
+    lbImg.alt = alt||'';
+    if(!loaded[src]) lbImg.src = src;
+    loaded[src] = true;
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function shut(){
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // intercept clicks on gallery image anchors (but not nav buttons or email/linkedin)
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href]');
+    if(!a) return;
+    var href = a.getAttribute('href')||'';
+    // only intercept direct image links (jpg/gif)
+    if(!/\.(jpg|jpeg|gif|png)(\?|$)/i.test(href)) return;
+    e.preventDefault();
+    var img = a.querySelector('img.a') || a.querySelector('img:not(.b)') || a.querySelector('img');
+    open(href, img ? img.alt : '');
+  });
+
+  lb.addEventListener('click', function(e){
+    if(e.target === lb) shut();
+  });
+  lbClose.addEventListener('click', shut);
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape') shut();
+  });
+  // swipe down to close on mobile
+  var touchY = null;
+  lb.addEventListener('touchstart', function(e){ touchY = e.touches[0].clientY; }, {passive:true});
+  lb.addEventListener('touchend', function(e){
+    if(touchY !== null && e.changedTouches[0].clientY - touchY > 60) shut();
+    touchY = null;
+  }, {passive:true});
+})();
+</script>
 </body>
 </html>
