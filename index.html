@@ -803,30 +803,38 @@ footer{
   // show splash01 immediately while probing continues in background
   var firstImg = new Image();
   var staticImg = document.querySelector('.frame-img');
+  // pick a random starting image immediately
+  var startN = Math.floor(Math.random()*17)+1;  // random 1-17 before probing confirms count
+  if(staticImg) staticImg.src = url(startN);    // update static img to random start instantly
+
   firstImg.onload = function(){
-    imgs.push(url(1));
+    imgs.push(url(startN));
     idx = 0;
-    show(url(1), true);
-    if(staticImg) staticImg.style.display='none'; // JS frame took over
-    probe(2);
+    // don't call show() — static img already displays this; just hide it once JS frame is ready
+    // start rotation timer directly
+    if(!timer && imgs.length >= 1){
+      timer = setInterval(function(){
+        var src = next();
+        var pre = new Image();
+        pre.onload = pre.onerror = function(){
+          if(staticImg){ staticImg.style.display='none'; staticImg=null; }
+          show(src, front.style.backgroundImage==='');  // first JS transition
+        };
+        pre.src = src;
+      }, 10000);
+    }
+    probe(2, startN);
   };
-  firstImg.onerror = function(){ probe(2); };
-  firstImg.src = url(1);
+  firstImg.onerror = function(){ probe(2, startN); };
+  firstImg.src = url(startN);
 
   // discover remaining splash images in background
-  function probe(n){
+  function probe(n, skip){
+    if(n===skip){ probe(n+1, skip); return; } // skip the one already shown
     var im = new Image();
-    im.onload = function(){ imgs.push(url(n)); probe(n+1); };
+    im.onload = function(){ imgs.push(url(n)); probe(n+1, skip); };
     im.onerror = function(){
-      // probing done — now start the rotation timer if not already running
-      if(!timer && imgs.length > 1){
-        timer = setInterval(function(){
-          var src = next();
-          var pre = new Image();
-          pre.onload = pre.onerror = function(){ show(src, false); };
-          pre.src = src;
-        }, 10000);
-      }
+      // probing done — list is complete, timer already running
     };
     im.src = url(n);
   }
