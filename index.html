@@ -267,6 +267,8 @@ footer{
 .lb.open{cursor:pointer}
 .lb.open{display:flex}
 .lb img{max-width:100vw;max-height:100vh;width:auto;height:auto;display:block;cursor:pointer}
+.lb.pan-mode{align-items:flex-start;overflow:hidden}
+.lb.pan-mode img{width:100vw;height:auto;max-width:none;max-height:none;transition:transform .1s linear}
 
 </style>
 </head>
@@ -509,7 +511,7 @@ footer{
 
     <article class="project">
       <div class="slate"><span class="num">100</span><h3>Cyberpunk Apartment Interior</h3><span class="meta">Film · Dir. Joseph Procopio</span></div>
-      <div class="shots"><a href="https://patlau.com/concept/shut-in.jpg"><img width="1600" height="675" src="https://patlau.com/concept/shut-in.jpg" alt="Cyberpunk apartment interior concept" loading="lazy"></a></div>
+      <div class="shots"><a href="https://patlau.com/concept/shut-in.jpg" data-pan="true"><img width="1600" height="675" src="https://patlau.com/concept/shut-in.jpg" alt="Cyberpunk apartment interior concept" loading="lazy"></a></div>
     </article>
 
     <article class="project">
@@ -796,30 +798,34 @@ footer{
     idx = (idx + 1) % imgs.length;   // wrap from last back to first
     return src;
   }
-  function start(){
-    if (!imgs.length) return;
-    idx = Math.floor(Math.random()*imgs.length);  // random starting frame
-    var first = imgs[idx];
-    idx = (idx + 1) % imgs.length;
-    var im = new Image();
-    im.onload = im.onerror = function(){ show(first, true); };
-    im.src = first;
-    timer = setInterval(function(){
-      var src = next();
-      var pre = new Image();
-      pre.onload = pre.onerror = function(){ show(src, false); };
-      pre.src = src;
-    }, 10000);
-  }
+  // show splash01 immediately while probing continues in background
+  var firstImg = new Image();
+  firstImg.onload = function(){
+    imgs.push(url(1));
+    idx = 0;
+    show(url(1), true);   // display immediately, don't wait for probe
+    probe(2);             // probe rest in background
+  };
+  firstImg.onerror = function(){ probe(2); };
+  firstImg.src = url(1);
 
-  // discover how many splash images exist: probe splash01, 02, ... until one is missing
+  // discover remaining splash images in background
   function probe(n){
     var im = new Image();
-    im.onload = function(){ imgs.push(url(n)); probe(n+1); };   // found -> keep going
-    im.onerror = function(){ start(); };                        // missing -> list complete
+    im.onload = function(){ imgs.push(url(n)); probe(n+1); };
+    im.onerror = function(){
+      // probing done — now start the rotation timer if not already running
+      if(!timer && imgs.length > 1){
+        timer = setInterval(function(){
+          var src = next();
+          var pre = new Image();
+          pre.onload = pre.onerror = function(){ show(src, false); };
+          pre.src = src;
+        }, 10000);
+      }
+    };
     im.src = url(n);
   }
-  probe(1);
 })();
 </script>
 <script>
@@ -903,15 +909,22 @@ footer{
   var lb    = document.getElementById('lb');
   var lbImg = document.getElementById('lb-img');
 
-  function open(src, alt){
+  var isPan = false;
+  function open(src, alt, pan){
     lbImg.alt = alt||'';
-    lbImg.src = '';         // force browser to treat as new load
-    lbImg.src = src;        // always re-set so correct image always shows
+    lbImg.src = '';
+    lbImg.src = src;
+    isPan = !!pan;
+    lb.classList.toggle('pan-mode', isPan);
+    lbImg.style.transform = '';
     lb.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
   function shut(){
     lb.classList.remove('open');
+    lb.classList.remove('pan-mode');
+    lbImg.style.transform = '';
+    isPan = false;
     document.body.style.overflow = '';
   }
 
@@ -924,7 +937,8 @@ footer{
     if(!/\.(jpg|jpeg|gif|png)(\?|$)/i.test(href)) return;
     e.preventDefault();
     var img = a.querySelector('img.a') || a.querySelector('img:not(.b)') || a.querySelector('img');
-    open(href, img ? img.alt : '');
+    var pan = a.getAttribute('data-pan') === 'true';
+    open(href, img ? img.alt : '', pan);
   });
 
   lb.addEventListener('click', shut);
@@ -938,6 +952,17 @@ footer{
     if(touchY !== null && e.changedTouches[0].clientY - touchY > 60) shut();
     touchY = null;
   }, {passive:true});
+
+  // pan vertically on mousemove when in pan mode
+  lb.addEventListener('mousemove', function(e){
+    if(!isPan) return;
+    var imgH = lbImg.naturalHeight * (window.innerWidth / lbImg.naturalWidth);
+    var overflow = imgH - window.innerHeight;
+    if(overflow <= 0){ lbImg.style.transform=''; return; }
+    var rel = e.clientY / window.innerHeight;  // 0=top, 1=bottom
+    var shift = -(overflow * rel);
+    lbImg.style.transform = 'translateY(' + shift + 'px)';
+  });
 })();
 </script>
 </body>
