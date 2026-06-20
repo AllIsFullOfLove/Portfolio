@@ -149,7 +149,7 @@ section.page#matte{padding-top:32px}
 .hero .frame{position:absolute;inset:0;background-position:50% 50%;background-size:cover;background-repeat:no-repeat;opacity:0}
 .hero .veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,11,1) 0%,rgba(10,10,11,.6) 35%,rgba(10,10,11,.05) 65%)}
 .hero .title{
-  position:absolute;left:0;right:0;bottom:24px;text-align:center;
+  position:absolute;left:0;right:0;top:66%;transform:translateY(-50%);text-align:center;
 }
 .hero h1{font-family:'Cinzel',serif;font-weight:500;font-size:clamp(30px,5.5vw,64px);letter-spacing:.14em;text-transform:uppercase}
 .hero .role{margin-top:10px;font-size:14px;letter-spacing:.3em;text-transform:uppercase;color:var(--seal-bright)}
@@ -775,97 +775,81 @@ footer{
 (function(){
   var front = document.getElementById('splashA');
   var back  = document.getElementById('splashB');
-  var imgs=[], idx=0;
+  var imgs=[], idx=0, started=false;
 
   function pad(n){ return (n<10?'0':'')+n; }
   function url(n){ return 'https://patlau.com/splash'+pad(n)+'.jpg'; }
 
-  // Per-image motion assignment.
-  // background-position pans never show bars (image stays cover-fitted).
-  // Zoom uses scale only, no translate — no bars possible.
-  // All travel = 5%.
-  //                    01         02         03         04         05
-  var imgMotions = [ null,
-    {type:'pan', axis:'ud', dir:1},   // 01 borderline tall -> pan down
-    {type:'pan', axis:'ud', dir:-1},  // 02 -> pan up
-    {type:'zoom', dir:1},             // 03 -> zoom in
-    {type:'pan', axis:'ud', dir:1},   // 04 tall -> pan down
-    {type:'zoom', dir:-1},            // 05 -> zoom out
-    {type:'pan', axis:'lr', dir:1},   // 06 -> pan right
-    {type:'zoom', dir:1},             // 07 -> zoom in
-    {type:'pan', axis:'ud', dir:-1},  // 08 tall -> pan up
-    {type:'pan', axis:'lr', dir:1},   // 09 very wide -> pan right
-    {type:'pan', axis:'lr', dir:-1},  // 10 -> pan left
-    {type:'pan', axis:'ud', dir:1},   // 11 tall -> pan down
-    {type:'pan', axis:'ud', dir:-1},  // 12 tall -> pan up
-    {type:'pan', axis:'ud', dir:1},   // 13 borderline tall -> pan down
-    {type:'zoom', dir:-1},            // 14 -> zoom out
-    {type:'pan', axis:'lr', dir:1},   // 15 -> pan right
-    {type:'pan', axis:'lr', dir:-1},  // 16 -> pan left
-    {type:'pan', axis:'ud', dir:1},   // 17 tall -> pan down
-    {type:'pan', axis:'ud', dir:-1},  // 18 -> pan up
+  // Per-image motion — background-position pans (never bars), scale-only zooms
+  var imgMotions = [null,
+    {type:'pan',axis:'ud',dir:1},   // 01
+    {type:'pan',axis:'ud',dir:-1},  // 02
+    {type:'zoom',dir:1},            // 03
+    {type:'pan',axis:'ud',dir:1},   // 04 tall
+    {type:'zoom',dir:-1},           // 05
+    {type:'pan',axis:'lr',dir:1},   // 06
+    {type:'zoom',dir:1},            // 07
+    {type:'pan',axis:'ud',dir:-1},  // 08 tall
+    {type:'pan',axis:'lr',dir:1},   // 09 very wide
+    {type:'pan',axis:'lr',dir:-1},  // 10
+    {type:'pan',axis:'ud',dir:1},   // 11 tall
+    {type:'pan',axis:'ud',dir:-1},  // 12 tall
+    {type:'pan',axis:'ud',dir:1},   // 13
+    {type:'zoom',dir:-1},           // 14
+    {type:'pan',axis:'lr',dir:1},   // 15
+    {type:'pan',axis:'lr',dir:-1},  // 16
+    {type:'pan',axis:'ud',dir:1},   // 17 tall
+    {type:'pan',axis:'ud',dir:-1},  // 18
   ];
 
-  function getMotion(n){
-    var m = imgMotions[n] || {type:'zoom', dir:1};
-    return m;
-  }
+  function getMotion(n){ return imgMotions[n] || {type:'zoom',dir:1}; }
 
   function applyMotion(el, m, dur){
-    el.style.transition = 'none';
-    el.style.transform  = 'scale(1)';
+    el.style.transition='none';
+    el.style.transform='scale(1)';
     if(m.type==='zoom'){
-      var fromS = m.dir===1 ? 'scale(1.00)' : 'scale(1.10)';
-      var toS   = m.dir===1 ? 'scale(1.10)' : 'scale(1.00)';
+      var f=m.dir===1?'scale(1.00)':'scale(1.10)';
+      var t=m.dir===1?'scale(1.10)':'scale(1.00)';
       el.style.backgroundPosition='50% 50%';
-      el.style.transform = fromS;
+      el.style.transform=f;
       el.offsetHeight;
-      el.style.transition = 'transform '+dur+'s linear';
-      el.style.transform  = toS;
+      el.style.transition='transform '+dur+'s linear';
+      el.style.transform=t;
     } else if(m.axis==='ud'){
-      var fromP = m.dir===1  ? '50% 45%' : '50% 55%';
-      var toP   = m.dir===1  ? '50% 55%' : '50% 45%';
-      el.style.backgroundPosition = fromP;
-      el.style.transform = 'scale(1)';
+      var f=m.dir===1?'50% 45%':'50% 55%';
+      var t=m.dir===1?'50% 55%':'50% 45%';
+      el.style.backgroundPosition=f;
       el.offsetHeight;
-      el.style.transition = 'background-position '+dur+'s linear';
-      el.style.backgroundPosition = toP;
-    } else { // lr
-      var fromP2 = m.dir===1  ? '45% 50%' : '55% 50%';
-      var toP2   = m.dir===1  ? '55% 50%' : '45% 50%';
-      el.style.backgroundPosition = fromP2;
-      el.style.transform = 'scale(1)';
+      el.style.transition='background-position '+dur+'s linear';
+      el.style.backgroundPosition=t;
+    } else {
+      var f=m.dir===1?'45% 50%':'55% 50%';
+      var t=m.dir===1?'55% 50%':'45% 50%';
+      el.style.backgroundPosition=f;
       el.offsetHeight;
-      el.style.transition = 'background-position '+dur+'s linear';
-      el.style.backgroundPosition = toP2;
+      el.style.transition='background-position '+dur+'s linear';
+      el.style.backgroundPosition=t;
     }
   }
 
   function showFirst(src, n){
-    var m=getMotion(n);
     front.style.backgroundImage='url("'+src+'")';
     front.style.transition='none';
     front.style.opacity='0';
     front.offsetHeight;
-    applyMotion(front, m, 10);
-    // fade in
+    applyMotion(front, getMotion(n), 10);
     front.style.transition='opacity 2s ease-in-out';
     front.style.opacity='1';
   }
 
   function crossfade(src, n){
-    var m=getMotion(n);
-    // prep back: set image + starting position, fully transparent
     back.style.transition='none';
     back.style.opacity='0';
     back.style.transform='scale(1)';
     back.style.backgroundPosition='50% 50%';
     back.style.backgroundImage='url("'+src+'")';
     back.offsetHeight;
-    // start motion on back
-    applyMotion(back, m, 10);
-    // now crossfade: back fades in, front fades out simultaneously
-    // use CSS class for opacity
+    applyMotion(back, getMotion(n), 10);
     back.style.transition='opacity 2s ease-in-out';
     back.style.opacity='1';
     front.style.transition='opacity 2s ease-in-out';
@@ -875,27 +859,30 @@ footer{
 
   function preload(src,cb){ var im=new Image(); im.onload=im.onerror=cb; im.src=src; }
 
-  function startRotation(){
+  function begin(){
+    if(started) return; started=true;
+    idx=Math.floor(Math.random()*imgs.length);
+    var firstN=idx+1;
+    var firstSrc=imgs[idx]; idx=(idx+1)%imgs.length;
+    preload(firstSrc,function(){ showFirst(firstSrc,firstN); });
     setInterval(function(){
-      var n=idx+1; // 1-based image number
-      var src=imgs[idx]; idx=(idx+1)%imgs.length;
-      preload(src, function(){ crossfade(src, n); });
-    }, 10000);
+      var n=idx+1; var src=imgs[idx]; idx=(idx+1)%imgs.length;
+      preload(src,function(){ crossfade(src,n); });
+    },10000);
   }
 
+  // pre-fill known 18 immediately so rotation never waits
+  for(var i=1;i<=18;i++) imgs.push(url(i));
+  begin();
+
+  // probe beyond 18 silently for future additions
   function probe(n){
     var im=new Image();
     im.onload=function(){ imgs.push(url(n)); probe(n+1); };
-    im.onerror=function(){
-      if(!imgs.length) return;
-      var startIdx=Math.floor(Math.random()*imgs.length);
-      idx=startIdx;
-      var first=imgs[idx]; idx=(idx+1)%imgs.length;
-      preload(first, function(){ showFirst(first, startIdx+1); startRotation(); });
-    };
+    im.onerror=function(){};
     im.src=url(n);
   }
-  probe(1);
+  probe(19);
 })();
 </script>
 <script>
