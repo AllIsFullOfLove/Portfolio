@@ -129,7 +129,7 @@ a.contact:hover{color:var(--seal-bright) !important}
 section.page .wrap{max-width:min(var(--col-wide),94vw)}
 section.page{padding-top:calc(var(--bar-h) + 48px);scroll-margin-top:0}
 .section-head{
-  text-align:center;margin-bottom:56px;
+  text-align:center;margin-bottom:56px;margin-top:-200px;
 }
 .section-head h2{
   font-family:'Cinzel',serif;font-weight:500;
@@ -149,7 +149,7 @@ section.page{padding-top:calc(var(--bar-h) + 48px);scroll-margin-top:0}
 .hero .frame.show{opacity:1}
 .hero .veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,11,1) 0%,rgba(10,10,11,.6) 35%,rgba(10,10,11,.05) 65%)}
 .hero .title{
-  position:absolute;left:0;right:0;bottom:18px;text-align:center;
+  position:absolute;left:0;right:0;bottom:218px;text-align:center;
 }
 .hero h1{font-family:'Cinzel',serif;font-weight:500;font-size:clamp(30px,5.5vw,64px);letter-spacing:.14em;text-transform:uppercase}
 .hero .role{margin-top:10px;font-size:14px;letter-spacing:.3em;text-transform:uppercase;color:var(--seal-bright)}
@@ -780,81 +780,63 @@ footer{
   function pad(n){ return (n<10?'0':'')+n; }
   function url(n){ return 'https://patlau.com/splash'+pad(n)+'.jpg'; }
 
-  // 6 motion presets: [fromTransform, toTransform]
+  // All motions stay >= 100% scale so background-size:cover never shows bars.
+  // Pan: translate within the covered area (~10% of the overflow).
+  // Zoom: 100%->110% or 110%->100%.
   var motions = [
-    ['scale(1.0)  translate(0%,0%)',  'scale(0.9)  translate(0%,0%)'],   // zoom out
-    ['scale(0.9)  translate(0%,0%)',  'scale(1.0)  translate(0%,0%)'],   // zoom in
-    ['scale(1.0)  translate(-5%,0%)', 'scale(1.0)  translate(5%,0%)'],   // pan right
-    ['scale(1.0)  translate(5%,0%)',  'scale(1.0)  translate(-5%,0%)'],  // pan left
-    ['scale(1.0)  translate(0%,-5%)','scale(1.0)  translate(0%,5%)'],   // pan down
-    ['scale(1.0)  translate(0%,5%)', 'scale(1.0)  translate(0%,-5%)'],  // pan up
+    ['scale(1.10)','scale(1.00)'],                                    // zoom out (110->100)
+    ['scale(1.00)','scale(1.10)'],                                    // zoom in  (100->110)
+    ['scale(1.05) translateX(-5%)','scale(1.05) translateX(5%)'],    // pan right
+    ['scale(1.05) translateX(5%)', 'scale(1.05) translateX(-5%)'],   // pan left
+    ['scale(1.05) translateY(-5%)','scale(1.05) translateY(5%)'],    // pan down
+    ['scale(1.05) translateY(5%)', 'scale(1.05) translateY(-5%)'],   // pan up
   ];
 
-  function applyMotion(el, from, to, duration){
+  function pickMotion(){ return motions[Math.floor(Math.random()*motions.length)]; }
+
+  function applyMotion(el, from, to, dur){
     el.style.transition = 'none';
     el.style.transform  = from;
-    // force reflow
-    el.offsetHeight;
-    el.style.transition = 'transform '+duration+'s linear';
+    el.offsetHeight;   // force reflow
+    el.style.transition = 'transform '+dur+'s linear';
     el.style.transform  = to;
   }
 
-  function pickMotion(){
-    return motions[Math.floor(Math.random()*motions.length)];
-  }
-
+  // frame CSS controls opacity crossfade via .show class (2s ease-in-out already set)
   function showFirst(src){
-    var m = pickMotion();
-    front.style.backgroundImage = 'url("'+src+'")';
-    front.classList.add('show');
+    var m=pickMotion();
+    front.style.backgroundImage='url("'+src+'")';
     applyMotion(front, m[0], m[1], 10);
+    front.classList.add('show');
   }
 
   function crossfade(src){
-    var m = pickMotion();
-    back.style.backgroundImage = 'url("'+src+'")';
-    // set motion on back before it fades in
-    back.style.transition = 'none';
-    back.style.transform  = m[0];
-    back.offsetHeight;
-    back.style.transition = 'transform 10s linear, opacity 0s';
+    var m=pickMotion();
+    // prep back layer: set image + start transform, invisible
+    back.style.backgroundImage='url("'+src+'")';
+    applyMotion(back, m[0], m[1], 10);
+    // crossfade: back fades in, front fades out (CSS transition handles opacity)
     back.classList.add('show');
     front.classList.remove('show');
-    // reset front motion
-    front.style.transition = 'none';
-    front.style.transform  = 'scale(1) translate(0%,0%)';
     var t=front; front=back; back=t;
-    // start motion on new front (was back)
-    setTimeout(function(){
-      front.style.transition = 'transform 10s linear';
-      front.style.transform  = m[1];
-    }, 50);
   }
 
-  function preload(src, cb){
-    var im=new Image(); im.onload=im.onerror=cb; im.src=src;
-  }
+  function preload(src,cb){ var im=new Image(); im.onload=im.onerror=cb; im.src=src; }
 
   function startRotation(){
     setInterval(function(){
-      var src=imgs[idx];
-      idx=(idx+1)%imgs.length;
+      var src=imgs[idx]; idx=(idx+1)%imgs.length;
       preload(src, function(){ crossfade(src); });
     }, 10000);
   }
 
-  // auto-discover: probe from 1 until 404, then start
   function probe(n){
     var im=new Image();
-    im.onload=function(){
-      imgs.push(url(n));
-      probe(n+1);
-    };
+    im.onload=function(){ imgs.push(url(n)); probe(n+1); };
     im.onerror=function(){
-      if(!imgs.length) return; // nothing found
+      if(!imgs.length) return;
       idx=Math.floor(Math.random()*imgs.length);
-      var first=imgs[idx];
-      idx=(idx+1)%imgs.length;
+      var first=imgs[idx]; idx=(idx+1)%imgs.length;
       preload(first, function(){ showFirst(first); startRotation(); });
     };
     im.src=url(n);
