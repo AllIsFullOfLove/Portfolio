@@ -775,107 +775,60 @@ footer{
 (function(){
   var front = document.getElementById('splashA');
   var back  = document.getElementById('splashB');
-  var imgs=[], idx=0, started=false;
+  var imgs=[], idx=0;
 
   function pad(n){ return (n<10?'0':'')+n; }
   function url(n){ return 'https://patlau.com/splash'+pad(n)+'.jpg'; }
 
-  // Per-image motion — background-position pans (never bars), scale-only zooms
-  var imgMotions = [null,
-    {type:'pan',axis:'ud',dir:1},   // 01
-    {type:'pan',axis:'ud',dir:-1},  // 02
-    {type:'zoom',dir:1},            // 03
-    {type:'pan',axis:'ud',dir:1},   // 04 tall
-    {type:'zoom',dir:-1},           // 05
-    {type:'pan',axis:'lr',dir:1},   // 06
-    {type:'zoom',dir:1},            // 07
-    {type:'pan',axis:'ud',dir:-1},  // 08 tall
-    {type:'pan',axis:'lr',dir:1},   // 09 very wide
-    {type:'pan',axis:'lr',dir:-1},  // 10
-    {type:'pan',axis:'ud',dir:1},   // 11 tall
-    {type:'pan',axis:'ud',dir:-1},  // 12 tall
-    {type:'pan',axis:'ud',dir:1},   // 13
-    {type:'zoom',dir:-1},           // 14
-    {type:'pan',axis:'lr',dir:1},   // 15
-    {type:'pan',axis:'lr',dir:-1},  // 16
-    {type:'pan',axis:'ud',dir:1},   // 17 tall
-    {type:'pan',axis:'ud',dir:-1},  // 18
-  ];
+  for(var i=1;i<=18;i++) imgs.push(url(i));
 
-  function getMotion(n){ return imgMotions[n] || {type:'zoom',dir:1}; }
-
-  function applyMotion(el, m, dur){
-    el.style.transition='none';
-    el.style.transform='scale(1)';
-    if(m.type==='zoom'){
-      var f=m.dir===1?'scale(1.00)':'scale(1.10)';
-      var t=m.dir===1?'scale(1.10)':'scale(1.00)';
-      el.style.backgroundPosition='50% 50%';
-      el.style.transform=f;
-      el.offsetHeight;
-      el.style.transition='transform '+dur+'s linear';
-      el.style.transform=t;
-    } else if(m.axis==='ud'){
-      var f=m.dir===1?'50% 45%':'50% 55%';
-      var t=m.dir===1?'50% 55%':'50% 45%';
-      el.style.backgroundPosition=f;
-      el.offsetHeight;
-      el.style.transition='background-position '+dur+'s linear';
-      el.style.backgroundPosition=t;
-    } else {
-      var f=m.dir===1?'45% 50%':'55% 50%';
-      var t=m.dir===1?'55% 50%':'45% 50%';
-      el.style.backgroundPosition=f;
-      el.offsetHeight;
-      el.style.transition='background-position '+dur+'s linear';
-      el.style.backgroundPosition=t;
-    }
+  function applyZoom(el, fromScale, toScale, dur){
+    el.style.transition = 'none';
+    el.style.backgroundPosition = '50% 50%';
+    el.style.transform = 'scale('+fromScale+')';
+    el.offsetHeight;
+    el.style.transition = 'transform '+dur+'s linear';
+    el.style.transform = 'scale('+toScale+')';
   }
 
-  function showFirst(src, n){
-    front.style.backgroundImage='url("'+src+'")';
-    front.style.transition='none';
-    front.style.opacity='0';
+  function showFirst(src){
+    front.style.backgroundImage = 'url("'+src+'")';
+    front.style.opacity = '0';
+    front.style.transition = 'none';
     front.offsetHeight;
-    applyMotion(front, getMotion(n), 10);
-    front.style.transition='opacity 2s ease-in-out';
-    front.style.opacity='1';
+    applyZoom(front, 1.0, 1.05, 10);
+    front.style.transition = 'opacity 2s ease-in-out';
+    front.style.opacity = '1';
   }
 
-  function crossfade(src, n){
-    back.style.transition='none';
-    back.style.opacity='0';
-    back.style.transform='scale(1)';
-    back.style.backgroundPosition='50% 50%';
-    back.style.backgroundImage='url("'+src+'")';
+  function crossfade(src){
+    var fromScale = Math.random() > 0.5 ? 1.0 : 1.05;
+    var toScale   = fromScale === 1.0   ? 1.05 : 1.0;
+    back.style.transition = 'none';
+    back.style.opacity = '0';
+    back.style.backgroundImage = 'url("'+src+'")';
     back.offsetHeight;
-    applyMotion(back, getMotion(n), 10);
-    back.style.transition='opacity 2s ease-in-out';
-    back.style.opacity='1';
-    front.style.transition='opacity 2s ease-in-out';
-    front.style.opacity='0';
+    applyZoom(back, fromScale, toScale, 10);
+    back.style.transition = 'opacity 2s ease-in-out';
+    back.style.opacity = '1';
+    front.style.transition = 'opacity 2s ease-in-out';
+    front.style.opacity = '0';
     var t=front; front=back; back=t;
   }
 
   function preload(src,cb){ var im=new Image(); im.onload=im.onerror=cb; im.src=src; }
 
-  function begin(){
-    if(started) return; started=true;
-    idx=Math.floor(Math.random()*imgs.length);
-    var firstN=idx+1;
-    var firstSrc=imgs[idx]; idx=(idx+1)%imgs.length;
-    preload(firstSrc,function(){ showFirst(firstSrc,firstN); });
-    setInterval(function(){
-      var n=idx+1; var src=imgs[idx]; idx=(idx+1)%imgs.length;
-      preload(src,function(){ crossfade(src,n); });
-    },10000);
-  }
+  // start immediately
+  idx = Math.floor(Math.random()*imgs.length);
+  var firstSrc = imgs[idx]; idx=(idx+1)%imgs.length;
+  preload(firstSrc, function(){ showFirst(firstSrc); });
 
-  // pre-fill known 18 immediately so rotation never waits
-  for(var i=1;i<=18;i++) imgs.push(url(i));
-  begin();
+  setInterval(function(){
+    var src=imgs[idx]; idx=(idx+1)%imgs.length;
+    preload(src, function(){ crossfade(src); });
+  }, 10000);
 
-  // probe beyond 18 silently for future additions
+  // probe beyond 18 silently
   function probe(n){
     var im=new Image();
     im.onload=function(){ imgs.push(url(n)); probe(n+1); };
