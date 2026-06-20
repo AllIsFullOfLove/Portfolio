@@ -779,56 +779,72 @@ footer{
 
   function pad(n){ return (n<10?'0':'')+n; }
   function url(n){ return 'https://patlau.com/splash'+pad(n)+'.jpg'; }
+  function preload(src,cb){ var im=new Image(); im.onload=im.onerror=cb; im.src=src; }
 
   for(var i=1;i<=18;i++) imgs.push(url(i));
 
-  function applyZoom(el, fromScale, toScale, dur){
-    el.style.transition = 'none';
-    el.style.backgroundPosition = '50% 50%';
-    el.style.transform = 'scale('+fromScale+')';
-    el.offsetHeight;
-    el.style.transition = 'transform '+dur+'s linear';
-    el.style.transform = 'scale('+toScale+')';
+  var fromT = [
+    'scale(1.10)','scale(1.00)','scale(1.10) translateX(-5%)',
+    'scale(1.10) translateX(5%)','scale(1.10) translateY(-5%)','scale(1.10) translateY(5%)'
+  ];
+  var toT = [
+    'scale(1.00)','scale(1.10)','scale(1.10) translateX(5%)',
+    'scale(1.10) translateX(-5%)','scale(1.10) translateY(5%)','scale(1.10) translateY(-5%)'
+  ];
+  var imgM=[0,4,5,1,4,0,2,1,5,2,3,4,5,4,0,3,2,4,5];
+
+  function animate(el, n){
+    var mi = (imgM[n]!==undefined) ? imgM[n] : Math.floor(Math.random()*6);
+    // step 1: snap to start with no transition
+    el.style.transition='none';
+    el.style.transform=fromT[mi];
+    // step 2: force reflow so browser registers the start value
+    void el.getBoundingClientRect();
+    // step 3: now set transition and end value — browser will animate between them
+    el.style.transition='transform 10s linear';
+    el.style.transform=toT[mi];
   }
 
-  function showFirst(src){
-    front.style.backgroundImage = 'url("'+src+'")';
-    front.style.opacity = '0';
-    front.style.transition = 'none';
-    front.offsetHeight;
-    applyZoom(front, 1.0, 1.05, 10);
-    front.style.transition = 'opacity 2s ease-in-out';
-    front.style.opacity = '1';
+  function showFirst(src, n){
+    front.style.backgroundImage='url("'+src+'")';
+    // snap opacity to 0, no transition
+    front.style.transition='none';
+    front.style.opacity='0';
+    void front.getBoundingClientRect();
+    // set motion start
+    animate(front, n);
+    // now fade in — use setTimeout so opacity transition doesn't fight transform snap
+    setTimeout(function(){
+      front.style.transition='opacity 2s ease-in-out';
+      front.style.opacity='1';
+    }, 50);
   }
 
-  function crossfade(src){
-    var fromScale = Math.random() > 0.5 ? 1.0 : 1.05;
-    var toScale   = fromScale === 1.0   ? 1.05 : 1.0;
-    back.style.transition = 'none';
-    back.style.opacity = '0';
-    back.style.backgroundImage = 'url("'+src+'")';
-    back.offsetHeight;
-    applyZoom(back, fromScale, toScale, 10);
-    back.style.transition = 'opacity 2s ease-in-out';
-    back.style.opacity = '1';
-    front.style.transition = 'opacity 2s ease-in-out';
-    front.style.opacity = '0';
-    var t=front; front=back; back=t;
+  function crossfade(src, n){
+    back.style.backgroundImage='url("'+src+'")';
+    back.style.transition='none';
+    back.style.opacity='0';
+    void back.getBoundingClientRect();
+    animate(back, n);
+    setTimeout(function(){
+      back.style.transition='opacity 2s ease-in-out';
+      back.style.opacity='1';
+      front.style.transition='opacity 2s ease-in-out';
+      front.style.opacity='0';
+      var t=front; front=back; back=t;
+    }, 50);
   }
 
-  function preload(src,cb){ var im=new Image(); im.onload=im.onerror=cb; im.src=src; }
-
-  // start immediately
-  idx = Math.floor(Math.random()*imgs.length);
-  var firstSrc = imgs[idx]; idx=(idx+1)%imgs.length;
-  preload(firstSrc, function(){ showFirst(firstSrc); });
+  // start
+  idx=Math.floor(Math.random()*imgs.length);
+  var fn=idx+1; var fs=imgs[idx]; idx=(idx+1)%imgs.length;
+  preload(fs, function(){ showFirst(fs,fn); });
 
   setInterval(function(){
-    var src=imgs[idx]; idx=(idx+1)%imgs.length;
-    preload(src, function(){ crossfade(src); });
-  }, 10000);
+    var n=idx+1; var src=imgs[idx]; idx=(idx+1)%imgs.length;
+    preload(src, function(){ crossfade(src,n); });
+  },10000);
 
-  // probe beyond 18 silently
   function probe(n){
     var im=new Image();
     im.onload=function(){ imgs.push(url(n)); probe(n+1); };
