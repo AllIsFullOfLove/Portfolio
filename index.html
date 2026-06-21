@@ -227,9 +227,71 @@ footer{
 
 .logos-scroll{width:100vw;position:relative;left:50%;transform:translateX(-50%);padding:0 24px}
 @media(max-width:760px){
-  :root{--bar-h:170px}
-  .contact{justify-content:center;font-size:10px;gap:10px}
-  .btn{padding:7px 11px;font-size:10px}
+  /* ---- MOBILE BANNER ---- */
+  :root{--bar-h:110px}
+  .banner-inner{
+    flex-direction:row;
+    align-items:flex-start;
+    gap:10px;
+    padding:10px 12px;
+    max-width:100vw;
+  }
+  /* logo stays top-left, fixed size */
+  .seal-img{height:36px;width:auto;flex-shrink:0}
+  /* nav fills remaining width, wraps into 2 rows of 4 */
+  .nav-row{
+    flex:1;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:5px;
+    margin-left:0;
+  }
+  /* smaller buttons: tight padding, same font */
+  .btn{
+    padding:5px 4px;
+    font-size:10px;
+    letter-spacing:.08em;
+    text-align:center;
+  }
+  /* hide side rail on mobile */
+  .rail{display:none}
+  /* splash taller on portrait */
+  .hero{height:50vh;min-height:260px}
+  /* content columns full width */
+  .wrap,section.page .wrap,.banner-inner{max-width:100vw}
+  /* logos wrap on mobile */
+  .logos{grid-template-columns:repeat(auto-fill,minmax(72px,1fr))}
+  .logos-scroll{width:100%;left:0;transform:none;padding:0 12px}
+  /* storyboard scaling on mobile */
+  .shots.storyboard-scaled img{width:100%}
+}
+
+/* ---- MOBILE LANDSCAPE: full width, no bars ---- */
+@media(max-width:926px) and (orientation:landscape){
+  :root{--bar-h:80px}
+  .banner-inner{
+    flex-direction:row;
+    align-items:center;
+    gap:10px;
+    padding:8px 12px;
+    max-width:100vw;
+  }
+  .seal-img{height:30px;width:auto;flex-shrink:0}
+  .nav-row{
+    flex:1;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:4px;
+    margin-left:0;
+  }
+  .btn{padding:4px 6px;font-size:9px;letter-spacing:.07em;text-align:center}
+  .hero{height:100vh;min-height:200px;margin-top:0}
+  /* ensure splash fills full viewport width — no bars */
+  .hero .frame{background-size:cover;width:100vw}
+  .rail{display:none}
+  .wrap,section.page .wrap{max-width:100vw;padding:0 12px}
+  .logos{grid-template-columns:repeat(auto-fill,minmax(60px,1fr))}
+  .logos-scroll{width:100%;left:0;transform:none;padding:0 12px}
 }
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
