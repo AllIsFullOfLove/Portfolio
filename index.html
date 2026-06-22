@@ -264,6 +264,10 @@ footer{
   .logos-scroll{width:100%;left:0;transform:none;padding:0 12px}
   /* storyboard scaling on mobile */
   .shots.storyboard-scaled img{width:100%}
+  /* ERUPT thumbnails: auto-fill minimum 80px on mobile */
+  .shots.thumbs{grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px}
+  .shots.thumbs a{grid-column:span 1}
+  .shots.thumbs a:nth-child(10){grid-column:span 1}
 }
 
 /* ---- MOBILE LANDSCAPE: full width, no bars ---- */
@@ -558,6 +562,7 @@ footer{
         <a href="https://patlau.com/aobm/011.jpg"><img width="192" height="108" src="https://patlau.com/aobm/011icon.jpg" alt="ERUPT frame" loading="lazy"></a>
         <a href="https://patlau.com/aobm/143.jpg"><img width="192" height="108" src="https://patlau.com/aobm/143icon.jpg" alt="ERUPT frame" loading="lazy"></a>
       </div>
+      <div class="video"><iframe src="https://player.vimeo.com/video/123176191" title="ERUPT — Art of Beat-Making additional" allow="fullscreen" loading="lazy"></iframe></div>
     </article>
   </div>
 </section>
