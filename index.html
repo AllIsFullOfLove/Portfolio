@@ -81,8 +81,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--seal-bright);outlin
 .banner-inner{
   max-width:min(var(--col-wide),94vw);
   margin:0 auto;
-  padding:12px 24px;
-  display:flex;flex-direction:column;align-items:stretch;gap:10px;
+  padding:10px 24px;
+  display:flex;flex-direction:row;align-items:center;gap:16px;flex-wrap:nowrap;
 }
 .id-row{
   display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap;
@@ -98,7 +98,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--seal-bright);outlin
   color:#f3ece4;font-size:9px;line-height:1.15;letter-spacing:.18em;
   text-align:center;text-transform:uppercase;
 }
-.seal-img{height:44px;width:auto;display:block}
+.seal-img{height:44px;width:auto;display:block;order:-1;flex-shrink:0}
 .contact{
   display:flex;gap:18px;flex-wrap:wrap;align-items:center;
   font-size:11px;letter-spacing:.12em;color:var(--dim);
@@ -179,6 +179,8 @@ section.page#matte{padding-top:32px}
 .shots.thumbs a:nth-child(10){grid-column:4 / span 2}
 .shots.thumbs img{width:100%;height:auto}
 .shots.storyboard-scaled{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.nav-left{flex:1}
+.nav-right{flex-shrink:0}
 @media(max-width:700px){.shots.two,.shots.three{grid-template-columns:1fr}}
 .shots a{position:relative;overflow:hidden;background:var(--black)}
 .shots.storyboard-scaled a{background:transparent}
