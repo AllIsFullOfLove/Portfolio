@@ -107,7 +107,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--seal-bright);outlin
 .contact a:hover{color:var(--seal-bright)}
 a.contact:hover{color:var(--seal-bright) !important}
 .contact .label{color:var(--dim)}
-.nav-row{display:flex;justify-content:flex-start;gap:8px;flex-wrap:nowrap;align-items:center}
+.nav-row{display:flex;justify-content:space-between;gap:10px;flex-wrap:nowrap;align-items:center}
 .btn{
   display:inline-block;
   padding:8px 16px;
@@ -179,8 +179,8 @@ section.page#matte{padding-top:32px}
 .shots.thumbs a:nth-child(10){grid-column:4 / span 2}
 .shots.thumbs img{width:100%;height:auto}
 .shots.storyboard-scaled{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
-.nav-left{flex:1}
-.nav-right{flex-shrink:0}
+.nav-left{flex:1;justify-content:space-between}
+.nav-right{flex-shrink:0;gap:10px}
 @media(max-width:700px){.shots.two,.shots.three{grid-template-columns:1fr}}
 .shots a{position:relative;overflow:hidden;background:var(--black)}
 .shots.storyboard-scaled a{background:transparent}
