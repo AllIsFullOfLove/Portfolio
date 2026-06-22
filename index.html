@@ -82,7 +82,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--seal-bright);outlin
   max-width:min(var(--col-wide),94vw);
   margin:0 auto;
   padding:10px 24px;
-  display:flex;flex-direction:row;align-items:center;gap:16px;flex-wrap:nowrap;
+  display:flex;flex-direction:row;align-items:center;gap:14px;flex-wrap:nowrap;justify-content:space-between;
 }
 .id-row{
   display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap;
@@ -179,8 +179,8 @@ section.page#matte{padding-top:32px}
 .shots.thumbs a:nth-child(10){grid-column:4 / span 2}
 .shots.thumbs img{width:100%;height:auto}
 .shots.storyboard-scaled{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
-.nav-left{flex:1;justify-content:space-between}
-.nav-right{flex-shrink:0;gap:10px}
+.nav-left{display:contents}
+.nav-right{display:contents}
 @media(max-width:700px){.shots.two,.shots.three{grid-template-columns:1fr}}
 .shots a{position:relative;overflow:hidden;background:var(--black)}
 .shots.storyboard-scaled a{background:transparent}
