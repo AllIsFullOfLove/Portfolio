@@ -853,9 +853,11 @@ footer{
     var t = toggle[n]||0; toggle[n]=t+1;
     if(m==='alt_zlr'){ m = (t%2===0) ? (t%4===0?'zin':'zout') : 'lr'; }
 
-    // reset
+    // thorough reset: kill any in-flight transition before setting new start state
     el.style.transition='none';
     el.style.transform='none';
+    el.style.backgroundPosition='50% 50%';
+    void el.getBoundingClientRect();
 
     if(m==='zin' || m==='zout'){
       el.style.backgroundSize='cover';
