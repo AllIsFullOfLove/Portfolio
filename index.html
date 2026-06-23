@@ -832,10 +832,7 @@ footer{
 
   for(var i=1;i<=18;i++) imgs.push(url(i));
 
-  // Fixed motion per image — no per-appearance randomness.
-  // motion: 'zin'=zoom in, 'zout'=zoom out, 'up'=pan up, 'down'=pan down,
-  //         'lr'=pan side (alternates L/R), 'alt_zud'=img4 not used now,
-  //         'alt_zlr'=img10 alternates zoom<->side
+  // motion per image
   var motion = {
     1:'zin',  2:'zout', 3:'zin',  4:'up',
     5:'zout', 6:'zin',  7:'zout', 8:'up',
@@ -845,33 +842,50 @@ footer{
   };
 
   var toggle={};
+  var MOTION_DUR=13;
 
-  function getTransforms(n){
+  // Apply a motion to a frame element.
+  // Zoom: background-size cover, scale transform 100%<->110%.
+  // Vertical pan: background-size 100% auto (fit width), animate bg-position-y 0%->100% (full height).
+  // Horizontal pan: background-size auto 100% (fit height), animate bg-position-x 0%->100% (full width).
+  function applyMotion(el, n){
     var m = motion[n] || 'zin';
     var t = toggle[n]||0; toggle[n]=t+1;
-
     if(m==='alt_zlr'){ m = (t%2===0) ? (t%4===0?'zin':'zout') : 'lr'; }
 
-    if(m==='zin')  return ['scale(1.00)','scale(1.10)'];
-    if(m==='zout') return ['scale(1.10)','scale(1.00)'];
-    if(m==='up')   return ['scale(1.10) translateY(4%)','scale(1.10) translateY(-4%)'];
-    if(m==='down') return ['scale(1.10) translateY(-4%)','scale(1.10) translateY(4%)'];
-    // lr: alternate direction each time
-    return (t%2===0)
-      ? ['scale(1.10) translateX(-5%)','scale(1.10) translateX(5%)']
-      : ['scale(1.10) translateX(5%)','scale(1.10) translateX(-5%)'];
-  }
-
-  // motion runs 13s so it never finishes before the 10s display + 2s crossfade
-  var MOTION_DUR = 13;
-
-  function animate(el, n){
-    var tr = getTransforms(n);
+    // reset
     el.style.transition='none';
-    el.style.transform=tr[0];
-    void el.getBoundingClientRect();
-    el.style.transition='transform '+MOTION_DUR+'s linear, opacity 2s ease-in-out';
-    el.style.transform=tr[1];
+    el.style.transform='none';
+
+    if(m==='zin' || m==='zout'){
+      el.style.backgroundSize='cover';
+      el.style.backgroundPosition='50% 50%';
+      el.style.transform = (m==='zin')?'scale(1.0)':'scale(1.10)';
+      void el.getBoundingClientRect();
+      el.style.transition='transform '+MOTION_DUR+'s linear, opacity 2s ease-in-out';
+      el.style.transform = (m==='zin')?'scale(1.10)':'scale(1.0)';
+    }
+    else if(m==='up' || m==='down'){
+      // fit by width, full height available to pan
+      el.style.backgroundSize='100% auto';
+      el.style.transform='none';
+      var from = (m==='down') ? '50% 0%'   : '50% 100%';
+      var to   = (m==='down') ? '50% 100%' : '50% 0%';
+      el.style.backgroundPosition=from;
+      void el.getBoundingClientRect();
+      el.style.transition='background-position '+MOTION_DUR+'s linear, opacity 2s ease-in-out';
+      el.style.backgroundPosition=to;
+    }
+    else { // lr — fit by height, full width to pan
+      el.style.backgroundSize='auto 100%';
+      el.style.transform='none';
+      var lf = (t%2===0) ? '0% 50%'   : '100% 50%';
+      var lt = (t%2===0) ? '100% 50%' : '0% 50%';
+      el.style.backgroundPosition=lf;
+      void el.getBoundingClientRect();
+      el.style.transition='background-position '+MOTION_DUR+'s linear, opacity 2s ease-in-out';
+      el.style.backgroundPosition=lt;
+    }
   }
 
   function showFirst(src, n){
@@ -879,7 +893,7 @@ footer{
     front.style.transition='none';
     front.style.opacity='0';
     void front.getBoundingClientRect();
-    animate(front, n);
+    applyMotion(front, n);
     front.style.opacity='1';
   }
 
@@ -888,7 +902,7 @@ footer{
     back.style.transition='none';
     back.style.opacity='0';
     void back.getBoundingClientRect();
-    animate(back, n);
+    applyMotion(back, n);
     back.style.opacity='1';
     front.style.transition='opacity 2s ease-in-out';
     front.style.opacity='0';
