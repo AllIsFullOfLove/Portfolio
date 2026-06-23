@@ -1139,67 +1139,45 @@ footer{
   var pp=document.getElementById('pp');
   var canvas=document.getElementById('wave');
   var ctx=canvas.getContext('2d');
-  var muted=true, audioCtx, analyser, dataArray, source, raf, started=false;
+  var muted=true, raf, started=false;
 
   var muteIcon='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4.03v8.06A4.5 4.5 0 0016.5 12z" opacity=".4"/><path d="M19 5L5 19" stroke="currentColor" stroke-width="2"/></svg>';
   var soundIcon='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4.03v8.06A4.5 4.5 0 0016.5 12zM14 3.23v2.06a7 7 0 010 13.42v2.06a9 9 0 000-17.54z"/></svg>';
 
-  function setupAudio(){
-    if(audioCtx) return;
-    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-    analyser=audioCtx.createAnalyser();
-    analyser.fftSize=64;
-    source=audioCtx.createMediaElementSource(audio);
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    dataArray=new Uint8Array(analyser.frequencyBinCount);
-    draw();
-  }
-
+  // Waveform is fully synthetic — always bounces, never depends on audio analysis.
+  // Bouncing is livelier when unmuted, gentler when muted.
   var t0=Date.now();
   function draw(){
     raf=requestAnimationFrame(draw);
     var w=canvas.width, h=canvas.height;
     ctx.clearRect(0,0,w,h);
-    var bars, vals=[];
-    if(analyser && !muted){
-      // reactive: real audio data
-      analyser.getByteFrequencyData(dataArray);
-      bars=dataArray.length;
-      for(var i=0;i<bars;i++) vals.push(dataArray[i]/255);
-    } else {
-      // synthetic gentle bounce when muted
-      bars=16;
-      var tt=(Date.now()-t0)/1000;
-      for(var j=0;j<bars;j++){
-        var v=(Math.sin(tt*2.2 + j*0.7)*0.5+0.5)*0.55
-             +(Math.sin(tt*3.7 + j*1.3)*0.5+0.5)*0.25;
-        vals.push(v*0.6);
-      }
-    }
-    var bw=w/bars*1.4, x=0;
+    var bars=16, tt=(Date.now()-t0)/1000;
+    var amp = muted ? 0.55 : 0.95;     // livelier when playing
+    var spd = muted ? 1.0 : 1.8;
     ctx.fillStyle = muted ? 'rgba(196,26,26,.55)' : '#c41a1a';
-    for(var k=0;k<bars;k++){
-      var bh=Math.max(2, vals[k]*h);
+    var bw=w/bars*1.4, x=0;
+    for(var j=0;j<bars;j++){
+      var v=(Math.sin(tt*2.2*spd + j*0.7)*0.5+0.5)*0.6
+           +(Math.sin(tt*3.7*spd + j*1.3)*0.5+0.5)*0.4;
+      var bh=Math.max(2, v*amp*h);
       ctx.fillRect(x, (h-bh)/2, bw, bh);
       x+=bw+1;
     }
   }
 
-  // start playback muted (autoplay-safe) on load
   function startPlayback(){
     if(started) return; started=true;
     audio.muted=true;
+    audio.loop=true;
     audio.play().catch(function(){});
   }
 
   function unmute(){
-    setupAudio();
-    if(audioCtx.state==='suspended') audioCtx.resume();
     audio.muted=false;
+    audio.volume=1;
     muted=false;
     pp.innerHTML=soundIcon;
-    if(audio.paused) audio.play().catch(function(){});
+    if(audio.paused) audio.play().catch(function(e){ console.log('play failed',e); });
   }
   function mute(){
     audio.muted=true;
@@ -1216,10 +1194,8 @@ footer{
     if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(e); }
   });
 
-  // begin draw loop immediately (synthetic bounce) + muted autoplay
-  draw();
-  startPlayback();
-  // some browsers need a user gesture to even start muted audio — retry on first interaction
+  draw();                 // waveform runs forever
+  startPlayback();        // muted autoplay
   document.addEventListener('click', startPlayback, {once:true});
 })();
 </script>
