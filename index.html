@@ -832,55 +832,45 @@ footer{
 
   for(var i=1;i<=18;i++) imgs.push(url(i));
 
-  // Per-image motion category:
-  // 'zoom'  = zoom in/out 10%
-  // 'ud'    = pan up/down (scaled headroom)
-  // 'lr'    = pan side to side 10%
-  // 'zoom_ud' = alternates zoom <-> up/down  (image 4)
-  // 'zoom_lr' = alternates zoom <-> side      (image 10)
-  var cat = {
-    1:'zoom',2:'zoom',3:'zoom',4:'zoom_ud',5:'zoom',6:'zoom',7:'zoom',
-    8:'ud',9:'lr',10:'zoom_lr',11:'ud',12:'ud',13:'zoom',14:'zoom',
-    15:'zoom',16:'zoom',17:'ud',18:'zoom'
+  // Fixed motion per image — no per-appearance randomness.
+  // motion: 'zin'=zoom in, 'zout'=zoom out, 'up'=pan up, 'down'=pan down,
+  //         'lr'=pan side (alternates L/R), 'alt_zud'=img4 not used now,
+  //         'alt_zlr'=img10 alternates zoom<->side
+  var motion = {
+    1:'zin',  2:'zout', 3:'zin',  4:'up',
+    5:'zout', 6:'zin',  7:'zout', 8:'up',
+    9:'lr',   10:'alt_zlr', 11:'down', 12:'down',
+    13:'zin', 14:'zout', 15:'up', 16:'zin',
+    17:'down',18:'zout'
   };
 
-  // toggles so each image alternates direction / type each appearance
-  var toggle = {};
+  var toggle={};
 
   function getTransforms(n){
-    var c = cat[n] || 'zoom';
-    var t = toggle[n] || 0;
-    toggle[n] = t+1;
+    var m = motion[n] || 'zin';
+    var t = toggle[n]||0; toggle[n]=t+1;
 
-    // resolve alternating categories
-    if(c==='zoom_ud') c = (t%2===0) ? 'zoom' : 'ud';
-    else if(c==='zoom_lr') c = (t%2===0) ? 'zoom' : 'lr';
+    if(m==='alt_zlr'){ m = (t%2===0) ? (t%4===0?'zin':'zout') : 'lr'; }
 
-    if(c==='zoom'){
-      // 10% zoom, alternate in/out
-      return (t%2===0)
-        ? ['scale(1.00)','scale(1.10)']   // zoom in
-        : ['scale(1.10)','scale(1.00)'];  // zoom out
-    }
-    if(c==='ud'){
-      // scale to 1.10 for headroom, pan vertically within
-      return (t%2===0)
-        ? ['scale(1.10) translateY(-4%)','scale(1.10) translateY(4%)']   // down
-        : ['scale(1.10) translateY(4%)','scale(1.10) translateY(-4%)'];  // up
-    }
-    // lr: 10% side pan, scale 1.10 headroom
+    if(m==='zin')  return ['scale(1.00)','scale(1.10)'];
+    if(m==='zout') return ['scale(1.10)','scale(1.00)'];
+    if(m==='up')   return ['scale(1.10) translateY(4%)','scale(1.10) translateY(-4%)'];
+    if(m==='down') return ['scale(1.10) translateY(-4%)','scale(1.10) translateY(4%)'];
+    // lr: alternate direction each time
     return (t%2===0)
-      ? ['scale(1.10) translateX(-5%)','scale(1.10) translateX(5%)']    // right
-      : ['scale(1.10) translateX(5%)','scale(1.10) translateX(-5%)'];   // left
+      ? ['scale(1.10) translateX(-5%)','scale(1.10) translateX(5%)']
+      : ['scale(1.10) translateX(5%)','scale(1.10) translateX(-5%)'];
   }
+
+  // motion runs 13s so it never finishes before the 10s display + 2s crossfade
+  var MOTION_DUR = 13;
 
   function animate(el, n){
     var tr = getTransforms(n);
     el.style.transition='none';
     el.style.transform=tr[0];
     void el.getBoundingClientRect();
-    // combine transform + opacity in one transition so neither overrides the other
-    el.style.transition='transform 10s linear, opacity 2s ease-in-out';
+    el.style.transition='transform '+MOTION_DUR+'s linear, opacity 2s ease-in-out';
     el.style.transform=tr[1];
   }
 
@@ -889,8 +879,8 @@ footer{
     front.style.transition='none';
     front.style.opacity='0';
     void front.getBoundingClientRect();
-    animate(front, n);          // sets transform+opacity transition
-    front.style.opacity='1';    // fade in (uses same combined transition)
+    animate(front, n);
+    front.style.opacity='1';
   }
 
   function crossfade(src, n){
@@ -898,16 +888,15 @@ footer{
     back.style.transition='none';
     back.style.opacity='0';
     void back.getBoundingClientRect();
-    animate(back, n);                 // back: transform+opacity transition, starts fading in
+    animate(back, n);
     back.style.opacity='1';
     front.style.transition='opacity 2s ease-in-out';
-    front.style.opacity='0';          // front fades out
+    front.style.opacity='0';
     var t=front; front=back; back=t;
   }
 
   function preload(src,cb){ var im=new Image(); im.onload=im.onerror=cb; im.src=src; }
 
-  // random start image
   idx=Math.floor(Math.random()*imgs.length);
   var firstN=idx+1;
   var firstSrc=imgs[idx]; idx=(idx+1)%imgs.length;
@@ -918,10 +907,9 @@ footer{
     preload(src, function(){ crossfade(src, n); });
   }, 10000);
 
-  // probe beyond 18 — new images default to gentle zoom
   function probe(n){
     var im=new Image();
-    im.onload=function(){ imgs.push(url(n)); if(!cat[n]) cat[n]='zoom'; probe(n+1); };
+    im.onload=function(){ imgs.push(url(n)); if(!motion[n]) motion[n]=(n%2===0?'zout':'zin'); probe(n+1); };
     im.onerror=function(){};
     im.src=url(n);
   }
