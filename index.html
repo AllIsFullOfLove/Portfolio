@@ -324,7 +324,6 @@ footer{
 /* ---- music player (waveform only) ---- */
 .player{
   display:inline-flex;align-items:center;justify-content:center;
-  margin-left:auto;
   padding:8px 14px;
   border:1px solid var(--line);
   background:var(--ink);
@@ -589,7 +588,7 @@ footer{
     </div>
 
     <article class="project">
-      <div class="slate"><span class="num">100</span><h3>Cyberpunk Apartment Interior</h3><span class="meta">Film · Dir. Joseph Procopio</span></div>
+      <div class="slate"><span class="num">100</span><h3>Cyberpunk Apartment Interior</h3><span class="meta">Short Film · Dir. Joseph Procopio</span></div>
       <div class="shots"><a href="https://patlau.com/concept/shut-in.jpg" data-pan="true"><img width="1600" height="675" src="https://patlau.com/concept/shut-in.jpg" alt="Cyberpunk apartment interior concept" loading="lazy"></a></div>
     </article>
 
@@ -618,7 +617,7 @@ footer{
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">841</span><h3>Colossal</h3><span class="meta">MARZ</span></div>
+      <div class="slate"><span class="num">841</span><h3>Colossal — 2016</h3><span class="meta">Feature Film · Dir. Nacho Vigalondo · MARZ</span></div>
       <div class="shots three">
         <a href="https://patlau.com/concept/collosal03.jpg"><img width="1600" height="900" src="https://patlau.com/concept/collosal03.jpg" alt="Colossal concept" loading="lazy"></a>
         <a href="https://patlau.com/concept/collosal02.jpg"><img width="1600" height="900" src="https://patlau.com/concept/collosal02.jpg" alt="Colossal concept" loading="lazy"></a>
@@ -644,7 +643,7 @@ footer{
     </article>
 
     <article class="project">
-      <div class="slate"><span class="num">935</span><h3>Downsizing</h3><span class="meta">Feature Film · Paramount</span></div>
+      <div class="slate"><span class="num">935</span><h3>Downsizing — 2017</h3><span class="meta">Feature Film · Alexander Payne · Paramount</span></div>
       <div class="shots"><span class="clip"><img width="1600" height="796" src="https://patlau.com/concept/downsizing.jpg" alt="Downsizing concept" loading="lazy"></span></div>
     </article>
 
@@ -744,7 +743,7 @@ footer{
     </div>
 
     <article class="project">
-      <div class="slate"><span class="num">347</span><h3>Sony 3D — Two Worlds</h3><span class="meta">Commercial</span></div>
+      <div class="slate"><span class="num">347</span><h3>Sony 3D — Two Worlds</h3><span class="meta">TV Commercial · Dir. Arev Manoukian</span></div>
       <div class="shots two">
         <a href="https://patlau.com/storyboard/sony1.jpg"><img width="878" height="1293" src="https://patlau.com/storyboard/sony1.jpg" alt="Sony Two Worlds storyboard" loading="lazy"></a>
         <a href="https://patlau.com/storyboard/sony2.jpg"><img width="878" height="1291" src="https://patlau.com/storyboard/sony2.jpg" alt="Sony Two Worlds storyboard" loading="lazy"></a>
@@ -875,77 +874,62 @@ footer{
   var toggle={};
   var MOTION_DUR=13;
 
-  // Apply a motion to a frame element.
-  // Zoom: background-size cover, scale transform 100%<->110%.
-  // Vertical pan: background-size 100% auto (fit width), animate bg-position-y 0%->100% (full height).
-  // Horizontal pan: background-size auto 100% (fit height), animate bg-position-x 0%->100% (full width).
-  function applyMotion(el, n){
+  // Apply motion. Two-phase: set START state (no transition), paint it via rAF,
+  // THEN add transition + END state. Guarantees no snap.
+  function applyMotion(el, n, cb){
     var m = motion[n] || 'zin';
     var t = toggle[n]||0; toggle[n]=t+1;
     if(m==='alt_zlr'){ m = (t%2===0) ? (t%4===0?'zin':'zout') : 'lr'; }
 
-    // thorough reset: kill any in-flight transition before setting new start state
-    el.style.transition='none';
-    el.style.transform='none';
-    el.style.backgroundPosition='50% 50%';
-    void el.getBoundingClientRect();
+    var startTf='none', endTf='none', startBg='50% 50%', endBg='50% 50%', sizeMode='cover';
 
-    if(m==='zin' || m==='zout'){
-      el.style.backgroundSize='cover';
-      el.style.backgroundPosition='50% 50%';
-      el.style.transform = (m==='zin')?'scale(1.0)':'scale(1.10)';
-      void el.getBoundingClientRect();
-      el.style.transition='transform '+MOTION_DUR+'s linear, opacity 2s ease-in-out';
-      el.style.transform = (m==='zin')?'scale(1.10)':'scale(1.0)';
+    if(m==='zin'){ sizeMode='cover'; startTf='scale(1.0)'; endTf='scale(1.10)'; }
+    else if(m==='zout'){ sizeMode='cover'; startTf='scale(1.10)'; endTf='scale(1.0)'; }
+    else if(m==='up'){ sizeMode='100% auto'; startBg='50% 100%'; endBg='50% 0%'; }
+    else if(m==='down'){ sizeMode='100% auto'; startBg='50% 0%'; endBg='50% 100%'; }
+    else { // lr
+      sizeMode='auto 100%';
+      startBg = (t%2===0)?'0% 50%':'100% 50%';
+      endBg   = (t%2===0)?'100% 50%':'0% 50%';
     }
-    else if(m==='up' || m==='down'){
-      // fit by width, full height available to pan
-      el.style.backgroundSize='100% auto';
-      el.style.transform='none';
-      var from = (m==='down') ? '50% 0%'   : '50% 100%';
-      var to   = (m==='down') ? '50% 100%' : '50% 0%';
-      el.style.backgroundPosition=from;
-      void el.getBoundingClientRect();
-      el.style.transition='background-position '+MOTION_DUR+'s linear, opacity 2s ease-in-out';
-      el.style.backgroundPosition=to;
-    }
-    else { // lr — fit by height, full width to pan
-      el.style.backgroundSize='auto 100%';
-      el.style.transform='none';
-      var lf = (t%2===0) ? '0% 50%'   : '100% 50%';
-      var lt = (t%2===0) ? '100% 50%' : '0% 50%';
-      el.style.backgroundPosition=lf;
-      void el.getBoundingClientRect();
-      el.style.transition='background-position '+MOTION_DUR+'s linear, opacity 2s ease-in-out';
-      el.style.backgroundPosition=lt;
-    }
+
+    // PHASE 1: start state, no transition
+    el.style.transition='none';
+    el.style.backgroundSize=sizeMode;
+    el.style.transform=startTf;
+    el.style.backgroundPosition=startBg;
+
+    // PHASE 2: after the start state has painted (next frame), apply transition + end state
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        el.style.transition='transform '+MOTION_DUR+'s linear, background-position '+MOTION_DUR+'s linear, opacity 2s ease-in-out';
+        el.style.transform=endTf;
+        el.style.backgroundPosition=endBg;
+        if(cb) cb();
+      });
+    });
   }
 
   function showFirst(src, n){
-    front.style.backgroundImage='url("'+src+'")';
     front.style.transition='none';
     front.style.opacity='0';
-    void front.getBoundingClientRect();
-    applyMotion(front, n);
-    front.style.opacity='1';
+    front.style.backgroundImage='url("'+src+'")';
+    applyMotion(front, n, function(){
+      front.style.opacity='1';
+    });
   }
 
   function crossfade(src, n){
-    // prep incoming (back) layer fully while invisible
-    back.style.transition='none';
-    back.style.opacity='0';
-    back.style.backgroundImage='url("'+src+'")';
-    back.style.transform='none';
-    back.style.backgroundPosition='50% 50%';
-    void back.getBoundingClientRect();        // commit invisible reset (no snap visible)
-    applyMotion(back, n);                      // sets start state + transition + end state
-    // force the start state to paint before opacity ramps (still invisible)
-    void back.getBoundingClientRect();
-    // now fade: incoming in, outgoing out
-    back.style.opacity='1';
-    front.style.transition='opacity 2s ease-in-out';
-    front.style.opacity='0';
-    var t=front; front=back; back=t;
+    var incoming=back, outgoing=front;
+    incoming.style.transition='none';
+    incoming.style.opacity='0';
+    incoming.style.backgroundImage='url("'+src+'")';
+    applyMotion(incoming, n, function(){
+      incoming.style.opacity='1';
+      outgoing.style.transition='opacity 2s ease-in-out';
+      outgoing.style.opacity='0';
+    });
+    front=incoming; back=outgoing;  // swap by explicit reference
   }
 
   function preload(src,cb){ var im=new Image(); im.onload=im.onerror=cb; im.src=src; }
