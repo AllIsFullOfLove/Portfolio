@@ -829,41 +829,66 @@ footer{
 
   function pad(n){ return (n<10?'0':'')+n; }
   function url(n){ return 'https://patlau.com/splash'+pad(n)+'.jpg'; }
-  function preload(src,cb){ var im=new Image(); im.onload=im.onerror=cb; im.src=src; }
 
   for(var i=1;i<=18;i++) imgs.push(url(i));
 
-  var fromT = [
-    'scale(1.10)','scale(1.00)','scale(1.10) translateX(-5%)',
-    'scale(1.10) translateX(5%)','scale(1.10) translateY(-5%)','scale(1.10) translateY(5%)'
-  ];
-  var toT = [
-    'scale(1.00)','scale(1.10)','scale(1.10) translateX(5%)',
-    'scale(1.10) translateX(-5%)','scale(1.10) translateY(5%)','scale(1.10) translateY(-5%)'
-  ];
-  var imgM=[0,4,5,1,4,0,2,1,5,2,3,4,5,4,0,3,2,4,5];
+  // Per-image motion category:
+  // 'zoom'  = zoom in/out 10%
+  // 'ud'    = pan up/down (scaled headroom)
+  // 'lr'    = pan side to side 10%
+  // 'zoom_ud' = alternates zoom <-> up/down  (image 4)
+  // 'zoom_lr' = alternates zoom <-> side      (image 10)
+  var cat = {
+    1:'zoom',2:'zoom',3:'zoom',4:'zoom_ud',5:'zoom',6:'zoom',7:'zoom',
+    8:'ud',9:'lr',10:'zoom_lr',11:'ud',12:'ud',13:'zoom',14:'zoom',
+    15:'zoom',16:'zoom',17:'ud',18:'zoom'
+  };
+
+  // toggles so each image alternates direction / type each appearance
+  var toggle = {};
+
+  function getTransforms(n){
+    var c = cat[n] || 'zoom';
+    var t = toggle[n] || 0;
+    toggle[n] = t+1;
+
+    // resolve alternating categories
+    if(c==='zoom_ud') c = (t%2===0) ? 'zoom' : 'ud';
+    else if(c==='zoom_lr') c = (t%2===0) ? 'zoom' : 'lr';
+
+    if(c==='zoom'){
+      // 10% zoom, alternate in/out
+      return (t%2===0)
+        ? ['scale(1.00)','scale(1.10)']   // zoom in
+        : ['scale(1.10)','scale(1.00)'];  // zoom out
+    }
+    if(c==='ud'){
+      // scale to 1.10 for headroom, pan vertically within
+      return (t%2===0)
+        ? ['scale(1.10) translateY(-4%)','scale(1.10) translateY(4%)']   // down
+        : ['scale(1.10) translateY(4%)','scale(1.10) translateY(-4%)'];  // up
+    }
+    // lr: 10% side pan, scale 1.10 headroom
+    return (t%2===0)
+      ? ['scale(1.10) translateX(-5%)','scale(1.10) translateX(5%)']    // right
+      : ['scale(1.10) translateX(5%)','scale(1.10) translateX(-5%)'];   // left
+  }
 
   function animate(el, n){
-    var mi = (imgM[n]!==undefined) ? imgM[n] : Math.floor(Math.random()*6);
-    // step 1: snap to start with no transition
+    var tr = getTransforms(n);
     el.style.transition='none';
-    el.style.transform=fromT[mi];
-    // step 2: force reflow so browser registers the start value
+    el.style.transform=tr[0];
     void el.getBoundingClientRect();
-    // step 3: now set transition and end value — browser will animate between them
     el.style.transition='transform 10s linear';
-    el.style.transform=toT[mi];
+    el.style.transform=tr[1];
   }
 
   function showFirst(src, n){
     front.style.backgroundImage='url("'+src+'")';
-    // snap opacity to 0, no transition
     front.style.transition='none';
     front.style.opacity='0';
     void front.getBoundingClientRect();
-    // set motion start
     animate(front, n);
-    // now fade in — use setTimeout so opacity transition doesn't fight transform snap
     setTimeout(function(){
       front.style.transition='opacity 2s ease-in-out';
       front.style.opacity='1';
@@ -885,19 +910,23 @@ footer{
     }, 50);
   }
 
-  // start
+  function preload(src,cb){ var im=new Image(); im.onload=im.onerror=cb; im.src=src; }
+
+  // random start image
   idx=Math.floor(Math.random()*imgs.length);
-  var fn=idx+1; var fs=imgs[idx]; idx=(idx+1)%imgs.length;
-  preload(fs, function(){ showFirst(fs,fn); });
+  var firstN=idx+1;
+  var firstSrc=imgs[idx]; idx=(idx+1)%imgs.length;
+  preload(firstSrc, function(){ showFirst(firstSrc, firstN); });
 
   setInterval(function(){
     var n=idx+1; var src=imgs[idx]; idx=(idx+1)%imgs.length;
-    preload(src, function(){ crossfade(src,n); });
-  },10000);
+    preload(src, function(){ crossfade(src, n); });
+  }, 10000);
 
+  // probe beyond 18 — new images default to gentle zoom
   function probe(n){
     var im=new Image();
-    im.onload=function(){ imgs.push(url(n)); probe(n+1); };
+    im.onload=function(){ imgs.push(url(n)); if(!cat[n]) cat[n]='zoom'; probe(n+1); };
     im.onerror=function(){};
     im.src=url(n);
   }
