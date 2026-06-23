@@ -312,6 +312,34 @@ footer{
 .lb.pan-mode{align-items:flex-start;overflow:hidden}
 .lb.pan-mode img{width:100vw;height:auto;max-width:none;max-height:none;transition:transform .1s linear}
 
+
+/* ---- music player ---- */
+.player{
+  position:fixed;bottom:18px;right:18px;z-index:95;
+  display:flex;align-items:center;gap:10px;
+  background:rgba(10,10,11,.82);backdrop-filter:blur(8px);
+  border:1px solid var(--line);border-radius:6px;
+  padding:8px 12px;cursor:pointer;
+  transition:border-color .3s ease;
+  font-family:'IBM Plex Mono',monospace;
+}
+.player:hover{border-color:var(--seal-bright)}
+.player .pp{
+  width:22px;height:22px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--seal-bright);
+}
+.player .pp svg{width:18px;height:18px;display:block}
+.player canvas{display:block;width:60px;height:22px}
+.player .track{
+  font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--paper);white-space:nowrap;
+}
+@media(max-width:760px){
+  .player{bottom:12px;right:12px;padding:6px 9px;gap:7px}
+  .player .track{font-size:9px}
+  .player canvas{width:44px;height:18px}
+}
 </style>
 </head>
 <body>
@@ -1092,6 +1120,107 @@ footer{
       lastY=y;ticking=false;
     });
   },{passive:true});
+})();
+</script>
+
+<div class="player" id="player" role="button" aria-label="Play background music" tabindex="0">
+  <span class="pp" id="pp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4.03v8.06A4.5 4.5 0 0016.5 12z" opacity=".4"/><path d="M19 5L5 19" stroke="currentColor" stroke-width="2"/></svg>
+  </span>
+  <canvas id="wave" width="120" height="44"></canvas>
+  <span class="track">Aria — Ariella</span>
+  <audio id="audio" src="https://patlau.com/Aria_-_Ariella.mp3" loop preload="none"></audio>
+</div>
+
+<script>
+(function(){
+  var player=document.getElementById('player');
+  var audio=document.getElementById('audio');
+  var pp=document.getElementById('pp');
+  var canvas=document.getElementById('wave');
+  var ctx=canvas.getContext('2d');
+  var muted=true, audioCtx, analyser, dataArray, source, raf, started=false;
+
+  var muteIcon='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4.03v8.06A4.5 4.5 0 0016.5 12z" opacity=".4"/><path d="M19 5L5 19" stroke="currentColor" stroke-width="2"/></svg>';
+  var soundIcon='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4.03v8.06A4.5 4.5 0 0016.5 12zM14 3.23v2.06a7 7 0 010 13.42v2.06a9 9 0 000-17.54z"/></svg>';
+
+  function setupAudio(){
+    if(audioCtx) return;
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    analyser=audioCtx.createAnalyser();
+    analyser.fftSize=64;
+    source=audioCtx.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    dataArray=new Uint8Array(analyser.frequencyBinCount);
+    draw();
+  }
+
+  var t0=Date.now();
+  function draw(){
+    raf=requestAnimationFrame(draw);
+    var w=canvas.width, h=canvas.height;
+    ctx.clearRect(0,0,w,h);
+    var bars, vals=[];
+    if(analyser && !muted){
+      // reactive: real audio data
+      analyser.getByteFrequencyData(dataArray);
+      bars=dataArray.length;
+      for(var i=0;i<bars;i++) vals.push(dataArray[i]/255);
+    } else {
+      // synthetic gentle bounce when muted
+      bars=16;
+      var tt=(Date.now()-t0)/1000;
+      for(var j=0;j<bars;j++){
+        var v=(Math.sin(tt*2.2 + j*0.7)*0.5+0.5)*0.55
+             +(Math.sin(tt*3.7 + j*1.3)*0.5+0.5)*0.25;
+        vals.push(v*0.6);
+      }
+    }
+    var bw=w/bars*1.4, x=0;
+    ctx.fillStyle = muted ? 'rgba(196,26,26,.55)' : '#c41a1a';
+    for(var k=0;k<bars;k++){
+      var bh=Math.max(2, vals[k]*h);
+      ctx.fillRect(x, (h-bh)/2, bw, bh);
+      x+=bw+1;
+    }
+  }
+
+  // start playback muted (autoplay-safe) on load
+  function startPlayback(){
+    if(started) return; started=true;
+    audio.muted=true;
+    audio.play().catch(function(){});
+  }
+
+  function unmute(){
+    setupAudio();
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    audio.muted=false;
+    muted=false;
+    pp.innerHTML=soundIcon;
+    if(audio.paused) audio.play().catch(function(){});
+  }
+  function mute(){
+    audio.muted=true;
+    muted=true;
+    pp.innerHTML=muteIcon;
+  }
+  function toggle(e){
+    e.stopPropagation();
+    if(muted) unmute(); else mute();
+  }
+
+  player.addEventListener('click', toggle);
+  player.addEventListener('keydown', function(e){
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(e); }
+  });
+
+  // begin draw loop immediately (synthetic bounce) + muted autoplay
+  draw();
+  startPlayback();
+  // some browsers need a user gesture to even start muted audio — retry on first interaction
+  document.addEventListener('click', startPlayback, {once:true});
 })();
 </script>
 </body>
