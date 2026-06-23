@@ -313,32 +313,29 @@ footer{
 .lb.pan-mode img{width:100vw;height:auto;max-width:none;max-height:none;transition:transform .1s linear}
 
 
-/* ---- music player ---- */
+  
+}
+
+/* ---- music player (button-styled, in banner) ---- */
 .player{
-  position:fixed;bottom:18px;right:18px;z-index:95;
-  display:flex;align-items:center;gap:10px;
-  background:rgba(10,10,11,.82);backdrop-filter:blur(8px);
-  border:1px solid var(--line);border-radius:6px;
-  padding:8px 12px;cursor:pointer;
-  transition:border-color .3s ease;
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 14px;
+  border:1px solid var(--line);
+  background:var(--ink);
+  border-radius:3px;
+  cursor:pointer;
   font-family:'IBM Plex Mono',monospace;
+  font-size:13px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--seal-bright);
+  transition:border-color .3s ease,color .3s ease;
+  flex-shrink:0;
 }
 .player:hover{border-color:var(--seal-bright)}
-.player .pp{
-  width:22px;height:22px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--seal-bright);
-}
-.player .pp svg{width:18px;height:18px;display:block}
-.player canvas{display:block;width:60px;height:22px}
-.player .track{
-  font-size:10px;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--paper);white-space:nowrap;
-}
+.player canvas{display:block;width:46px;height:16px}
+.player .track{white-space:nowrap;color:var(--seal-bright)}
 @media(max-width:760px){
-  .player{bottom:12px;right:12px;padding:6px 9px;gap:7px}
-  .player .track{font-size:9px}
-  .player canvas{width:44px;height:18px}
+  .player{padding:0;height:30px;font-size:10px;justify-content:center;gap:5px}
+  .player canvas{width:34px;height:14px}
 }
 </style>
 </head>
@@ -360,6 +357,11 @@ footer{
       <span class="btn phone">(647) 921-8241</span>
       <a class="btn mail" href="https://mail.google.com/mail/?view=cm&fs=1&to=patlau.com@gmail.com" target="_blank" rel="noopener">E-mail</a>
     </nav>
+    <div class="player" id="player" role="button" aria-label="Toggle music" tabindex="0">
+      <canvas id="wave" width="120" height="44"></canvas>
+      <span class="track">Ariella</span>
+      <audio id="audio" src="https://patlau.com/Aria_-_Ariella.mp3" loop preload="none"></audio>
+    </div>
   </div>
 </header>
 <nav class="rail" aria-label="Section progress">
@@ -1123,26 +1125,15 @@ footer{
 })();
 </script>
 
-<div class="player" id="player" role="button" aria-label="Play background music" tabindex="0">
-  <span class="pp" id="pp">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4.03v8.06A4.5 4.5 0 0016.5 12z" opacity=".4"/><path d="M19 5L5 19" stroke="currentColor" stroke-width="2"/></svg>
-  </span>
-  <canvas id="wave" width="120" height="44"></canvas>
-  <span class="track">Aria — Ariella</span>
-  <audio id="audio" src="https://patlau.com/Aria_-_Ariella.mp3" loop preload="none"></audio>
-</div>
 
 <script>
 (function(){
   var player=document.getElementById('player');
   var audio=document.getElementById('audio');
-  var pp=document.getElementById('pp');
   var canvas=document.getElementById('wave');
   var ctx=canvas.getContext('2d');
   var muted=true, raf, started=false;
 
-  var muteIcon='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4.03v8.06A4.5 4.5 0 0016.5 12z" opacity=".4"/><path d="M19 5L5 19" stroke="currentColor" stroke-width="2"/></svg>';
-  var soundIcon='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4.03v8.06A4.5 4.5 0 0016.5 12zM14 3.23v2.06a7 7 0 010 13.42v2.06a9 9 0 000-17.54z"/></svg>';
 
   // Waveform is fully synthetic — always bounces, never depends on audio analysis.
   // Bouncing is livelier when unmuted, gentler when muted.
@@ -1176,13 +1167,11 @@ footer{
     audio.muted=false;
     audio.volume=1;
     muted=false;
-    pp.innerHTML=soundIcon;
     if(audio.paused) audio.play().catch(function(e){ console.log('play failed',e); });
   }
   function mute(){
     audio.muted=true;
     muted=true;
-    pp.innerHTML=muteIcon;
   }
   function toggle(e){
     e.stopPropagation();
