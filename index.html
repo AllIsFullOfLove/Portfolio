@@ -82,7 +82,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--seal-bright);outlin
   max-width:min(var(--col-wide),94vw);
   margin:0 auto;
   padding:10px 24px;
-  display:flex;flex-direction:row;align-items:center;gap:14px;flex-wrap:nowrap;justify-content:space-between;
+  display:flex;flex-direction:row;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between;
 }
 .id-row{
   display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap;
@@ -107,13 +107,12 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--seal-bright);outlin
 .contact a:hover{color:var(--seal-bright)}
 a.contact:hover{color:var(--seal-bright) !important}
 .contact .label{color:var(--dim)}
-.nav-row{display:flex;justify-content:space-between;gap:8px;flex-wrap:nowrap;align-items:center;min-width:0}
+.nav-row{display:flex;justify-content:flex-start;gap:8px;flex-wrap:wrap;align-items:center}
 .btn{
   display:inline-block;
-  padding:8px 14px;
+  padding:8px 12px;
   white-space:nowrap;
-  flex-shrink:1;
-  min-width:0;
+  flex-shrink:0;
   border:1px solid var(--line);
   background:var(--ink);
   font-family:'IBM Plex Mono',monospace;
@@ -858,6 +857,10 @@ footer{
 })();
 </script>
 <script>
+/* SPLASH — Gemini solution: Web Animations API on two recycled divs.
+   No transition:none, no rAF, no reflow. element.animate() commits the
+   first keyframe natively at the compositor — eliminates the snap.
+   Previous fill:forwards animations are cancelled before each new cycle. */
 (function(){
   var front = document.getElementById('splashA');
   var back  = document.getElementById('splashB');
@@ -865,10 +868,8 @@ footer{
 
   function pad(n){ return (n<10?'0':'')+n; }
   function url(n){ return 'https://patlau.com/splash'+pad(n)+'.jpg'; }
-
   for(var i=1;i<=18;i++) imgs.push(url(i));
 
-  // motion per image
   var motion = {
     1:'zin',  2:'zout', 3:'zin',  4:'up',
     5:'zout', 6:'zin',  7:'zout', 8:'up',
@@ -876,77 +877,72 @@ footer{
     13:'zin', 14:'zout', 15:'up', 16:'zin',
     17:'down',18:'zout'
   };
-
   var toggle={};
-  var MOTION_DUR=13;
+  var MOTION_DUR=13000, FADE=2000;
+  var anims = new Map();   // div -> [animation,...] for cancellation
 
-  // Apply motion. Two-phase: set START state (no transition), paint it via rAF,
-  // THEN add transition + END state. Guarantees no snap.
-  function applyMotion(el, n, cb){
+  function tfPair(n){
     var m = motion[n] || 'zin';
     var t = toggle[n]||0; toggle[n]=t+1;
     if(m==='alt_zlr'){ m = (t%2===0) ? (t%4===0?'zin':'zout') : 'lr'; }
+    if(m==='zin')  return ['scale(1.0)','scale(1.12)'];
+    if(m==='zout') return ['scale(1.12)','scale(1.0)'];
+    if(m==='up')   return ['scale(1.12) translateY(4%)','scale(1.12) translateY(-4%)'];
+    if(m==='down') return ['scale(1.12) translateY(-4%)','scale(1.12) translateY(4%)'];
+    // lr
+    return (t%2===0)
+      ? ['scale(1.12) translateX(-3%)','scale(1.12) translateX(3%)']
+      : ['scale(1.12) translateX(3%)','scale(1.12) translateX(-3%)'];
+  }
 
-    // ALWAYS cover (never bars on any screen). Pan via transform, not background-size.
-    var startTf='scale(1.10)', endTf='scale(1.10)', startBg='50% 50%', endBg='50% 50%', sizeMode='cover';
+  function cancelAnims(div){
+    if(anims.has(div)){ anims.get(div).forEach(function(a){ try{a.cancel();}catch(e){} }); }
+    anims.set(div, []);
+  }
 
-    if(m==='zin'){ startTf='scale(1.0)';  endTf='scale(1.12)'; }
-    else if(m==='zout'){ startTf='scale(1.12)'; endTf='scale(1.0)'; }
-    else if(m==='up'){   startTf='scale(1.12) translateY(4%)';  endTf='scale(1.12) translateY(-4%)'; }
-    else if(m==='down'){ startTf='scale(1.12) translateY(-4%)'; endTf='scale(1.12) translateY(4%)'; }
-    else { // lr — gentle 3% so it doesn't race on narrow screens
-      startTf = (t%2===0)?'scale(1.12) translateX(-3%)':'scale(1.12) translateX(3%)';
-      endTf   = (t%2===0)?'scale(1.12) translateX(3%)':'scale(1.12) translateX(-3%)';
-    }
+  function moveIn(div, n){
+    cancelAnims(div);                       // clear any lingering forwards-fill
+    var tf = tfPair(n);
+    div.style.backgroundSize='cover';
+    div.style.backgroundPosition='50% 50%';
+    var mv = div.animate(
+      [{transform:tf[0]}, {transform:tf[1]}],
+      {duration:MOTION_DUR, easing:'linear', fill:'forwards'}
+    );
+    var fade = div.animate(
+      [{opacity:0},{opacity:1}],
+      {duration:FADE, easing:'ease-in-out', fill:'forwards'}
+    );
+    anims.get(div).push(mv, fade);
+  }
 
-    // PHASE 1: start state, no transition
-    el.style.transition='none';
-    el.style.backgroundSize="cover";
-    el.style.transform=startTf;
-    el.style.backgroundPosition=startBg;
-
-    // PHASE 2: after the start state has painted (next frame), apply transition + end state
-    requestAnimationFrame(function(){
-      requestAnimationFrame(function(){
-        el.style.transition='transform '+MOTION_DUR+'s linear, opacity 2s ease-in-out';
-        el.style.transform=endTf;
-        el.style.backgroundPosition=endBg;
-        if(cb) cb();
-      });
-    });
+  function fadeOut(div){
+    var a = div.animate([{opacity:1},{opacity:0}],
+      {duration:FADE, easing:'ease-in-out', fill:'forwards'});
+    if(!anims.has(div)) anims.set(div,[]);
+    anims.get(div).push(a);
   }
 
   function showFirst(src, n){
-    front.style.transition='none';
-    front.style.opacity='0';
     front.style.backgroundImage='url("'+src+'")';
-    applyMotion(front, n, function(){
-      front.style.opacity='1';
-    });
+    moveIn(front, n);
   }
-
   function crossfade(src, n){
     var incoming=back, outgoing=front;
-    incoming.style.transition='none';
-    incoming.style.opacity='0';
     incoming.style.backgroundImage='url("'+src+'")';
-    applyMotion(incoming, n, function(){
-      incoming.style.opacity='1';
-      outgoing.style.transition='opacity 2s ease-in-out';
-      outgoing.style.opacity='0';
-    });
-    front=incoming; back=outgoing;  // swap by explicit reference
+    moveIn(incoming, n);
+    fadeOut(outgoing);
+    front=incoming; back=outgoing;
   }
 
   function preload(src,cb){ var im=new Image(); im.onload=im.onerror=cb; im.src=src; }
 
   idx=Math.floor(Math.random()*imgs.length);
-  var firstN=idx+1;
-  var firstSrc=imgs[idx]; idx=(idx+1)%imgs.length;
+  var firstN=idx+1, firstSrc=imgs[idx]; idx=(idx+1)%imgs.length;
   preload(firstSrc, function(){ showFirst(firstSrc, firstN); });
 
   setInterval(function(){
-    var n=idx+1; var src=imgs[idx]; idx=(idx+1)%imgs.length;
+    var n=idx+1, src=imgs[idx]; idx=(idx+1)%imgs.length;
     preload(src, function(){ crossfade(src, n); });
   }, 10000);
 
