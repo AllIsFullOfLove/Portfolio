@@ -271,9 +271,9 @@ footer{
   .player{
     width:64px;height:64px;flex:none;
     justify-content:center;align-items:center;padding:0;
-    background:var(--seal);border:none;border-radius:3px;
+    background:transparent;border:none;
   }
-  .player canvas{width:52px;height:52px;max-width:100%;max-height:100%}
+  .player canvas{width:72%;height:72%}
   .rail{display:none}
   .hero{height:50vh;min-height:260px}
   .wrap,section.page .wrap{max-width:100vw;padding:0 12px}
@@ -323,9 +323,9 @@ footer{
   .player{
     width:40px;height:40px;flex:none;
     justify-content:center;align-items:center;padding:0;
-    background:var(--seal);border:none;border-radius:3px;
+    background:transparent;border:none;
   }
-  .player canvas{width:32px;height:32px;max-width:100%;max-height:100%}
+  .player canvas{width:72%;height:72%}
   .hero{height:100vh;min-height:200px}
   /* lightbox landscape: fill screen height; wide images overflow & pan */
   .lb img{max-width:none;max-height:100vh;width:auto;height:100vh}
@@ -378,19 +378,19 @@ footer{
 }
 
 
-/* ---- music player (red square, white pixel waveform) ---- */
+/* ---- music player: logo2 red square base + white pixel waveform on top ---- */
 .player{
+  position:relative;
   display:inline-flex;align-items:center;justify-content:center;
   width:44px;height:44px;padding:0;
-  border:none;
-  background:var(--seal);
-  border-radius:3px;
+  border:none;background:transparent;
   cursor:pointer;
   transition:filter .3s ease;
   flex-shrink:0;
 }
 .player:hover{filter:brightness(1.15)}
-.player canvas{display:block;width:36px;height:36px;max-width:100%;max-height:100%}
+.player-base{position:absolute;inset:0;width:100%;height:100%;display:block;border-radius:3px}
+.player canvas{position:relative;z-index:1;display:block;width:72%;height:72%}
 </style>
 </head>
 <body>
@@ -398,7 +398,7 @@ footer{
 <!-- ============ STICKY BANNER ============ -->
 <header class="banner">
   <div class="banner-inner">
-    <img width="1350" height="1350" class="seal-img" src="https://patlau.com/logo1.png" alt="Pat Lau">
+    <img width="400" height="400" class="seal-img" src="https://patlau.com/logo1.png" alt="Pat Lau">
     <nav class="nav-row" aria-label="Sections">
       <a class="btn" href="#matte">Matte Painting</a>
       <a class="btn" href="#vfx">Visual Effects</a>
@@ -409,6 +409,7 @@ footer{
       <a class="btn mail" href="https://mail.google.com/mail/?view=cm&fs=1&to=patlau.com@gmail.com" target="_blank" rel="noopener">E-mail</a>
     </nav>
     <div class="player" id="player" role="button" aria-label="Toggle music" tabindex="0">
+      <img class="player-base" width="400" height="400" src="https://patlau.com/logo2.png" alt="">
       <canvas id="wave" width="64" height="64"></canvas>
       <audio id="audio" src="https://patlau.com/ariella.mp3" loop preload="none"></audio>
     </div>
