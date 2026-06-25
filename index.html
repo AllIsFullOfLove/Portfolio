@@ -233,40 +233,39 @@ footer{
 
 .logos-scroll{width:100vw;position:relative;left:50%;transform:translateX(-50%);padding:0 24px}
 @media(max-width:1024px){
-  :root{--bar-h:96px}
-  /* banner: logo left, buttons fill rest in 2 rows of 4 */
+  :root{--bar-h:auto}
+  /* banner: [logo] [button grid] [waveform] */
   .banner-inner{
     display:flex;
-    flex-direction:column;
-    gap:5px;
+    flex-direction:row;
+    align-items:center;
+    gap:8px;
     padding:7px 8px;
     max-width:100vw;
-    align-items:flex-start;
+    flex-wrap:nowrap;
   }
-  /* logo: locked square, never stretched */
-  .seal-img{height:32px!important;width:32px!important;object-fit:contain;display:block;margin:0;flex:none;align-self:flex-start}
-  /* both navs: combined 4-col grid across full width */
-  .nav-left,.nav-right{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:4px;
-    flex:none;
-  }
-  /* uniform buttons: same height, text centered */
+  /* logo square left */
+  .seal-img{height:64px!important;width:64px!important;object-fit:contain;display:block;flex:none;order:1}
+  /* the two navs sit in the middle, share a 4-column grid via flex wrap */
+  .nav-left{order:2;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;flex:1;min-width:0}
+  .nav-right{order:2;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;flex:1;min-width:0}
+  /* Actually combine: make both navs flow as ONE grid block */
   .btn{
-    padding:0;
+    padding:2px;
     height:30px;
-    font-size:10px;
-    letter-spacing:.06em;
+    font-size:9.5px;
+    letter-spacing:.04em;
     text-align:center;
     white-space:normal;
-    line-height:1.1;
+    line-height:1.15;
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
   }
-  .player{width:100%;justify-content:center;padding:4px;height:26px}
-  .player canvas{width:60px;height:14px}
+  /* waveform square right, same as logo */
+  .player{width:64px;height:64px;flex:none;justify-content:center;align-items:center;padding:0;order:3}
+  .player canvas{width:44px;height:44px}
   .rail{display:none}
   .hero{height:50vh;min-height:260px}
   .wrap,section.page .wrap{max-width:100vw;padding:0 12px}
@@ -276,49 +275,59 @@ footer{
   .shots.thumbs{grid-template-columns:repeat(5,1fr);gap:6px}
   .shots.thumbs a{grid-column:span 1}
   .shots.thumbs a:nth-child(9){grid-column:auto}
+  /* large images fill screen width on mobile; centered vertically */
+  .lb{align-items:center}
+  .lb img{width:100vw;height:auto;max-width:100vw;max-height:100vh;object-fit:contain}
+  /* shut-in: no pan on mobile, behave like normal centered image */
+  .lb.pan-mode{align-items:center;overflow:visible}
+  .lb.pan-mode img{width:100vw;height:auto;max-width:100vw;max-height:100vh;transform:none!important;transition:none}
 }
 
-/* ---- MOBILE LANDSCAPE: thin bar, logo + all buttons one row ---- */
+/* ---- MOBILE LANDSCAPE: thin bar — logo | 7 buttons | waveform, one row ---- */
 @media(max-width:1024px) and (orientation:landscape){
   :root{--bar-h:auto}
   .banner-inner{
+    display:flex;
     flex-direction:row;
     align-items:center;
-    flex-wrap:wrap;
+    flex-wrap:nowrap;
     gap:6px;
     padding:5px 8px;
     max-width:100vw;
   }
-  .seal-img{height:34px!important;width:34px!important;flex:none}
-  /* both navs flow inline as one row */
-  .nav-left,.nav-right{
-    display:flex;
-    flex-direction:row;
-    gap:4px;
-    flex:1;
-    min-width:0;
-  }
-  /* buttons: logo height, 2-line text inside, left-justified, shrink to fit */
+  /* logo square left */
+  .seal-img{height:38px!important;width:38px!important;flex:none;order:1}
+  /* both navs become one continuous evenly-spaced button strip in the middle */
+  .nav-left{display:contents}
+  .nav-right{display:contents}
+  /* buttons: logo height, centered 2-line text, evenly sized */
   .btn{
-    height:34px;
-    padding:2px 6px;
+    order:2;
+    height:38px;
+    padding:2px 4px;
     font-size:9px;
-    letter-spacing:.04em;
-    line-height:1.05;
-    text-align:left;
+    letter-spacing:.03em;
+    line-height:1.25;
+    text-align:center;
     white-space:normal;
     display:flex;
     flex-direction:column;
     justify-content:center;
-    align-items:flex-start;
+    align-items:center;
     flex:1 1 0;
     min-width:0;
     overflow:hidden;
   }
-  /* waveform under the bar */
-  .player{width:100%;justify-content:center;padding:3px;height:22px;order:99}
-  .player canvas{width:60px;height:12px}
-  .nav-left,.nav-right{flex:1 1 40%}
+  /* waveform: square box same size as logo, far right, balances logo */
+  .player{
+    order:3;
+    width:38px;height:38px;
+    flex:none;
+    justify-content:center;align-items:center;
+    padding:0;
+    margin-left:2px;
+  }
+  .player canvas{width:30px;height:30px}
   .hero{height:100vh;min-height:200px}
 }
 
@@ -404,7 +413,6 @@ footer{
     <nav class="nav-row nav-right" aria-label="Sections right">
       <a class="btn" href="#resume">Résumé</a>
       <a class="btn" href="https://www.linkedin.com/in/pat-lau-6b44574/" target="_blank" rel="noopener">LinkedIn</a>
-      <span class="btn phone">(647) 921-8241</span>
       <a class="btn mail" href="https://mail.google.com/mail/?view=cm&fs=1&to=patlau.com@gmail.com" target="_blank" rel="noopener">E-mail</a>
     </nav>
     <div class="player" id="player" role="button" aria-label="Toggle music" tabindex="0">
