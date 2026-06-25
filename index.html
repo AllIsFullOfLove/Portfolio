@@ -264,8 +264,8 @@ footer{
     overflow:hidden;
   }
   /* waveform square right, same size as logo */
-  .player{width:64px;height:64px;flex:0 0 64px}
-  .player canvas{width:72%;height:72%}
+  .player{width:64px !important;height:64px !important;flex:0 0 64px !important}
+  .player canvas{width:72% !important;height:72% !important}
   .rail{display:none}
   .hero{height:50vh;min-height:260px}
   .wrap,section.page .wrap{max-width:100vw;padding:0 12px}
@@ -312,8 +312,8 @@ footer{
     flex:1 1 0;min-width:0;overflow:hidden;
   }
   /* waveform square right, same as logo */
-  .player{width:40px;height:40px;flex:0 0 40px}
-  .player canvas{width:72%;height:72%}
+  .player{width:40px !important;height:40px !important;flex:0 0 40px !important}
+  .player canvas{width:72% !important;height:72% !important}
   .hero{height:100vh;min-height:200px}
   /* lightbox landscape: fill screen height; wide images overflow & pan */
   .lb img{max-width:none;max-height:100vh;width:auto;height:100vh}
@@ -362,32 +362,37 @@ footer{
 .lb.pan-mode img{width:100vw;height:auto;max-width:none;max-height:none;transition:transform .1s linear;cursor:default}
 
 
-  
+/* ---- music player ---- */
+.player {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 44px !important;
+  height: 44px !important;
+  flex: 0 0 44px !important;
+  min-width: 0; min-height: 0;
+  padding: 0; border: none;
+  background-color: #9a0000 !important;
+  background-image: url("https://patlau.com/logo2.png") !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: filter .3s ease;
 }
-
-
-/* ---- music player: logo2 red square base + white pixel waveform on top ---- */
-/* logo2 red square painted as background (no child img => no 400px intrinsic
-   min-content fighting the box). flex:0 0 hard-locks size; min-0 + overflow clamp. */
-.player{
-  display:grid !important;
-  place-items:center !important;
-  width:44px !important;height:44px !important;
-  flex:0 0 44px !important;
-  min-width:0;min-height:0;
-  padding:0;border:none;
-  background-color:#9a0000 !important;                       /* brand red, always visible */
-  background-image:url("https://patlau.com/logo2.png") !important;
-  background-size:cover !important;
-  background-position:center !important;
-  background-repeat:no-repeat !important;
-  border-radius:3px;
-  overflow:hidden;
-  cursor:pointer;
-  transition:filter .3s ease;
+.player:hover { filter: brightness(1.15); }
+.player canvas {
+  position: absolute !important;
+  display: block !important;
+  width: 72% !important;
+  height: 72% !important;
+  top: 14% !important;
+  left: 14% !important;
+  z-index: 2 !important;
 }
-.player:hover{filter:brightness(1.15)}
-.player canvas{display:block;width:72%;height:72%;z-index:1}
 </style>
 </head>
 <body>
@@ -887,7 +892,6 @@ footer{
 </footer>
 
 <script>
-<script>
 (function(){
   var banner = document.querySelector('.banner');
   function sync(){
@@ -1244,29 +1248,28 @@ footer{
   var P=[];
   for(var k=0;k<COLS;k++){
     P.push({
-      f1: 1.5 + Math.random()*3.5,
-      f2: 2.0 + Math.random()*5.0,
-      f3: 0.7 + Math.random()*2.0,
+      f1: 3.0 + Math.random()*5.0,
+      f2: 9.0 + Math.random()*8.0,
+      f3: 18.0 + Math.random()*15.0,
       ph1: Math.random()*6.28,
       ph2: Math.random()*6.28,
       ph3: Math.random()*6.28
     });
   }
   function draw(){
-    raf=requestAnimationFrame(draw);
-    var w=canvas.width, h=canvas.height;
-    ctx.clearRect(0,0,w,h);
-    var tt=(Date.now()-t0)/1000;
+    raf = requestAnimationFrame(draw);
+    var w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    var tt = (Date.now() - t0) / 1000;
     var amp = muted ? 0.34 : 0.70;
     var spd = muted ? 1.0 : 2.0;
     ctx.fillStyle = '#ffffff';
-    for(var x=0;x<w;x++){
-      var p=P[x];
+    for(var x=0; x<w; x++){
+      var p = P[x];
       var v = Math.sin(tt*p.f1*spd + p.ph1)*0.5
             + Math.sin(tt*p.f2*spd + p.ph2)*0.32
             + Math.sin(tt*p.f3*spd + p.ph3)*0.18;
       var cy = h/2 - v*amp*h*0.45;
-      // 1px dot at this column's bounce height (no gaps between columns)
       ctx.fillRect(x, cy, 1, 1);
     }
   }
