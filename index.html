@@ -82,7 +82,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--seal-bright);outlin
   max-width:min(var(--col-wide),94vw);
   margin:0 auto;
   padding:10px 24px;
-  display:flex;flex-direction:row;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between;
+  display:flex;flex-direction:row;align-items:center;gap:14px;flex-wrap:nowrap;
 }
 .id-row{
   display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap;
@@ -98,7 +98,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--seal-bright);outlin
   color:#f3ece4;font-size:9px;line-height:1.15;letter-spacing:.18em;
   text-align:center;text-transform:uppercase;
 }
-.seal-img{height:44px;width:auto;display:block;order:-1;flex-shrink:0}
+.seal-img{height:44px;width:44px;object-fit:contain;display:block;flex:none}
 .contact{
   display:flex;gap:18px;flex-wrap:wrap;align-items:center;
   font-size:11px;letter-spacing:.12em;color:var(--dim);
@@ -107,7 +107,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--seal-bright);outlin
 .contact a:hover{color:var(--seal-bright)}
 a.contact:hover{color:var(--seal-bright) !important}
 .contact .label{color:var(--dim)}
-.nav-row{display:flex;justify-content:flex-start;gap:8px;flex-wrap:wrap;align-items:center}
+.nav-row{display:flex;justify-content:space-between;gap:8px;flex-wrap:nowrap;align-items:center;flex:1;min-width:0}
 .btn{
   display:inline-block;
   padding:8px 12px;
@@ -181,8 +181,6 @@ section.page#matte{padding-top:32px}
 .shots.thumbs a:nth-child(9){grid-column:2 / span 2}
 .shots.thumbs img{width:100%;height:auto}
 .shots.storyboard-scaled{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
-.nav-left{display:contents}
-.nav-right{display:contents}
 @media(max-width:700px){.shots.two,.shots.three{grid-template-columns:1fr}}
 .shots a{position:relative;overflow:hidden;background:var(--black)}
 .shots.storyboard-scaled a{background:transparent}
@@ -234,54 +232,48 @@ footer{
 .logos-scroll{width:100vw;position:relative;left:50%;transform:translateX(-50%);padding:0 24px}
 @media(max-width:1024px){
   :root{--bar-h:auto}
-  /* banner: [logo] [button grid] [waveform] */
+  /* banner: [logo] [7 buttons as 2 rows] [waveform square], one tidy bar */
   .banner-inner{
-    display:flex;
-    flex-direction:row;
+    display:grid;
+    grid-template-columns:auto 1fr auto;
     align-items:center;
     gap:8px;
     padding:7px 8px;
     max-width:100vw;
-    flex-wrap:nowrap;
   }
   /* logo square left */
-  .seal-img{height:64px!important;width:64px!important;object-fit:contain;display:block;flex:none;order:1}
-  /* middle: two rows. nav-left = top row (4), nav-right = bottom row (3, centered).
-     Stack them in a column that fills between logo and waveform, matching logo height. */
-  .nav-left{
-    order:2;
-    display:flex;flex-direction:row;justify-content:center;gap:5px;
-    flex:1 0 100%;min-width:0;
+  .seal-img{height:64px!important;width:64px!important;object-fit:contain;display:block;flex:none}
+  /* nav: 7 buttons in the middle column, wrapping into 2 rows (4 + 3), centered */
+  .nav-row{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-content:center;
+    gap:5px;
+    min-width:0;
   }
-  .nav-right{
-    order:3;
-    display:flex;flex-direction:row;justify-content:center;gap:5px;
-    flex:1 0 100%;min-width:0;
-  }
-  /* wrap the middle into a column: banner becomes flex with logo|nav-column|player.
-     Use flex-wrap so nav-left and nav-right stack as two rows in the middle. */
-  .banner-inner{flex-wrap:wrap;align-content:center}
-  .seal-img{order:1}
-  .player{order:4}
-  /* force nav rows to occupy middle column: give logo+player fixed, navs take a stacked middle */
   .btn{
-    flex:1 1 0;
+    flex:1 1 calc(25% - 5px);   /* 4 per row */
+    max-width:calc(25% - 5px);
+    height:28px;
     padding:2px 4px;
-    height:30px;
-    font-size:9.5px;
-    letter-spacing:.04em;
+    font-size:9px;
+    letter-spacing:.03em;
     text-align:center;
     white-space:nowrap;
-    line-height:1.1;
+    line-height:1;
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
   }
-  /* waveform square right, same as logo */
-  .player{width:64px;height:64px;flex:none;justify-content:center;align-items:center;padding:0;order:3;
-          background:var(--seal);border:none;border-radius:3px}
-  .player canvas{width:48px;height:48px;max-width:100%;max-height:100%}
+  /* waveform square right, same size as logo, RED */
+  .player{
+    width:64px;height:64px;flex:none;
+    justify-content:center;align-items:center;padding:0;
+    background:var(--seal);border:none;border-radius:3px;
+  }
+  .player canvas{width:52px;height:52px;max-width:100%;max-height:100%}
   .rail{display:none}
   .hero{height:50vh;min-height:260px}
   .wrap,section.page .wrap{max-width:100vw;padding:0 12px}
@@ -291,15 +283,11 @@ footer{
   .shots.thumbs{grid-template-columns:repeat(5,1fr);gap:6px}
   .shots.thumbs a{grid-column:span 1}
   .shots.thumbs a:nth-child(9){grid-column:auto}
-  /* large images fill screen width on mobile; centered vertically */
-  .lb{align-items:center}
-  .lb img{width:100vw;height:auto;max-width:100vw;max-height:100vh;object-fit:contain}
-  /* shut-in: no pan on mobile, behave like normal centered image */
-  .lb.pan-mode{align-items:center;overflow:visible}
-  .lb.pan-mode img{width:100vw;height:auto;max-width:100vw;max-height:100vh;transform:none!important;transition:none}
+  /* lightbox portrait: image 80% of screen height, centered, pannable */
+  .lb img{max-width:none;max-height:80vh;width:auto;height:80vh}
 }
 
-/* ---- MOBILE LANDSCAPE: thin bar — logo | 7 buttons | waveform, one row ---- */
+/* ---- MOBILE LANDSCAPE: thin bar — logo | 7 buttons | waveform ---- */
 @media(max-width:1024px) and (orientation:landscape){
   :root{--bar-h:auto}
   .banner-inner{
@@ -312,45 +300,35 @@ footer{
     max-width:100vw;
   }
   /* logo square left */
-  .seal-img{height:38px!important;width:38px!important;flex:none;order:1}
-  /* both navs become one continuous evenly-spaced button strip in the middle */
-  .nav-left{display:contents}
-  .nav-right{display:contents}
-  /* buttons: logo height, centered 2-line text, evenly sized */
+  .seal-img{height:40px!important;width:40px!important;object-fit:contain;flex:none}
+  /* nav: 7 buttons one row, evenly spread, 2-line centered text within logo height */
+  .nav-row{
+    display:flex;flex-direction:row;flex-wrap:nowrap;
+    justify-content:space-between;gap:4px;
+    flex:1;min-width:0;
+  }
   .btn{
-    order:2;
-    height:38px;
+    height:40px;
     padding:2px 4px;
     font-size:9px;
     letter-spacing:.03em;
     line-height:1.25;
     text-align:center;
     white-space:normal;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    flex:1 1 0;
-    min-width:0;
-    overflow:hidden;
-  }
-  /* waveform: square box same size as logo, far right, balances logo */
-  .player{
-    order:3;
-    width:38px;height:38px;
-    flex:none;
+    display:flex;flex-direction:column;
     justify-content:center;align-items:center;
-    padding:0;
-    margin-left:2px;
+    flex:1 1 0;min-width:0;overflow:hidden;
+  }
+  /* waveform square right, same as logo, RED */
+  .player{
+    width:40px;height:40px;flex:none;
+    justify-content:center;align-items:center;padding:0;
     background:var(--seal);border:none;border-radius:3px;
   }
-  .player canvas{width:28px;height:28px;max-width:100%;max-height:100%}
+  .player canvas{width:32px;height:32px;max-width:100%;max-height:100%}
   .hero{height:100vh;min-height:200px}
-  /* landscape lightbox: fill screen WIDTH for all images, centered */
-  .lb{align-items:center;justify-content:center}
-  .lb img{width:100vw;height:auto;max-width:100vw;max-height:none;object-fit:contain}
-  /* The Creator: fit to HEIGHT instead (fills screen height, sides may crop) */
-  .lb.fit-height img{width:auto;height:100vh;max-height:100vh;max-width:none}
+  /* lightbox landscape: fill screen height; wide images overflow & pan */
+  .lb img{max-width:none;max-height:100vh;width:auto;height:100vh}
 }
 
 
@@ -384,13 +362,16 @@ footer{
 @media(max-width:1024px){ .rail{display:none} }
 
 /* ---- lightbox ---- */
+/* ---- unified lightbox: fit + drag-to-pan ---- */
 .lb{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.75);
-    align-items:center;justify-content:center;cursor:pointer}
-.lb.open{cursor:pointer}
+    align-items:center;justify-content:center;cursor:pointer;overflow:hidden;touch-action:none}
 .lb.open{display:flex}
-.lb img{max-width:100vw;max-height:100vh;width:auto;height:auto;display:block;cursor:pointer}
-.lb.pan-mode{align-items:flex-start;overflow:hidden}
-.lb.pan-mode img{width:100vw;height:auto;max-width:none;max-height:none;transition:transform .1s linear}
+.lb img{display:block;cursor:grab;user-select:none;-webkit-user-drag:none;
+    max-width:100vw;max-height:100vh;width:auto;height:auto;will-change:transform}
+.lb.dragging img{cursor:grabbing}
+/* desktop Shut-in cursor pan keeps its own mode */
+.lb.pan-mode{align-items:flex-start}
+.lb.pan-mode img{width:100vw;height:auto;max-width:none;max-height:none;transition:transform .1s linear;cursor:default}
 
 
   
@@ -425,14 +406,12 @@ footer{
 <!-- ============ STICKY BANNER ============ -->
 <header class="banner">
   <div class="banner-inner">
-    <nav class="nav-row nav-left" aria-label="Sections left">
+    <img width="1350" height="1350" class="seal-img" src="https://patlau.com/logo1.png" alt="Pat Lau">
+    <nav class="nav-row" aria-label="Sections">
       <a class="btn" href="#matte">Matte Painting</a>
       <a class="btn" href="#vfx">Visual Effects</a>
       <a class="btn" href="#concept">Concept Design</a>
       <a class="btn" href="#storyboards">Storyboards</a>
-    </nav>
-    <img width="1350" height="1350" class="seal-img" src="https://patlau.com/logo1.png" alt="Pat Lau">
-    <nav class="nav-row nav-right" aria-label="Sections right">
       <a class="btn" href="#resume">Résumé</a>
       <a class="btn" href="https://www.linkedin.com/in/pat-lau-6b44574/" target="_blank" rel="noopener">LinkedIn</a>
       <a class="btn mail" href="https://mail.google.com/mail/?view=cm&fs=1&to=patlau.com@gmail.com" target="_blank" rel="noopener">E-mail</a>
@@ -1109,34 +1088,49 @@ footer{
 (function(){
   var lb    = document.getElementById('lb');
   var lbImg = document.getElementById('lb-img');
+  var isPan = false;          // desktop Shut-in cursor-pan mode
+  var tx=0, ty=0;             // current pan translation
+  var dragging=false, moved=false, sx=0, sy=0, ox=0, oy=0;
 
-  var isPan = false;
+  function isMobile(){ return window.innerWidth <= 1024; }
+
+  function clampAndApply(){
+    // keep the image from being dragged past its own edges
+    var r = lbImg.getBoundingClientRect();
+    var vw = window.innerWidth, vh = window.innerHeight;
+    // overflow on each axis (how far the image exceeds the viewport)
+    var imgW = lbImg.offsetWidth, imgH = lbImg.offsetHeight;
+    var maxX = Math.max(0, (imgW - vw)/2);
+    var maxY = Math.max(0, (imgH - vh)/2);
+    if(tx >  maxX) tx =  maxX;
+    if(tx < -maxX) tx = -maxX;
+    if(ty >  maxY) ty =  maxY;
+    if(ty < -maxY) ty = -maxY;
+    lbImg.style.transform = 'translate('+tx+'px,'+ty+'px)';
+  }
+
   function open(src, alt, pan, fitHeight){
     lbImg.alt = alt||'';
     lbImg.src = '';
     lbImg.src = src;
-    isPan = !!pan;
+    isPan = !!pan && !isMobile();         // cursor-pan only on desktop
     lb.classList.toggle('pan-mode', isPan);
     lb.classList.toggle('fit-height', !!fitHeight);
-    lbImg.style.transform = '';
+    tx=0; ty=0; lbImg.style.transform='';
     lb.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
   function shut(){
-    lb.classList.remove('open');
-    lb.classList.remove('pan-mode');
-    lb.classList.remove('fit-height');
-    lbImg.style.transform = '';
-    isPan = false;
-    document.body.style.overflow = '';
+    lb.classList.remove('open','pan-mode','fit-height','dragging');
+    lbImg.style.transform=''; tx=0; ty=0; isPan=false;
+    document.body.style.overflow='';
   }
 
-  // intercept clicks on gallery image anchors (but not nav buttons or email/linkedin)
+  // open from gallery clicks
   document.addEventListener('click', function(e){
     var a = e.target.closest('a[href]');
     if(!a) return;
     var href = a.getAttribute('href')||'';
-    // only intercept direct image links (jpg/gif)
     if(!/\.(jpg|jpeg|gif|png)(\?|$)/i.test(href)) return;
     e.preventDefault();
     var img = a.querySelector('img.a') || a.querySelector('img:not(.b)') || a.querySelector('img');
@@ -1145,27 +1139,55 @@ footer{
     open(href, img ? img.alt : '', pan, fitH);
   });
 
-  lb.addEventListener('click', shut);
-  document.addEventListener('keydown', function(e){
-    if(e.key==='Escape') shut();
-  });
-  // swipe down to close on mobile
-  var touchY = null;
-  lb.addEventListener('touchstart', function(e){ touchY = e.touches[0].clientY; }, {passive:true});
-  lb.addEventListener('touchend', function(e){
-    if(touchY !== null && e.changedTouches[0].clientY - touchY > 60) shut();
-    touchY = null;
-  }, {passive:true});
+  // ---- DRAG TO PAN (mouse + touch) ----
+  function start(x,y){
+    dragging=true; moved=false; sx=x; sy=y; ox=tx; oy=ty;
+    lb.classList.add('dragging');
+  }
+  function move(x,y){
+    if(!dragging) return;
+    var dx=x-sx, dy=y-sy;
+    if(Math.abs(dx)>3||Math.abs(dy)>3) moved=true;
+    tx=ox+dx; ty=oy+dy;
+    clampAndApply();
+  }
+  function end(){ dragging=false; lb.classList.remove('dragging'); }
 
-  // pan vertically on mousemove when in pan mode
+  // mouse
+  lbImg.addEventListener('mousedown', function(e){ if(isPan) return; e.preventDefault(); start(e.clientX,e.clientY); });
+  window.addEventListener('mousemove', function(e){ if(dragging){ move(e.clientX,e.clientY); } });
+  window.addEventListener('mouseup', function(){ end(); });
+
+  // touch
+  lbImg.addEventListener('touchstart', function(e){
+    if(e.touches.length===1){ start(e.touches[0].clientX, e.touches[0].clientY); }
+  }, {passive:true});
+  lbImg.addEventListener('touchmove', function(e){
+    if(dragging && e.touches.length===1){ move(e.touches[0].clientX, e.touches[0].clientY); }
+  }, {passive:true});
+  lbImg.addEventListener('touchend', function(){ end(); }, {passive:true});
+
+  // click background (not the image, and not after a drag) closes
+  lb.addEventListener('click', function(e){
+    if(e.target===lbImg && moved) return;   // ignore click that ended a drag
+    if(e.target===lbImg && (lbImg.offsetWidth>window.innerWidth || lbImg.offsetHeight>window.innerHeight)){
+      // image is pannable; a tap on it shouldn't close
+      if(moved) return;
+    }
+    if(e.target!==lbImg) shut();
+    else if(!moved && lbImg.offsetWidth<=window.innerWidth && lbImg.offsetHeight<=window.innerHeight) shut();
+  });
+
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') shut(); });
+
+  // desktop Shut-in cursor pan (vertical), unchanged behaviour
   lb.addEventListener('mousemove', function(e){
     if(!isPan) return;
     var imgH = lbImg.naturalHeight * (window.innerWidth / lbImg.naturalWidth);
     var overflow = imgH - window.innerHeight;
     if(overflow <= 0){ lbImg.style.transform=''; return; }
-    var rel = e.clientY / window.innerHeight;  // 0=top, 1=bottom
-    var shift = -(overflow * rel);
-    lbImg.style.transform = 'translateY(' + shift + 'px)';
+    var rel = e.clientY / window.innerHeight;
+    lbImg.style.transform = 'translateY(' + (-(overflow*rel)) + 'px)';
   });
 })();
 </script>
@@ -1174,22 +1196,38 @@ footer{
 <script>
 (function(){
   var banner=document.querySelector('.banner');
-  var lastY=window.scrollY,ticking=false;
+  var lastY=window.scrollY, ticking=false, hidden=false;
+  var upAccum=0;                 // cumulative upward scroll while hidden
+  var HIDE_AT=5, REVEAL_AT=60;   // hide after 5px down; reveal after 60px up
   window.addEventListener('scroll',function(){
     if(ticking)return;
     ticking=true;
     requestAnimationFrame(function(){
       if(window.innerWidth>1024){
         banner.style.transform='';
-        ticking=false;return;
+        hidden=false; upAccum=0;
+        lastY=window.scrollY; ticking=false; return;
       }
       var y=window.scrollY;
-      if(y>lastY&&y>10){
-        banner.style.transform='translateY(-100%)';
-      }else{
-        banner.style.transform='translateY(0)';
+      var dy=y-lastY;
+      if(dy>0){
+        // scrolling down
+        upAccum=0;
+        if(!hidden && y>HIDE_AT){
+          banner.style.transform='translateY(-100%)';
+          hidden=true;
+        }
+      } else if(dy<0){
+        // scrolling up — accumulate; only reveal after REVEAL_AT
+        upAccum += -dy;
+        if(hidden && upAccum>=REVEAL_AT){
+          banner.style.transform='translateY(0)';
+          hidden=false; upAccum=0;
+        }
       }
-      lastY=y;ticking=false;
+      // always show at very top
+      if(y<=HIDE_AT){ banner.style.transform='translateY(0)'; hidden=false; upAccum=0; }
+      lastY=y; ticking=false;
     });
   },{passive:true});
 })();
@@ -1205,22 +1243,40 @@ footer{
   var muted=true, raf, started=false;
 
 
-  // White bouncing dots on the red square. Always animating; livelier when playing.
+  // White chaotic bouncing dots on the red square. 10 dots, each with its own
+  // pseudo-random frequencies so the motion looks turbulent, not sinusoidal.
   var t0=Date.now();
+  var DOTS=10;
+  // per-dot random parameters (fixed at load so each dot has a distinct rhythm)
+  var P=[];
+  for(var k=0;k<DOTS;k++){
+    P.push({
+      f1: 1.5 + Math.random()*3.5,
+      f2: 2.0 + Math.random()*5.0,
+      f3: 0.7 + Math.random()*2.0,
+      ph1: Math.random()*6.28,
+      ph2: Math.random()*6.28,
+      ph3: Math.random()*6.28
+    });
+  }
   function draw(){
     raf=requestAnimationFrame(draw);
     var w=canvas.width, h=canvas.height;
     ctx.clearRect(0,0,w,h);
-    var dots=5, tt=(Date.now()-t0)/1000;
-    var amp = muted ? 0.30 : 0.62;     // bounce height fraction
-    var spd = muted ? 1.0 : 1.9;
+    var tt=(Date.now()-t0)/1000;
+    var amp = muted ? 0.34 : 0.70;
+    var spd = muted ? 1.0 : 2.0;
     ctx.fillStyle = '#ffffff';
-    var r = Math.max(1.5, Math.min(w,h)*0.05);  // dot radius scales with canvas
-    var gap = w/(dots+1);
-    for(var j=0;j<dots;j++){
+    var r = Math.max(1.2, Math.min(w,h)*0.035);   // smaller dots
+    var gap = w/(DOTS+1);
+    for(var j=0;j<DOTS;j++){
+      var p=P[j];
+      // sum of 3 incommensurate sines => chaotic-looking vertical jitter
+      var v = Math.sin(tt*p.f1*spd + p.ph1)*0.5
+            + Math.sin(tt*p.f2*spd + p.ph2)*0.32
+            + Math.sin(tt*p.f3*spd + p.ph3)*0.18;
       var cx = gap*(j+1);
-      var v=(Math.sin(tt*2.4*spd + j*0.9)*0.5+0.5);
-      var cy = h/2 - (v-0.5)*amp*h*1.6;
+      var cy = h/2 - v*amp*h*0.9;
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI*2);
       ctx.fill();
