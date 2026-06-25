@@ -378,27 +378,19 @@ footer{
 }
 
 
-@media(max-width:760px){
-  .player{padding:0;height:30px;font-size:10px;justify-content:center;gap:5px}
-  .player canvas{width:34px;height:14px}
-}
-/* ---- music player (waveform only) ---- */
+/* ---- music player (red square, white pixel waveform) ---- */
 .player{
   display:inline-flex;align-items:center;justify-content:center;
-  padding:8px 14px;
-  border:1px solid var(--line);
-  background:var(--ink);
+  width:44px;height:44px;padding:0;
+  border:none;
+  background:var(--seal);
   border-radius:3px;
   cursor:pointer;
-  transition:border-color .3s ease;
+  transition:filter .3s ease;
   flex-shrink:0;
 }
-.player:hover{border-color:var(--seal-bright)}
-.player canvas{display:block;width:64px;height:18px;flex-shrink:0}
-@media(max-width:760px){
-  .player{padding:5px 10px}
-  .player canvas{width:48px;height:16px}
-}
+.player:hover{filter:brightness(1.15)}
+.player canvas{display:block;width:36px;height:36px;max-width:100%;max-height:100%}
 </style>
 </head>
 <body>
@@ -1248,13 +1240,12 @@ footer{
   var muted=true, raf, started=false;
 
 
-  // White chaotic bouncing dots on the red square. 10 dots, each with its own
-  // pseudo-random frequencies so the motion looks turbulent, not sinusoidal.
+  // White 1px columns packed edge-to-edge across the red square — a chaotic
+  // pixel waveform. Each column has its own random rhythm so it looks turbulent.
   var t0=Date.now();
-  var DOTS=10;
-  // per-dot random parameters (fixed at load so each dot has a distinct rhythm)
+  var COLS=canvas.width;          // one column per pixel of width (64) => >=25
   var P=[];
-  for(var k=0;k<DOTS;k++){
+  for(var k=0;k<COLS;k++){
     P.push({
       f1: 1.5 + Math.random()*3.5,
       f2: 2.0 + Math.random()*5.0,
@@ -1272,19 +1263,14 @@ footer{
     var amp = muted ? 0.34 : 0.70;
     var spd = muted ? 1.0 : 2.0;
     ctx.fillStyle = '#ffffff';
-    var r = Math.max(1.2, Math.min(w,h)*0.035);   // smaller dots
-    var gap = w/(DOTS+1);
-    for(var j=0;j<DOTS;j++){
-      var p=P[j];
-      // sum of 3 incommensurate sines => chaotic-looking vertical jitter
+    for(var x=0;x<w;x++){
+      var p=P[x];
       var v = Math.sin(tt*p.f1*spd + p.ph1)*0.5
             + Math.sin(tt*p.f2*spd + p.ph2)*0.32
             + Math.sin(tt*p.f3*spd + p.ph3)*0.18;
-      var cx = gap*(j+1);
-      var cy = h/2 - v*amp*h*0.9;
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, Math.PI*2);
-      ctx.fill();
+      var cy = h/2 - v*amp*h*0.45;
+      // 1px dot at this column's bounce height (no gaps between columns)
+      ctx.fillRect(x, cy, 1, 1);
     }
   }
 
