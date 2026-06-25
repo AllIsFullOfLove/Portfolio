@@ -3,26 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Art of Pat Lau — Matte Painter · VFX · Concept Design · Storyboards | Toronto Montreal Vancouver</title>
-<meta name="description" content="Pat Lau — Visual Effects Supervisor, Matte Painter, Concept Artist, Storyboard Artist. Credits: The Creator, John Wick 4, Wednesday, Star Trek Discovery, Resident Evil, Star Wars Uprising.">
+<title>The Art of Pat Lau — Matte Painter · VFX · Concept Design · Storyboards · Motion Graphics | Toronto Montreal Vancouver</title>
+<meta name="description" content="Pat Lau — Visual Effects Supervisor, Matte Painter, Concept Artist, Storyboard Artist, Motion Graphic Artist. Credits: The Creator, John Wick 4, Wednesday, Star Trek Discovery, Resident Evil, Star Wars Uprising.">
 <link rel="canonical" href="https://patlau.com/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="The Art of Pat Lau — Matte Painter · VFX · Concept Design · Storyboards">
-<meta property="og:description" content="Pat Lau — Visual Effects Supervisor, Matte Painter, Concept Artist, Storyboard Artist. Credits: The Creator, John Wick 4, Wednesday, Star Trek Discovery, Resident Evil, Star Wars Uprising.">
+<meta property="og:title" content="The Art of Pat Lau — Matte Painter · VFX · Concept Design · Storyboards · Motion Graphics">
+<meta property="og:description" content="Pat Lau — Visual Effects Supervisor, Matte Painter, Concept Artist, Storyboard Artist, Motion Graphic Artist. Credits: The Creator, John Wick 4, Wednesday, Star Trek Discovery, Resident Evil, Star Wars Uprising.">
 <meta property="og:url" content="https://patlau.com/">
 <meta property="og:image" content="https://patlau.com/matte/tl.jpg">
 <meta property="og:site_name" content="The Art of Pat Lau">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="The Art of Pat Lau — VFX · Matte Painter · Concept Design">
-<meta name="twitter:description" content="Visual Effects Supervisor, Matte Painter & Concept Artist. Credits include The Creator, John Wick 4, Wednesday, Star Wars Uprising.">
-<meta name="twitter:image" content="https://patlau.com/matte/tl.jpg">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Pat Lau",
   "url": "https://patlau.com/",
-  "jobTitle": ["Visual Effects Supervisor", "Matte Painter", "Concept Artist", "Storyboard Artist"],
+  "jobTitle": ["Visual Effects Supervisor", "Matte Painter", "Concept Artist", "Storyboard Artist", "Motion Graphic Artist"],
   "description": "Pat Lau is a Visual Effects Supervisor, Matte Painter, Concept Artist, and Storyboard Artist based in Toronto, Montreal, and Vancouver, Canada.",
   "address": {"@type": "PostalAddress", "addressLocality": "Toronto", "addressRegion": "ON", "addressCountry": "CA"},
   "telephone": "+1-647-921-8241",
@@ -272,7 +268,7 @@ footer{
     width:64px;height:64px;flex:none;padding:0;
     background:transparent;border:none;
   }
-  .player-base{width:64px;height:64px}
+  .player-base{width:100%;height:100%}
   .player canvas{width:72%;height:72%}
   .rail{display:none}
   .hero{height:50vh;min-height:260px}
@@ -324,7 +320,7 @@ footer{
     width:40px;height:40px;flex:none;padding:0;
     background:transparent;border:none;
   }
-  .player-base{width:40px;height:40px}
+  .player-base{width:100%;height:100%}
   .player canvas{width:72%;height:72%}
   .hero{height:100vh;min-height:200px}
   /* lightbox landscape: fill screen height; wide images overflow & pan */
@@ -381,8 +377,8 @@ footer{
 /* ---- music player: logo2 red square base + white pixel waveform on top ---- */
 .player{
   display:grid;
-  place-items:center;
-  grid-template-areas:"stack";
+  grid-template-columns:1fr;
+  grid-template-rows:1fr;
   width:44px;height:44px;padding:0;
   border:none;background:transparent;
   cursor:pointer;
@@ -392,8 +388,9 @@ footer{
   border-radius:3px;
 }
 .player:hover{filter:brightness(1.15)}
-.player-base{grid-area:stack;width:44px;height:44px;display:block;border-radius:3px}
-.player canvas{grid-area:stack;display:block;width:72%;height:72%;z-index:1}
+/* both children occupy the SAME single grid cell (row 1 / col 1) => overlap */
+.player-base{grid-column:1;grid-row:1;width:100%;height:100%;display:block;border-radius:3px}
+.player canvas{grid-column:1;grid-row:1;place-self:center;display:block;width:72%;height:72%;z-index:1}
 </style>
 </head>
 <body>
@@ -434,7 +431,7 @@ footer{
   <div class="veil"></div>
   <div class="title">
     <h1>The Art of Pat Lau</h1>
-    <p class="role">Matte Painter · VFX · Concept Design · Storyboards — Toronto · Montreal · Vancouver</p>
+    <p class="role">Matte Painter · VFX · Concept Design · Storyboards · Motion Graphics<br>Toronto · Montreal · Vancouver</p>
   </div>
 </div>
 
