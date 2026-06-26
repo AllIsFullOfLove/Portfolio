@@ -284,7 +284,10 @@ footer{
   .shots.thumbs a{grid-column:span 1}
   .shots.thumbs a:nth-child(9){grid-column:auto}
   /* lightbox portrait: image 80% of screen height, centered, pannable */
+  .lb{align-items:center !important;justify-content:center !important}
   .lb img{max-width:none;max-height:80vh;width:auto;height:80vh}
+  /* fit-height images (tl.jpg) on mobile: full height, centered, drag sideways */
+  .lb.fit-height img{height:100vh;max-height:100vh;width:auto;max-width:none}
 }
 
 /* ---- MOBILE LANDSCAPE: thin bar — logo | 7 buttons | waveform ---- */
@@ -324,6 +327,7 @@ footer{
   .player canvas{width:72% !important;height:72% !important}
   .hero{height:100vh;min-height:200px}
   /* lightbox landscape: fill screen height; wide images overflow & pan */
+  .lb{align-items:center !important;justify-content:center !important}
   .lb img{max-width:none;max-height:100vh;width:auto;height:100vh}
 }
 
@@ -365,9 +369,12 @@ footer{
 .lb img{display:block;cursor:grab;user-select:none;-webkit-user-drag:none;
     max-width:100vw;max-height:100vh;width:auto;height:auto;will-change:transform}
 .lb.dragging img{cursor:grabbing}
-/* desktop Shut-in cursor pan keeps its own mode */
+/* desktop vertical cursor-pan (Shut-in, inversion1): fit width, pan up/down */
 .lb.pan-mode{align-items:flex-start}
-.lb.pan-mode img{width:100vw;height:auto;max-width:none;max-height:none;transition:transform .1s linear;cursor:default}
+.lb.pan-mode img{width:100vw;height:auto;max-width:none;max-height:none;transition:transform .1s linear;cursor:ns-resize}
+/* desktop horizontal cursor-pan (The Creator): fit height, pan left/right */
+.lb.hpan-mode{justify-content:flex-start;align-items:center}
+.lb.hpan-mode img{height:100vh;width:auto;max-width:none;max-height:none;transition:transform .1s linear;cursor:ew-resize}
 
 
 /* ---- music player ---- */
@@ -455,7 +462,7 @@ footer{
     <article class="project">
       <div class="slate"><span class="num">460</span><h3>The Creator</h3><span class="meta">New Asia City Night · Dir. Gareth Edwards · MARZ VFX</span></div>
       <div class="shots">
-        <a href="https://patlau.com/matte/tl.jpg" data-fit="height"><img width="1600" height="400" src="https://patlau.com/matte/tl.jpg" alt="The Creator — New Asia City night matte painting" loading="lazy"></a>
+        <a href="https://patlau.com/matte/tl.jpg" data-hpan="true"><img width="1600" height="400" src="https://patlau.com/matte/tl.jpg" alt="The Creator — New Asia City night matte painting" loading="lazy"></a>
         <span class="clip"><img width="1600" height="580" src="https://patlau.com/matte/tl.gif" alt="The Creator — New Asia City breakdown animation" loading="lazy"></span>
       </div>
     </article>
@@ -1094,7 +1101,8 @@ footer{
 (function(){
   var lb    = document.getElementById('lb');
   var lbImg = document.getElementById('lb-img');
-  var isPan = false;          // desktop Shut-in cursor-pan mode
+  var isPan = false;          // desktop vertical cursor-pan (Shut-in / inversion1)
+  var isHPan = false;         // desktop horizontal cursor-pan (The Creator / tl.jpg)
   var tx=0, ty=0;             // current pan translation
   var dragging=false, moved=false, sx=0, sy=0, ox=0, oy=0;
 
@@ -1115,20 +1123,23 @@ footer{
     lbImg.style.transform = 'translate('+tx+'px,'+ty+'px)';
   }
 
-  function open(src, alt, pan, fitHeight){
+  function open(src, alt, pan, fitHeight, hpan){
     lbImg.alt = alt||'';
     lbImg.src = '';
     lbImg.src = src;
-    isPan = !!pan && !isMobile();         // cursor-pan only on desktop
+    isPan  = !!pan  && !isMobile();        // vertical cursor-pan, desktop only
+    isHPan = !!hpan && !isMobile();        // horizontal cursor-pan, desktop only
     lb.classList.toggle('pan-mode', isPan);
-    lb.classList.toggle('fit-height', !!fitHeight);
+    lb.classList.toggle('hpan-mode', isHPan);
+    // on mobile, hpan images still fit-height so they can be dragged sideways
+    lb.classList.toggle('fit-height', !!fitHeight || (!!hpan && isMobile()));
     tx=0; ty=0; lbImg.style.transform='';
     lb.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
   function shut(){
-    lb.classList.remove('open','pan-mode','fit-height','dragging');
-    lbImg.style.transform=''; tx=0; ty=0; isPan=false;
+    lb.classList.remove('open','pan-mode','hpan-mode','fit-height','dragging');
+    lbImg.style.transform=''; tx=0; ty=0; isPan=false; isHPan=false;
     document.body.style.overflow='';
   }
 
@@ -1142,7 +1153,8 @@ footer{
     var img = a.querySelector('img.a') || a.querySelector('img:not(.b)') || a.querySelector('img');
     var pan = a.getAttribute('data-pan') === 'true';
     var fitH = a.getAttribute('data-fit') === 'height';
-    open(href, img ? img.alt : '', pan, fitH);
+    var hpan = a.getAttribute('data-hpan') === 'true';
+    open(href, img ? img.alt : '', pan, fitH, hpan);
   });
 
   // ---- DRAG TO PAN (mouse + touch) ----
@@ -1160,7 +1172,7 @@ footer{
   function end(){ dragging=false; lb.classList.remove('dragging'); }
 
   // mouse
-  lbImg.addEventListener('mousedown', function(e){ if(isPan) return; e.preventDefault(); start(e.clientX,e.clientY); });
+  lbImg.addEventListener('mousedown', function(e){ if(isPan||isHPan) return; e.preventDefault(); start(e.clientX,e.clientY); });
   window.addEventListener('mousemove', function(e){ if(dragging){ move(e.clientX,e.clientY); } });
   window.addEventListener('mouseup', function(){ end(); });
 
@@ -1173,20 +1185,20 @@ footer{
   }, {passive:true});
   lbImg.addEventListener('touchend', function(){ end(); }, {passive:true});
 
-  // click background (not the image, and not after a drag) closes
+  // closing rules:
+  //  - cursor-pan modes (isPan/isHPan): a click anywhere, incl. the image, closes
+  //  - drag-pan images: image click closes only if it wasn't a drag
+  //  - background click always closes
   lb.addEventListener('click', function(e){
-    if(e.target===lbImg && moved) return;   // ignore click that ended a drag
-    if(e.target===lbImg && (lbImg.offsetWidth>window.innerWidth || lbImg.offsetHeight>window.innerHeight)){
-      // image is pannable; a tap on it shouldn't close
-      if(moved) return;
-    }
-    if(e.target!==lbImg) shut();
-    else if(!moved && lbImg.offsetWidth<=window.innerWidth && lbImg.offsetHeight<=window.innerHeight) shut();
+    if(isPan || isHPan){ shut(); return; }      // cursor-pan: click image OR bg exits
+    if(e.target!==lbImg){ shut(); return; }     // background always closes
+    if(moved) return;                           // ignore click that ended a drag
+    shut();                                     // plain click on image closes
   });
 
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') shut(); });
 
-  // desktop Shut-in cursor pan (vertical), unchanged behaviour
+  // desktop vertical cursor pan (Shut-in / inversion1): fit width, move up/down
   lb.addEventListener('mousemove', function(e){
     if(!isPan) return;
     var imgH = lbImg.naturalHeight * (window.innerWidth / lbImg.naturalWidth);
@@ -1194,6 +1206,16 @@ footer{
     if(overflow <= 0){ lbImg.style.transform=''; return; }
     var rel = e.clientY / window.innerHeight;
     lbImg.style.transform = 'translateY(' + (-(overflow*rel)) + 'px)';
+  });
+
+  // desktop horizontal cursor pan (The Creator / tl.jpg): fit height, move left/right
+  lb.addEventListener('mousemove', function(e){
+    if(!isHPan) return;
+    var imgW = lbImg.naturalWidth * (window.innerHeight / lbImg.naturalHeight);
+    var overflow = imgW - window.innerWidth;
+    if(overflow <= 0){ lbImg.style.transform=''; return; }
+    var rel = e.clientX / window.innerWidth;   // left of center -> show left, right -> show right
+    lbImg.style.transform = 'translateX(' + (-(overflow*rel)) + 'px)';
   });
 })();
 </script>
