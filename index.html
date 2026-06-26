@@ -411,6 +411,19 @@ footer{
   left: 14% !important;
   z-index: 2 !important;
 }
+.site-version{
+  position:fixed;
+  right:8px;
+  bottom:6px;
+  z-index:200;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:.08em;
+  color:var(--seal);
+  opacity:.7;
+  pointer-events:none;
+  user-select:none;
+}
 </style>
 </head>
 <body>
@@ -1369,5 +1382,6 @@ footer{
   document.addEventListener('click', startPlayback, {once:true});
 })();
 </script>
+<div class="site-version">v001</div>
 </body>
 </html>
