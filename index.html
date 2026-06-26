@@ -1412,11 +1412,13 @@ footer{
     if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(e); }
   });
 
-  draw();                 // waveform runs forever
-  startPlayback();        // muted autoplay
-  document.addEventListener('click', startPlayback, {once:true});
+  draw();                 // waveform runs forever (visual only, no audio)
+  // Audio does NOT auto-start. It plays ONLY when the user clicks the waveform.
+  // Ensure it begins paused/muted so nothing leaks until the user toggles it.
+  audio.pause();
+  muted = true;
 })();
 </script>
-<div class="site-version">v006</div>
+<div class="site-version">v007</div>
 </body>
 </html>
