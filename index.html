@@ -1119,6 +1119,10 @@ footer{
   var isClickPos = false;     // tl.jpg: start position set by click
   var startFrac = 0.5;        // where the click landed (0..1)
   var hpanActive = false;     // true after first mouse move post-open
+  var hpanX = 0;              // current horizontal offset of the image (px)
+  var hpanOverflow = 0;       // how far the image exceeds the viewport (px)
+  var hpanLastClientX = null; // previous cursor X for delta calc
+  var HPAN_GAIN = 2.6;        // movement amplification (wide image, small sweep)
   var tx=0, ty=0;             // current pan translation
   var dragging=false, moved=false, sx=0, sy=0, ox=0, oy=0;
 
@@ -1156,13 +1160,15 @@ footer{
     lb.classList.add('open');
     document.body.style.overflow = 'hidden';
 
-    // For click-position images: open showing the SAME horizontal spot that was clicked.
-    if(isClickPos){
+    // For click-position images: open showing the SAME horizontal spot that was clicked,
+    // then store that pixel offset so relative-movement panning continues from it.
+    if(isHPan){
       var place = function(){
         var imgW = lbImg.offsetWidth, vw = window.innerWidth;
-        var overflow = imgW - vw;
-        if(overflow <= 0){ lbImg.style.transform=''; return; }
-        lbImg.style.transform = 'translateX(' + (-(overflow*startFrac)) + 'px)';
+        hpanOverflow = imgW - vw;
+        if(hpanOverflow <= 0){ hpanX = 0; lbImg.style.transform=''; return; }
+        hpanX = -(hpanOverflow * startFrac);   // current x offset (px)
+        lbImg.style.transform = 'translateX(' + hpanX + 'px)';
       };
       if(lbImg.complete && lbImg.naturalWidth){ place(); }
       else { lbImg.onload = place; }
@@ -1170,7 +1176,8 @@ footer{
   }
   function shut(){
     lb.classList.remove('open','pan-mode','hpan-mode','fit-height','dragging');
-    lbImg.style.transform=''; tx=0; ty=0; isPan=false; isHPan=false; isClickPos=false; hpanActive=false;
+    lbImg.style.transform=''; tx=0; ty=0; isPan=false; isHPan=false; isClickPos=false;
+    hpanActive=false; hpanX=0; hpanOverflow=0; hpanLastClientX=null;
     lbImg.onload=null;
     document.body.style.overflow='';
   }
@@ -1249,19 +1256,21 @@ footer{
     lbImg.style.transform = 'translateY(' + (-(overflow*rel)) + 'px)';
   });
 
-  // desktop horizontal cursor pan (The Creator / tl.jpg): fit height, move left/right.
-  // Opens at the clicked position; panning starts once the mouse actually moves, so the
-  // click-set start isn't instantly overridden. Cursor is already at the click spot, so
-  // the transition into panning is seamless.
+  // desktop horizontal pan (The Creator / tl.jpg): fit height. Starting view is set by the
+  // click position; panning is driven by RELATIVE mouse MOVEMENT (delta), not by the cursor's
+  // absolute screen position. Move the mouse right -> image pans right; move left -> pans left.
   lb.addEventListener('mousemove', function(e){
-    if(!isHPan) return;
-    hpanActive = true;
-    var imgW = lbImg.offsetWidth || (lbImg.naturalWidth * (window.innerHeight / lbImg.naturalHeight));
-    var overflow = imgW - window.innerWidth;
-    if(overflow <= 0){ lbImg.style.transform=''; return; }
-    var rel = e.clientX / window.innerWidth;   // 0 at left edge -> show left; 1 -> show right
-    if(rel<0) rel=0; if(rel>1) rel=1;
-    lbImg.style.transform = 'translateX(' + (-(overflow*rel)) + 'px)';
+    if(!isHPan){ hpanLastClientX = null; return; }
+    if(hpanOverflow <= 0){ return; }
+    if(hpanLastClientX === null){ hpanLastClientX = e.clientX; return; }
+    var dx = e.clientX - hpanLastClientX;      // how far the mouse moved this frame
+    hpanLastClientX = e.clientX;
+    // moving the mouse right reveals the right side => image shifts left (negative x)
+    hpanX -= dx * HPAN_GAIN;
+    // clamp to image edges (never pan into blank space)
+    if(hpanX > 0) hpanX = 0;
+    if(hpanX < -hpanOverflow) hpanX = -hpanOverflow;
+    lbImg.style.transform = 'translateX(' + hpanX + 'px)';
   });
 })();
 </script>
@@ -1385,6 +1394,6 @@ footer{
   document.addEventListener('click', startPlayback, {once:true});
 })();
 </script>
-<div class="site-version">v002</div>
+<div class="site-version">v003</div>
 </body>
 </html>
