@@ -1276,18 +1276,31 @@ footer{
     lbImg.style.transform = 'translateY(' + (-(overflow*rel)) + 'px)';
   });
 
-  // desktop horizontal pan (The Creator / tl.jpg): fit height. Starting view is set by the
-  // click position; panning is driven by RELATIVE mouse MOVEMENT (delta), not by the cursor's
-  // absolute screen position. Move the mouse right -> image pans right; move left -> pans left.
+  // desktop horizontal pan (The Creator / tl.jpg): fit height.
+  // BLEND mixes two pan models each frame:
+  //   relativeTarget = current pos + (mouse delta * gain)   [feels like the 100% version]
+  //   absoluteTarget = cursor screen-X fraction * overflow  [sweep whole screen = whole image]
+  // result = BLEND*relative + (1-BLEND)*absolute.  Lower BLEND => less sensitive / more 1:1.
+  var HPAN_BLEND = 0.0;   // 0% relative, 100% absolute (pure cursor-position mapping)
   lb.addEventListener('mousemove', function(e){
     if(!isHPan){ hpanLastClientX = null; return; }
     if(hpanOverflow <= 0){ return; }
-    if(hpanLastClientX === null){ hpanLastClientX = e.clientX; return; }
-    var dx = e.clientX - hpanLastClientX;      // how far the mouse moved this frame
+    if(hpanLastClientX === null){ hpanLastClientX = e.clientX; }
+    var dx = e.clientX - hpanLastClientX;
     hpanLastClientX = e.clientX;
-    // moving the mouse right reveals the right side => image shifts left (negative x)
-    hpanX -= dx * HPAN_GAIN;
-    // clamp to image edges (never pan into blank space)
+
+    // relative target: accumulate delta from current position
+    var relTarget = hpanX - dx * HPAN_GAIN;
+
+    // absolute target: cursor position across the screen maps to image position
+    var rel = e.clientX / window.innerWidth;   // 0 at left edge, 1 at right edge
+    if(rel < 0) rel = 0; if(rel > 1) rel = 1;
+    var absTarget = -(hpanOverflow * rel);
+
+    // blend
+    hpanX = HPAN_BLEND * relTarget + (1 - HPAN_BLEND) * absTarget;
+
+    // clamp to image edges
     if(hpanX > 0) hpanX = 0;
     if(hpanX < -hpanOverflow) hpanX = -hpanOverflow;
     lbImg.style.transform = 'translateX(' + hpanX + 'px)';
@@ -1419,6 +1432,6 @@ footer{
   muted = true;
 })();
 </script>
-<div class="site-version">v007</div>
+<div class="site-version">blend 0% (absolute)</div>
 </body>
 </html>
