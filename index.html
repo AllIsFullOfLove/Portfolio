@@ -438,7 +438,7 @@ footer{
   font-family:'IBM Plex Mono',monospace;
   font-size:10px;
   letter-spacing:.08em;
-  color:var(--seal);
+  color:#ffffff;
   opacity:.7;
   pointer-events:none;
   user-select:none;
@@ -1025,11 +1025,11 @@ footer{
     div.style.backgroundPosition=focusFor(n);
 
     if(n === BLUR_SLIDE){
-      // focus-pull across the FULL slide duration: 20px -> 0px, steady linear resolve.
+      // focus-pull across the FULL slide duration: 10px -> 0px, steady linear resolve.
       // Goes fully sharp at the end (test). Spread over MOTION_DUR so it pulls focus the
       // whole time the slide is visible, finishing right as it crossfades out.
       var blurAnim = div.animate(
-        [{filter:'blur(20px)'},{filter:'blur(0px)'}],
+        [{filter:'blur(10px)'},{filter:'blur(0px)'}],
         {duration:MOTION_DUR, easing:'linear', fill:'forwards'}
       );
       anims.get(div).push(blurAnim);
@@ -1484,6 +1484,6 @@ footer{
   }
 })();
 </script>
-<div class="site-version">v017</div>
+<div class="site-version">v018</div>
 </body>
 </html>
