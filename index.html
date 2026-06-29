@@ -1003,11 +1003,22 @@ footer{
     anims.set(div, []);
   }
 
+  // Per-image focal points for PORTRAIT only (x% y%). Picked so the vertical phone
+  // crop lands on the interesting part of each wide image instead of dead center.
+  var SPLASH_FOCUS = {1:'60.5% 57.4%',2:'50.1% 49.6%',3:'25.7% 49.5%',4:'36.3% 46.0%',5:'46.2% 47.1%',6:'49.7% 48.9%',7:'38.0% 58.3%',8:'18.5% 46.5%',9:'38.9% 52.1%',10:'54.7% 49.9%',11:'47.3% 60.9%',12:'51.2% 48.2%',13:'24.8% 48.5%',14:'53.8% 52.8%',15:'48.5% 48.5%',16:'55.7% 50.0%',17:'51.2% 33.7%',18:'55.5% 47.5%',19:'48.4% 49.4%',20:'85.8% 77.8%',21:'45.9% 43.9%'};
+  function isPortrait(){
+    return window.innerWidth <= 1024 && window.matchMedia('(orientation:portrait)').matches;
+  }
+  function focusFor(n){
+    // portrait: use the per-image focal point; otherwise center.
+    if(isPortrait() && SPLASH_FOCUS[n]) return SPLASH_FOCUS[n];
+    return '50% 50%';
+  }
   function moveIn(div, n){
     cancelAnims(div);                       // clear any lingering forwards-fill
     var tf = tfPair(n);
     div.style.backgroundSize='cover';
-    div.style.backgroundPosition='50% 50%';
+    div.style.backgroundPosition=focusFor(n);
     var mv = div.animate(
       [{transform:tf[0]}, {transform:tf[1]}],
       {duration:MOTION_DUR, easing:'linear', fill:'forwards'}
@@ -1444,6 +1455,6 @@ footer{
   muted = true;
 })();
 </script>
-<div class="site-version">v011</div>
+<div class="site-version">v012</div>
 </body>
 </html>
