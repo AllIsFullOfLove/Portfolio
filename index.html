@@ -1025,11 +1025,12 @@ footer{
     div.style.backgroundPosition=focusFor(n);
 
     if(n === BLUR_SLIDE){
-      // focus-pull: emerge from heavy blur (20px) and resolve to a soft 5px, then hold.
-      // Never goes fully sharp -> keeps "mystery" AND hides upscaling on big displays.
+      // focus-pull across the FULL slide duration: 20px -> 0px, steady linear resolve.
+      // Goes fully sharp at the end (test). Spread over MOTION_DUR so it pulls focus the
+      // whole time the slide is visible, finishing right as it crossfades out.
       var blurAnim = div.animate(
-        [{filter:'blur(20px)'},{filter:'blur(5px)'}],
-        {duration:3000, easing:'ease-out', fill:'forwards'}
+        [{filter:'blur(20px)'},{filter:'blur(0px)'}],
+        {duration:MOTION_DUR, easing:'linear', fill:'forwards'}
       );
       anims.get(div).push(blurAnim);
     } else {
@@ -1483,6 +1484,6 @@ footer{
   }
 })();
 </script>
-<div class="site-version">v016</div>
+<div class="site-version">v017</div>
 </body>
 </html>
