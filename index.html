@@ -1015,27 +1015,20 @@ footer{
     if(isPortrait() && SPLASH_FOCUS[n]) return SPLASH_FOCUS[n];
     return '50% 50%';
   }
-  // TEST: slide 10 is a SHARP source (splash10.jpg = shut-in). We blur it live in CSS
-  // and animate the blur (gentle breathe) instead of baking blur into the JPEG.
-  var BLUR_SLIDE = 10;
+  // All splash images are now SHARP sources. Blur is done live in CSS and animated:
+  // every slide emerges at 10px blur and resolves to 0px (fully sharp) across its full
+  // time on screen — a slow continuous focus-pull, finishing as it crossfades out.
   function moveIn(div, n){
     cancelAnims(div);                       // clear any lingering forwards-fill
     var tf = tfPair(n);
     div.style.backgroundSize='cover';
     div.style.backgroundPosition=focusFor(n);
 
-    if(n === BLUR_SLIDE){
-      // focus-pull across the FULL slide duration: 10px -> 0px, steady linear resolve.
-      // Goes fully sharp at the end (test). Spread over MOTION_DUR so it pulls focus the
-      // whole time the slide is visible, finishing right as it crossfades out.
-      var blurAnim = div.animate(
-        [{filter:'blur(10px)'},{filter:'blur(0px)'}],
-        {duration:MOTION_DUR, easing:'linear', fill:'forwards'}
-      );
-      anims.get(div).push(blurAnim);
-    } else {
-      div.style.filter = 'none';            // all other (pre-blurred) slides: no CSS blur
-    }
+    var blurAnim = div.animate(
+      [{filter:'blur(10px)'},{filter:'blur(0px)'}],
+      {duration:MOTION_DUR, easing:'linear', fill:'forwards'}
+    );
+    anims.get(div).push(blurAnim);
 
     var mv = div.animate(
       [{transform:tf[0]}, {transform:tf[1]}],
@@ -1484,6 +1477,6 @@ footer{
   }
 })();
 </script>
-<div class="site-version">v018</div>
+<div class="site-version">v019</div>
 </body>
 </html>
