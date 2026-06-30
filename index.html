@@ -975,11 +975,11 @@ footer{
   for(var i=1;i<=18;i++) imgs.push(url(i));
 
   var motion = {
-    1:'zin',  2:'zctr', 3:'zin',  4:'up',
-    5:'zout', 6:'zin',  7:'zout', 8:'up',
-    9:'lr',   10:'alt_zlr', 11:'down', 12:'dnbot',
-    13:'zin', 14:'zout', 15:'up', 16:'zpt',
-    17:'down',18:'zout', 19:'zpt', 20:'zpt'
+    1:'zin',  2:'zctr', 3:'zin',  4:'pantop',
+    5:'zout', 6:'zin',  7:'zout', 8:'pantop',
+    9:'lr',   10:'alt_zlr', 11:'zin', 12:'travY',
+    13:'zin', 14:'zout', 15:'zin', 16:'zpt',
+    17:'travY',18:'zout', 19:'zpt', 20:'zpt'
   };
   var toggle={};
   var MOTION_DUR=13000, FADE=2000;
@@ -998,7 +998,16 @@ footer{
     // vertical pans (origin top): translateY 0 = top flush; negative reveals lower.
     if(m==='up')   return ['scale(1.12) translateY(0%)','scale(1.12) translateY(-3%)'];   // start at top
     if(m==='down') return ['scale(1.12) translateY(-3%)','scale(1.12) translateY(0%)'];   // end at top
-    if(m==='dnbot')return ['scale(1.12) translateY(0%)','scale(1.12) translateY(-4%)'];   // splash12: start top, END at BOTTOM
+    if(m==='dnbot')return ['scale(1.12) translateY(0%)','scale(1.12) translateY(-4%)'];
+    // pantop (04,08): near-square images. Scale up MORE (1.22) to create vertical overscan,
+    // then pan a clearly visible amount, ENDING at the top (translateY 0 = top flush).
+    if(m==='pantop')return ['scale(1.22) translateY(-7%)','scale(1.22) translateY(0%)'];
+    // travY (12,17): full traverse — start showing bottom, end showing top (or vice versa each cycle).
+    if(m==='travY'){
+      return (t%2===0)
+        ? ['scale(1.22) translateY(-8%)','scale(1.22) translateY(0%)']   // bottom -> top
+        : ['scale(1.22) translateY(0%)','scale(1.22) translateY(-8%)'];  // top -> bottom
+    }
     // horizontal pan: top stays pinned, slide sideways
     return (t%2===0)
       ? ['scale(1.12) translateX(-3%)','scale(1.12) translateX(3%)']
@@ -1500,6 +1509,6 @@ footer{
   }
 })();
 </script>
-<div class="site-version">v023</div>
+<div class="site-version">v024</div>
 </body>
 </html>
