@@ -152,7 +152,7 @@ section.page#matte{padding-top:32px}
   position:relative;height:72vh;min-height:420px;overflow:hidden;
   margin-top:0;
 }
-.hero .frame{position:absolute;inset:0;background-position:50% 50%;background-size:cover!important;background-repeat:no-repeat;opacity:0;transform-origin:center center}
+.hero .frame{position:absolute;inset:0;background-position:50% 50%;background-size:cover!important;background-repeat:no-repeat;opacity:0;transform-origin:center top}
 .hero .veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,11,1) 0%,rgba(10,10,11,.6) 35%,rgba(10,10,11,.05) 65%)}
 .hero .title{
   position:absolute;left:0;right:0;top:66%;transform:translateY(-50%);text-align:center;
@@ -989,11 +989,15 @@ footer{
     var m = motion[n] || 'zin';
     var t = toggle[n]||0; toggle[n]=t+1;
     if(m==='alt_zlr'){ m = (t%2===0) ? (t%4===0?'zin':'zout') : 'lr'; }
-    if(m==='zin')  return ['scale(1.0)','scale(1.12)'];
-    if(m==='zout') return ['scale(1.12)','scale(1.0)'];
-    if(m==='up')   return ['scale(1.12) translateY(4%)','scale(1.12) translateY(-4%)'];
-    if(m==='down') return ['scale(1.12) translateY(-4%)','scale(1.12) translateY(4%)'];
-    // lr
+    // transform-origin is center-top, so scale expands downward from the top edge:
+    // the TOP of the image stays pinned to the top of the page through every zoom.
+    if(m==='zin')  return ['scale(1.0)','scale(1.12)'];   // zoom in, top pinned
+    if(m==='zout') return ['scale(1.12)','scale(1.0)'];   // zoom out, top pinned
+    // vertical pans: keep the top in view. translateY 0 = top flush; negative reveals lower.
+    // "up": start at the TOP and drift down a touch.   "down": end at the TOP.
+    if(m==='up')   return ['scale(1.12) translateY(0%)','scale(1.12) translateY(-3%)'];
+    if(m==='down') return ['scale(1.12) translateY(-3%)','scale(1.12) translateY(0%)'];
+    // horizontal pan: top stays pinned (origin top), just slide sideways
     return (t%2===0)
       ? ['scale(1.12) translateX(-3%)','scale(1.12) translateX(3%)']
       : ['scale(1.12) translateX(3%)','scale(1.12) translateX(-3%)'];
@@ -1477,6 +1481,6 @@ footer{
   }
 })();
 </script>
-<div class="site-version">v019</div>
+<div class="site-version">v021</div>
 </body>
 </html>
