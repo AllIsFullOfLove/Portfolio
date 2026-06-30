@@ -975,11 +975,11 @@ footer{
   for(var i=1;i<=18;i++) imgs.push(url(i));
 
   var motion = {
-    1:'zin',  2:'zout', 3:'zin',  4:'up',
+    1:'zin',  2:'zctr', 3:'zin',  4:'up',
     5:'zout', 6:'zin',  7:'zout', 8:'up',
-    9:'lr',   10:'alt_zlr', 11:'down', 12:'down',
-    13:'zin', 14:'zout', 15:'up', 16:'zin',
-    17:'down',18:'zout'
+    9:'lr',   10:'alt_zlr', 11:'down', 12:'dnbot',
+    13:'zin', 14:'zout', 15:'up', 16:'zpt',
+    17:'down',18:'zout', 19:'zpt', 20:'zpt'
   };
   var toggle={};
   var MOTION_DUR=13000, FADE=2000;
@@ -989,15 +989,17 @@ footer{
     var m = motion[n] || 'zin';
     var t = toggle[n]||0; toggle[n]=t+1;
     if(m==='alt_zlr'){ m = (t%2===0) ? (t%4===0?'zin':'zout') : 'lr'; }
-    // transform-origin is center-top, so scale expands downward from the top edge:
-    // the TOP of the image stays pinned to the top of the page through every zoom.
+    // transform-origin is center-top (default), so scale expands downward from the top edge:
+    // the TOP of the image stays pinned through every zoom.
     if(m==='zin')  return ['scale(1.0)','scale(1.12)'];   // zoom in, top pinned
     if(m==='zout') return ['scale(1.12)','scale(1.0)'];   // zoom out, top pinned
-    // vertical pans: keep the top in view. translateY 0 = top flush; negative reveals lower.
-    // "up": start at the TOP and drift down a touch.   "down": end at the TOP.
-    if(m==='up')   return ['scale(1.12) translateY(0%)','scale(1.12) translateY(-3%)'];
-    if(m==='down') return ['scale(1.12) translateY(-3%)','scale(1.12) translateY(0%)'];
-    // horizontal pan: top stays pinned (origin top), just slide sideways
+    if(m==='zctr') return ['scale(1.0)','scale(1.12)'];   // splash02: zoom in, centered origin
+    if(m==='zpt')  return ['scale(1.0)','scale(1.18)'];   // zoom INTO a focal point (a bit deeper)
+    // vertical pans (origin top): translateY 0 = top flush; negative reveals lower.
+    if(m==='up')   return ['scale(1.12) translateY(0%)','scale(1.12) translateY(-3%)'];   // start at top
+    if(m==='down') return ['scale(1.12) translateY(-3%)','scale(1.12) translateY(0%)'];   // end at top
+    if(m==='dnbot')return ['scale(1.12) translateY(0%)','scale(1.12) translateY(-4%)'];   // splash12: start top, END at BOTTOM
+    // horizontal pan: top stays pinned, slide sideways
     return (t%2===0)
       ? ['scale(1.12) translateX(-3%)','scale(1.12) translateX(3%)']
       : ['scale(1.12) translateX(3%)','scale(1.12) translateX(-3%)'];
@@ -1011,6 +1013,9 @@ footer{
   // Per-image focal points for PORTRAIT only (x% y%). Picked so the vertical phone
   // crop lands on the interesting part of each wide image instead of dead center.
   var SPLASH_FOCUS = {1:'60.5% 57.4%',2:'50.1% 49.6%',3:'25.7% 49.5%',4:'36.3% 46.0%',5:'46.2% 47.1%',6:'49.7% 48.9%',7:'38.0% 58.3%',8:'20.4% 36.9%',9:'50.7% 42.5%',10:'54.7% 49.9%',11:'44.9% 37.8%',12:'51.2% 48.2%',13:'24.8% 48.5%',14:'53.8% 52.8%',15:'48.5% 48.5%',16:'55.7% 50.0%',17:'51.2% 33.7%',18:'55.5% 47.5%',19:'48.4% 49.4%',20:'54.8% 34.3%',21:'45.9% 43.9%'};
+  // Zoom-into-point focal targets (x% y%) for DESKTOP + LANDSCAPE only.
+  // In portrait these images fall back to a normal centered zoom.
+  var ZOOM_INTO = {16:'55.6% 44.8%', 19:'48.2% 25.2%', 20:'55.6% 13.6%'};
   function isPortrait(){
     return window.innerWidth <= 1024 && window.matchMedia('(orientation:portrait)').matches;
   }
@@ -1024,9 +1029,23 @@ footer{
   // time on screen — a slow continuous focus-pull, finishing as it crossfades out.
   function moveIn(div, n){
     cancelAnims(div);                       // clear any lingering forwards-fill
+    var m = motion[n] || 'zin';
     var tf = tfPair(n);
     div.style.backgroundSize='cover';
-    div.style.backgroundPosition=focusFor(n);
+
+    // Zoom-into-point (16/19/20) on desktop+landscape: anchor the zoom AND the crop to
+    // the focal point so the image zooms straight into that spot. Portrait ignores this.
+    if(m==='zpt' && ZOOM_INTO[n] && !isPortrait()){
+      div.style.backgroundPosition = ZOOM_INTO[n];
+      div.style.transformOrigin    = ZOOM_INTO[n];
+    } else if(m==='zctr'){
+      // splash02: always zoom into the CENTER
+      div.style.backgroundPosition = '50% 50%';
+      div.style.transformOrigin    = 'center center';
+    } else {
+      div.style.backgroundPosition = focusFor(n);
+      div.style.transformOrigin    = 'center top';   // default: top-anchored
+    }
 
     var blurAnim = div.animate(
       [{filter:'blur(10px)'},{filter:'blur(0px)'}],
@@ -1481,6 +1500,6 @@ footer{
   }
 })();
 </script>
-<div class="site-version">v022</div>
+<div class="site-version">v023</div>
 </body>
 </html>
