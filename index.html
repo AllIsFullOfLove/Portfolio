@@ -397,6 +397,9 @@ footer{
 /* desktop horizontal cursor-pan (The Creator): fit height, pan left/right */
 .lb.hpan-mode{justify-content:flex-start;align-items:center}
 .lb.hpan-mode img{height:100vh;width:auto;max-width:none;max-height:none;cursor:ew-resize}
+/* fit-width (The Creator): image fills viewport width, centered, click to close */
+.lb.fitwidth-mode{align-items:center;justify-content:center}
+.lb.fitwidth-mode img{width:100vw;height:auto;max-width:100vw;max-height:none;cursor:zoom-out}
 
 
 /* ---- music player ---- */
@@ -500,7 +503,7 @@ footer{
     <article class="project">
       <div class="slate"><span class="num">460</span><h3>The Creator</h3><span class="meta">New Asia City Night · Dir. Gareth Edwards · MARZ VFX</span></div>
       <div class="shots">
-        <a href="https://patlau.com/matte/tl.jpg" data-hpan="true" data-clickpos="true"><img width="1600" height="400" src="https://patlau.com/matte/tl.jpg" alt="The Creator — New Asia City night matte painting" loading="lazy"></a>
+        <a href="https://patlau.com/matte/tl.jpg" data-fitwidth="true"><img width="1600" height="400" src="https://patlau.com/matte/tl.jpg" alt="The Creator — New Asia City night matte painting" loading="lazy"></a>
         <span class="clip"><img width="1600" height="580" src="https://patlau.com/matte/tl.gif" alt="The Creator — New Asia City breakdown animation" loading="lazy"></span>
       </div>
     </article>
@@ -910,6 +913,7 @@ footer{
       <div class="exp"><span class="studio">WeFX</span><span class="credits">John Wick: Chapter 4, FUBAR, The Fall of the House of Usher, Painkiller, Cabinet of Curiosities, Reacher S2, Moonhaven</span></div>
       <div class="exp"><span class="studio">MARZ VFX</span><span class="credits">The Creator, Beacon 23, Cabinet of Curiosities, Umbrella Academy 3, The First Lady, Moon Knight, Wednesday, Æon Flux, Ice Road, WandaVision, Made for Love, The Walking Dead S11, Delia's Gone, Ray James, This Is Us, Y: The Last Man</span></div>
       <div class="exp"><span class="studio">Pixomondo Toronto</span><span class="credits">xXx 3: Return of Xander Cage, The Promise, Wonder Woman, The Fate of the Furious, Star Trek Discovery, Star Trek Beyond, Ocean Giant, Crouching Tiger Hidden Dragon 2</span></div>
+      <div class="exp"><span class="studio">JAXX Creative / Spin VFX</span><span class="credits">How It Works, Billionaire Murders, A Merry Little Ex-Mas, Philly Cloudscape, Seysara</span></div>
       <div class="exp"><span class="studio">Bedford Productions</span><span class="credits">American Gods (TV)</span></div>
       <div class="exp"><span class="studio">Mavericks VFX</span><span class="credits">My Big Fat Greek Wedding 2, American Gods, The Magicians, 11/22/63</span></div>
       <div class="exp"><span class="studio">Technicolor</span><span class="credits">ARQ, Darken, X Company (TV)</span></div>
@@ -928,7 +932,7 @@ footer{
       <div class="exp"><span class="studio">Secret Level Films</span><span class="credits">ERUPT: The Art of Beat Making (MV)</span></div>
       <div class="exp"><span class="studio">Stellar Scene</span><span class="credits">Nuit Blanche — Senior Digital Matte Painter (SF)</span></div>
       <div class="exp"><span class="studio">Parktown Productions</span><span class="credits">VFX Supervisor / Senior VFX Compositor / Storyboard Artist</span></div>
-      <div class="exp"><span class="studio">Fuel Industries / Fuel Films</span><span class="credits">VFX Supervisor / Senior VFX Compositor / Storyboard Artist / Senior Matte Painter</span></div>
+      <div class="exp"><span class="studio">Fuel Industries / Fuel Films / Karbon Arc</span><span class="credits">VFX Supervisor / Senior VFX Compositor / Storyboard Artist / Senior Matte Painter</span></div>
     </div>
 
     <h4 class="block">Clients &amp; Projects</h4>
@@ -1260,7 +1264,7 @@ footer{
     }
   }
   function shut(){
-    lb.classList.remove('open','pan-mode','hpan-mode','fit-height','dragging');
+    lb.classList.remove('open','pan-mode','hpan-mode','fit-height','fitwidth-mode','dragging');
     lbImg.style.transform=''; lbImg.style.visibility=''; tx=0; ty=0;
     isPan=false; isHPan=false; isClickPos=false;
     hpanActive=false; hpanX=0; hpanOverflow=0; hpanLastClientX=null;
@@ -1280,6 +1284,7 @@ footer{
     var fitH = a.getAttribute('data-fit') === 'height';
     var hpan = a.getAttribute('data-hpan') === 'true';
     var clickpos = a.getAttribute('data-clickpos') === 'true';
+    var fitWidth = a.getAttribute('data-fitwidth') === 'true';
     // for click-position images: where (0..1) across the thumbnail did the user click?
     var fracX = 0.5;
     if(clickpos && img){
@@ -1288,6 +1293,7 @@ footer{
       if(fracX < 0) fracX = 0;
       if(fracX > 1) fracX = 1;
     }
+    lb.classList.toggle('fitwidth-mode', fitWidth);
     open(href, img ? img.alt : '', pan, fitH, hpan, clickpos, fracX);
   });
 
@@ -1509,6 +1515,6 @@ footer{
   }
 })();
 </script>
-<div class="site-version">v025</div>
+<div class="site-version">v026</div>
 </body>
 </html>
