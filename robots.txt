@@ -1,0 +1,6 @@
+# robots.txt for patlau.com
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://patlau.com/sitemap.xml

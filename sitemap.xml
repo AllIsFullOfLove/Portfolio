@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://patlau.com/</loc>
+    <lastmod>2026-06-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://patlau.com/matte/tl.jpg</image:loc>
+      <image:title>The Creator — New Asia City night matte painting</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://patlau.com/matte/azul.jpg</image:loc>
+      <image:title>Azul — matte painting by Pat Lau</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://patlau.com/matte/inversion1.jpg</image:loc>
+      <image:title>Abandoned shopping mall interior matte painting</image:title>
+    </image:image>
+  </url>
+</urlset>
