@@ -555,108 +555,219 @@
   },{passive:true});
 })();
 (function(){
+  /* ---- MUSIC PLAYER + VISUALIZER (v030) ----
+     Mirrored log-frequency spectrum (thin bars + falling peak caps) in the red box.
+     • Playing: driven by the real FFT of the <audio> element (Web Audio AnalyserNode,
+       same-origin mp3, context created/resumed inside the click gesture).
+     • Idle / paused: a synthetic "band" (kick ~112 BPM, side-chained bassline, chords,
+       snare, arps, hi-hats, phrase variations, randomised) runs through the SAME band
+       dynamics, so motion never stops and it crossfades smoothly into the real thing.
+     • Reduced motion: slower, softer, lower frame rate.  Paused while the tab is hidden. */
   var player=document.getElementById('player');
   var audio=document.getElementById('audio');
   var canvas=document.getElementById('wave');
+  if(!player||!audio||!canvas) return;
   var ctx=canvas.getContext('2d');
-  var muted=true, raf, started=false;
-
-
-  // Smooth oscilloscope-style wave: three layered sine lines whose height follows the
-  // music (Web Audio AnalyserNode: smoothed RMS level + low-frequency energy).
-  // Idle/paused = a slow, gentle ripple. Reduced motion = no drift, still reacts to level.
   var REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var actx=null, analyser=null, tbuf=null, fbuf=null;
+
+  var N=16;                                   // bands (log-spaced 40 Hz – 14 kHz)
+  var cur=new Float32Array(N), vel=new Float32Array(N), peak=new Float32Array(N),
+      pvel=new Float32Array(N), phold=new Float32Array(N), real=new Float32Array(N), idle=new Float32Array(N);
+
+  /* ---------- canvas: crisp on HiDPI, sized only on resize (no per-frame layout reads) ---------- */
+  var W=64, H=64, dpr=1;
+  function fit(){
+    var r=canvas.getBoundingClientRect();
+    if(!r.width||!r.height) return;
+    dpr=Math.min(3, window.devicePixelRatio||1);
+    var w=Math.max(16, Math.round(r.width*dpr)), h=Math.max(16, Math.round(r.height*dpr));
+    if(w!==canvas.width||h!==canvas.height){ canvas.width=w; canvas.height=h; }
+    W=w; H=h;
+  }
+  if(window.ResizeObserver){ new ResizeObserver(fit).observe(canvas); } else { window.addEventListener('resize', fit); }
+  fit();
+
+  /* ---------- real audio analysis ---------- */
+  var actx=null, analyser=null, fbuf=null, lo=new Int16Array(N), hi=new Int16Array(N);
   function initAudioGraph(){
     if(actx || !(window.AudioContext||window.webkitAudioContext)) return;
     try{
       actx = new (window.AudioContext||window.webkitAudioContext)();
-      var src = actx.createMediaElementSource(audio);
+      var src = actx.createMediaElementSource(audio);   // /ariella.mp3 is same-origin, so data is not zeroed
       analyser = actx.createAnalyser();
-      analyser.fftSize = 512; analyser.smoothingTimeConstant = 0.85;
+      analyser.fftSize = 2048;
+      analyser.smoothingTimeConstant = REDUCE ? 0.75 : 0.35; // low: the band dynamics below do the shaping
+      analyser.minDecibels = -88; analyser.maxDecibels = -22;
       src.connect(analyser); analyser.connect(actx.destination);
-      tbuf = new Uint8Array(analyser.fftSize); fbuf = new Uint8Array(analyser.frequencyBinCount);
+      fbuf = new Uint8Array(analyser.frequencyBinCount);
+      var binHz = actx.sampleRate/analyser.fftSize, f0=40, f1=14000;
+      for(var i=0;i<N;i++){
+        var a=f0*Math.pow(f1/f0, i/N), b=f0*Math.pow(f1/f0, (i+1)/N);
+        lo[i]=Math.max(1, Math.floor(a/binHz)); hi[i]=Math.max(lo[i]+1, Math.ceil(b/binHz));
+      }
     }catch(err){ actx=null; analyser=null; }
   }
-  var level=0, bass=0, phase=0, last=0, frame=0;
-  var LAYERS=[ // [cycles across box, speed, weight, alpha, line width]
-    [1.15, 1.00, 1.00, 0.95, 2.2],
-    [1.90, -0.70, 0.55, 0.45, 1.4],
-    [0.70, 0.45, 0.75, 0.30, 1.2]
-  ];
-  function measure(){
-    var tl=0, tb=0;
-    if(analyser && !audio.paused){
-      analyser.getByteTimeDomainData(tbuf);
-      var sum=0; for(var i=0;i<tbuf.length;i+=4){ var v=(tbuf[i]-128)/128; sum+=v*v; }
-      tl=Math.min(1, Math.sqrt(sum/(tbuf.length/4))*3.2);
-      analyser.getByteFrequencyData(fbuf);
-      var lo=0; for(var j=1;j<12;j++) lo+=fbuf[j]; tb=Math.min(1, lo/(11*255)*0.9);
+  var silentFor=0, fl=new Float32Array(N), ce=new Float32Array(N);
+  for(var q=0;q<N;q++){ fl[q]=0.3; ce[q]=0.7; }
+  function readReal(dt){
+    if(!analyser || audio.paused){ silentFor=0; return false; }
+    analyser.getByteFrequencyData(fbuf);
+    var any=0;
+    for(var i=0;i<N;i++){
+      var m=0, s=0, n=0;
+      for(var k=lo[i]; k<hi[i] && k<fbuf.length; k++){ var v=fbuf[k]; if(v>m) m=v; s+=v; n++; }
+      var v2=(0.6*m+0.4*(n?s/n:0))/255;           // peak-ish, not a flat average
+      any+=v2;
+      v2=(v2-0.08)/0.92; if(v2<0) v2=0;
+      // per-band auto-gain: track each band's recent floor/ceiling so movement, not the
+      // song's static spectral tilt, drives the bars (highs and bass both get to bounce)
+      if(v2<fl[i]) fl[i]+= (v2-fl[i])*Math.min(1,dt*6); else fl[i]+= (v2-fl[i])*Math.min(1,dt*0.35);
+      if(v2>ce[i]) ce[i]+= (v2-ce[i])*Math.min(1,dt*12); else ce[i]+= (v2-ce[i])*Math.min(1,dt*0.25);
+      var span=Math.max(0.28, ce[i]-fl[i]), norm=(v2-fl[i])/span; if(norm<0) norm=0;
+      var o=0.6*norm+0.4*v2*(1+0.6*(i/(N-1)));
+      real[i]=Math.min(1, 0.92*Math.pow(o, 1.6));
     }
-    level += (tl-level)*0.12;   // lerp = smooth, no jitter
-    bass  += (tb-bass)*0.08;
+    silentFor = any<0.01 ? silentFor+dt : 0;
+    return silentFor<1.2;                           // no data (e.g. blocked) → stay on the idle animation
   }
-  function draw(now){
-    raf = requestAnimationFrame(draw);
-    if(now-last < 30) return;           // ~30 fps is plenty for a 40px icon
-    var dt=Math.min(0.1,(now-(last||now))/1000); last=now;
-    measure();
-    var w=canvas.width, h=canvas.height, mid=h/2;
-    var playing = !audio.paused;
-    var amp = (playing ? 0.10 + level*0.55 + bass*0.25 : 0.10) * (h/2);
-    if(!REDUCE) phase += dt*(playing ? 1.6 + bass*3.0 : 0.7);
-    ctx.clearRect(0,0,w,h);
-    ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#ffffff';
-    for(var L=0; L<LAYERS.length; L++){
-      var c=LAYERS[L], k=c[0]*Math.PI*2/w;
-      ctx.globalAlpha=c[3]; ctx.lineWidth=c[4]; ctx.beginPath();
-      for(var x=0; x<=w; x+=2){
-        var env=Math.sin(Math.PI*x/w);        // taper to the edges: reads as a wave, not noise
-        var y=mid + Math.sin(x*k + phase*c[1] + L*1.7)*amp*c[2]*env;
-        if(x===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-      }
-      ctx.stroke();
+
+  /* ---------- synthetic idle "band" ---------- */
+  var SEED=Math.random()*1000;
+  function rnd(a){ var x=Math.sin((a+SEED)*127.1+311.7)*43758.5453; return x-Math.floor(x); }
+  function bump(arr, c, width, amt){            // add a soft peak centred on band c
+    for(var i=0;i<N;i++){ var d=(i-c)/width; arr[i]+=amt*Math.exp(-d*d); }
+  }
+  var PROGS=[[0,5,3,4],[0,3,5,4],[5,3,0,4],[0,4,5,3]];
+  function synth(t){
+    var bpm = REDUCE ? 78 : 112, beatLen=60/bpm;
+    var beats=t/beatLen, bar=Math.floor(beats/4), phrase=Math.floor(bar/8), inBar=beats-bar*4;
+    var beatI=Math.floor(inBar), xb=(inBar-beatI)*beatLen;   // seconds since current beat
+    var prog=PROGS[Math.floor(rnd(phrase*7.3)*PROGS.length)], chord=prog[bar%4];
+    var lastBarOfPhrase=(bar%8===7), breakdown=(rnd(phrase*3.1)<0.22 && bar%8<2);
+    var energy = breakdown ? 0.55 : 0.82+0.18*rnd(bar*1.7);
+    for(var i=0;i<N;i++) idle[i]=0.03+0.02*rnd(i*13.7+Math.floor(t*12));   // floor noise
+
+    // kick: every beat, optional pickup on the "and" of 3, dropped in breakdowns
+    var kick=0;
+    if(!breakdown){
+      kick=Math.exp(-xb*7.5);
+      if(beatI===2 && rnd(bar*5.9)<0.45){ var xs=xb-beatLen*0.5; if(xs>0) kick=Math.max(kick, 0.8*Math.exp(-xs*8)); }
+      if(lastBarOfPhrase && beatI===3) kick*=0.4;
+    }
+    bump(idle, 0.4, 1.1, 0.95*kick); bump(idle, 2.2, 0.9, 0.35*kick*Math.exp(-xb*6));
+    var duck=1-0.65*kick;                                   // side-chain pump
+
+    // bassline: 8th notes, note picked per step, sits in bands 1–4
+    var step8=Math.floor(beats*2), x8=(beats*2-step8)*beatLen*0.5;
+    var bn=1.2+((chord+[0,0,2,1][Math.floor(rnd(step8*2.3)*4)])%4)*0.75;
+    var bassOn = rnd(step8*9.1)<0.8 ? 1 : 0.35;
+    bump(idle, bn, 0.8, energy*bassOn*(0.42+0.35*Math.exp(-x8*5))*duck);
+
+    // chords: three tones in the mids, slow swell + tremolo, ducked by the kick
+    var cb=4.6+chord*0.45, sw=0.7+0.3*Math.sin(t*1.3+bar);
+    bump(idle, cb, 0.9, 0.48*energy*sw*duck);
+    bump(idle, cb+1.9, 0.9, 0.4*energy*sw*duck);
+    bump(idle, cb+3.1, 0.8, 0.26*energy*sw*duck*(0.8+0.2*Math.sin(t*6.1)));
+
+    // snare / clap on 2 & 4 (broadband mid-high noise burst)
+    if(!breakdown && (beatI===1||beatI===3)){
+      var sn=Math.exp(-xb*9)*(0.8+0.2*rnd(bar*4.4+beatI));
+      for(var s=6;s<N;s++) idle[s]+=sn*(0.5+0.25*rnd(s*3.3+Math.floor(t*30)))*(s<12?1:0.7);
+    }
+    // arp / lead: 16ths in some bars, bands 9–12
+    var step16=Math.floor(beats*4), x16=(beats*4-step16)*beatLen*0.25;
+    if(rnd(bar*2.7)<0.55 && !REDUCE){
+      var an=9+Math.floor(rnd(step16*1.9)*4);
+      bump(idle, an, 0.55, 0.45*energy*Math.exp(-x16*10));
+    }
+    // hi-hats: 16ths with random velocity, accented off-beats, occasional open hat, rolls at phrase end
+    if(!REDUCE){
+      var vel16=(step16%2 ? 0.75 : 0.35)*(0.5+0.5*rnd(step16*6.1));
+      if(lastBarOfPhrase && inBar>2) vel16=0.9;
+      var hat=vel16*Math.exp(-x16*28);
+      if(step16%4===2 && rnd(step16*8.7)<0.25) hat=Math.max(hat, 0.6*Math.exp(-x16*5));
+      for(var hh=12;hh<N;hh++) idle[hh]+=hat*(0.55+0.45*rnd(hh*7.7+step16))*(hh===N-1?0.7:1);
+    } else {
+      for(var hh2=12;hh2<N;hh2++) idle[hh2]+=0.12+0.05*Math.sin(t*2+hh2);
+    }
+    var g = REDUCE ? 0.5 : 0.95;                           // idle sits a little lower than real music
+    for(var j=0;j<N;j++) idle[j]=Math.min(1, idle[j]*g*(0.92+0.16*rnd(j*1.3+Math.floor(t*15))));
+    return kick;
+  }
+
+  /* ---------- per-band dynamics + drawing ---------- */
+  var mix=0, t=0, last=0, frame=0, raf=0, punch=0, bassAvg=0, sinceKick=1, idleKick=0;
+  var GRAV = REDUCE ? 2.2 : 5.5;                // fall acceleration (units / s²)
+  function step(dt){
+    var hasReal=readReal(dt);
+    mix += ((hasReal?1:0)-mix)*Math.min(1, dt*(REDUCE?1.5:3));  // ~0.35 s crossfade
+    t += dt;
+    idleKick=synth(t);
+    // bass-hit detection on the real signal → extra punch on the low bands
+    var bE=(real[0]+real[1]+real[2])/3;
+    sinceKick+=dt;
+    if(hasReal && bE-bassAvg>0.09 && sinceKick>0.22){ punch=1; sinceKick=0; }
+    bassAvg += (bE-bassAvg)*Math.min(1, dt*4);
+    punch *= Math.exp(-dt*7);
+    var p = punch*mix + idleKick*0.6*(1-mix);
+    for(var i=0;i<N;i++){
+      var tg = idle[i]*(1-mix) + real[i]*mix;
+      if(i<4) tg=Math.min(1, tg + punch*mix*0.22*(1-i/4));
+      if(tg>cur[i]){ cur[i]+= (tg-cur[i])*(REDUCE?0.25:0.7); vel[i]=0; }        // fast attack
+      else { vel[i]+=GRAV*dt; cur[i]=Math.max(tg, cur[i]-vel[i]*dt); }          // gravity decay
+      if(cur[i]>=peak[i]){ peak[i]=cur[i]; pvel[i]=0; phold[i]=REDUCE?0.4:0.28; }
+      else if(phold[i]>0){ phold[i]-=dt; }
+      else { pvel[i]+=GRAV*0.45*dt; peak[i]=Math.max(cur[i], peak[i]-pvel[i]*dt); }
+    }
+    return p;
+  }
+  function render(p){
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.clearRect(0,0,W,H);
+    var mid=H/2, slot=W/N, bw=Math.max(1, Math.round(slot*0.58)), half=mid-1.5*dpr, minH=Math.max(1, dpr*0.9);
+    ctx.globalAlpha=0.22; ctx.fillStyle='#ffffff'; ctx.fillRect(0, Math.round(mid-dpr*0.5), W, Math.max(1,Math.round(dpr*0.6)));
+    var a=0.86+0.14*p;
+    for(var i=0;i<N;i++){
+      var x=Math.round(i*slot+(slot-bw)/2);
+      var hU=Math.max(minH, cur[i]*half), hD=hU*0.78;        // mirrored, softer reflection below
+      ctx.globalAlpha=a;      ctx.fillRect(x, Math.round(mid-hU), bw, Math.round(hU));
+      ctx.globalAlpha=a*0.55; ctx.fillRect(x, Math.round(mid), bw, Math.round(hD));
+      var py=Math.round(mid-Math.max(hU+dpr*1.5, peak[i]*half+dpr*1.5));
+      ctx.globalAlpha=0.75; ctx.fillRect(x, Math.max(0,py), bw, Math.max(1,Math.round(dpr)));
     }
     ctx.globalAlpha=1;
-    frame++;
   }
-  window.__wave = function(){ return {frames:frame, level:level, bass:bass, analyser:!!analyser, ctxState:actx?actx.state:'none'}; };
+  var MINDT = REDUCE ? 1/30 : 0;
+  function draw(now){
+    raf = requestAnimationFrame(draw);
+    if(!last){ last=now; return; }
+    var dt=(now-last)/1000;
+    if(dt<MINDT) return;
+    last=now; dt=Math.min(dt, 0.1);
+    render(step(dt)); frame++;
+  }
+  function start(){ if(!raf){ last=0; raf=requestAnimationFrame(draw); } }
+  function stop(){ if(raf){ cancelAnimationFrame(raf); raf=0; } }
+  document.addEventListener('visibilitychange', function(){ if(document.hidden) stop(); else start(); });
+  window.__wave = function(){ return {frames:frame, mix:+mix.toFixed(3), analyser:!!analyser, ctxState:actx?actx.state:'none', bands:Array.prototype.map.call(cur,function(v){return +v.toFixed(2);}), real:Array.prototype.map.call(real,function(v){return +v.toFixed(2);})}; };
 
+  /* ---------- play / pause (only ever on the user's click) ---------- */
   function startPlayback(){
-    initAudioGraph();                    // created on the user's click (autoplay policy)
-    if(actx && actx.state==='suspended') actx.resume();
-    audio.loop=true;
-    audio.volume=1;
-    audio.muted=false;
-    audio.play().catch(function(e){ console.log('play failed',e); });
-    muted=false;
+    initAudioGraph();                       // created inside the click gesture (autoplay policy)
+    if(actx && actx.state==='suspended'){ actx.resume().catch(function(){}); }
+    audio.loop=true; audio.volume=1; audio.muted=false;
+    var pr=audio.play(); if(pr && pr.catch) pr.catch(function(){});
   }
-  function stopPlayback(){
-    audio.pause();
-    muted=true;
-  }
-  // Toggle reads the ACTUAL audio state (audio.paused), not a separate variable that
-  // can desync after an orientation change. Uses real play/pause, not muting.
   function toggle(e){
     if(e) e.stopPropagation();
-    if(audio.paused){
-      startPlayback();
-    } else {
-      stopPlayback();
-    }
-    // keep the waveform's muted flag in sync with reality
-    muted = audio.paused;
+    if(audio.paused) startPlayback(); else audio.pause();
   }
-
   player.addEventListener('click', toggle);   // native <button>: Enter/Space already fire click
   function syncPressed(){ var on=!audio.paused; player.setAttribute('aria-pressed', on?'true':'false'); player.setAttribute('aria-label', on?'Pause background music':'Play background music'); }
   audio.addEventListener('play', syncPressed); audio.addEventListener('pause', syncPressed);
 
-  raf=requestAnimationFrame(draw);   // gentle idle wave; reacts once the music is playing
-  // Audio does NOT auto-start. It plays ONLY when the user clicks the waveform.
-  // Ensure it begins paused/muted so nothing leaks until the user toggles it.
-  audio.pause();
-  muted = true;
+  audio.pause();                            // never auto-starts
+  if(!document.hidden) start();
 })();
 /* ---- CONTACT: e-mail / phone are assembled at runtime so they never sit in the page source ---- */
 (function(){
