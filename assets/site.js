@@ -859,22 +859,16 @@
   });
 })();
 
-/* ---- VIMEO / YOUTUBE: lightweight click-to-play posters; the player loads only when asked ---- */
+/* ---- VIMEO: lightweight click-to-play posters; the Vimeo player loads only when asked ---- */
 (function(){
   document.querySelectorAll('.vfac').forEach(function(box){
     var b=box.querySelector('.vplay'); if(!b) return;
     b.addEventListener('click',function(){
-      var yt=box.getAttribute('data-youtube'), id=box.getAttribute('data-vimeo'), extra=box.getAttribute('data-params')||'';
+      var id=box.getAttribute('data-vimeo'), extra=box.getAttribute('data-params')||'';
       var f=document.createElement('iframe');
-      if(yt){   // YouTube, privacy-enhanced domain; same click-to-play poster as the Vimeo ones
-        f.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(yt)+'?autoplay=1&rel=0&modestbranding=1&playsinline=1';
-        f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';
-        f.referrerPolicy='strict-origin-when-cross-origin';   // YouTube needs the referring origin
-      } else {
-        f.src='https://player.vimeo.com/video/'+id+'?autoplay=1&dnt=1'+(extra?'&'+extra:'');
-        f.allow='autoplay; fullscreen; picture-in-picture';
-      }
+      f.src='https://player.vimeo.com/video/'+id+'?autoplay=1&dnt=1'+(extra?'&'+extra:'');
       f.title=b.getAttribute('data-title')||'Video';
+      f.allow='autoplay; fullscreen; picture-in-picture';
       f.setAttribute('allowfullscreen','');
       box.innerHTML=''; box.appendChild(f); box.classList.add('live');
     });
