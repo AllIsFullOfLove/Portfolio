@@ -1,22 +1,233 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://patlau.com/</loc>
-    <lastmod>2026-06-30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
-    <image:image>
-      <image:loc>https://patlau.com/matte/tl.jpg</image:loc>
-      <image:title>The Creator — New Asia City night matte painting</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://patlau.com/matte/azul.jpg</image:loc>
-      <image:title>Azul — matte painting by Pat Lau</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://patlau.com/matte/inversion1.jpg</image:loc>
-      <image:title>Abandoned shopping mall interior matte painting</image:title>
-    </image:image>
+    <lastmod>2026-10-31</lastmod>
+    <image:image><image:loc>https://patlau.com/matte/tl.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/dc.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/dc-b.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/inversion1.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/azul.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/kore1.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/kore3.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/kore5a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/kore5b.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/kore4a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/kore4b.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/kore6a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/kore6b.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/kore3a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/kore3b.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/kore1a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/kore1b.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/kore2a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/kore2b.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/ct2-03.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/druid_matte_11.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/druid_matte_09.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/druid_matte_04.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/druid_matte_06.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/druid_matte_01.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/druid_matte_08.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/druid_matte_05.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/druid_matte_07.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/druid_matte_03.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/druid_matte_02.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/sw_hoth.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/sw_cloud_city.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/sw_imperial_city.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/sw_erkt.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/sw_hoth2.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/nuit_blanche.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/orphan_black_1.1.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/orphan_black_1.0.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/orphan_black_2.1.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/orphan_black_2.0.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/re1.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/re3.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/re2.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/genesisa1.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/genesisa2.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/genesisa3.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/genesisa4.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/genesisa5.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/matte/genesisa6.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/vfx/meteor1.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/vfx/meteor2.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/vfx/meteor3.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/vfx/meteor4.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/vfx/devilsden.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/vfx/skrillex1a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/vfx/skrillex2a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/vfx/skrillex3a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/vfx/skrillex4a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/vfx/skrillex5a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/vfx/skrillex6a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/erupt.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/005.5.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/005.5icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/005.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/005icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/073.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/073icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/018.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/018icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/023.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/023icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/025.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/025icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/060.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/060icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/006.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/006icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/137.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/137icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/179.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/179icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/172.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/172icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/088.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/088icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/009.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/009icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/011.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/011icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/143.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/aobm/143icon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/shut-in.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/ae01.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/ae02.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/ae03.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/ae04.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/ae05.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/titan1.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/titan2.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/horror.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/collosal03.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/collosal02.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/collosal01.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/nazgul.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/druid_concept_01.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/druid_concept_06.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/druid_concept_03.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/druid_concept_02.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/druid_concept_08.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/druid_concept_10.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/downsizing.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/in_contempt_1.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/in_contempt_2.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/in_contempt_3.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/heroes01.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/heroes04.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/heroes03.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/heroes02.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/xbox1.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/xbox2.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/xbox3.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/xbox4.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/xbox5.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/rzr.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/cc_comp3a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/cc_comp4a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/cc_comp5a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/cc_comp6a.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/brain_city_1.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/brain_city_2.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/buddha.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/underwater.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/heaven.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/buddha2.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/dragon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/Era%20of%20Vampires%202%201.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/tong.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/horses.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/swords3.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/swords4.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/concept/swords5.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/storyboard/sony1.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/storyboard/sony2.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/storyboard/nokia.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/storyboard/500.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/storyboard/twins.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/storyboard/action.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/storyboard/texted.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/storyboard/msheireb.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/media/og-pat-lau-matte-painter-concept-artist-toronto.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/media/the-creator-new-asia-city-matte-painting-breakdown-poster.jpg</image:loc></image:image>
+    <image:image><image:loc>https://patlau.com/media/nissan-versa-note-matte-painting-breakdown-poster.jpg</image:loc></image:image>
+    <video:video>
+      <video:thumbnail_loc>https://patlau.com/media/vimeo/law-zero-105955063.jpg</video:thumbnail_loc>
+      <video:title>Law Zero sample</video:title>
+      <video:description>http://macgregor.works/films#/lawzero/</video:description>
+      <video:player_loc>https://player.vimeo.com/video/105955063</video:player_loc>
+      <video:duration>137</video:duration>
+      <video:publication_date>2014-09-12</video:publication_date>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://patlau.com/media/vimeo/nuit-blanche-9078364.jpg</video:thumbnail_loc>
+      <video:title>Nuit Blanche</video:title>
+      <video:description>Nuit Blanche explores a fleeting moment between two strangers, revealing their brief connection in a hyper real fantasy. Watch the "Making of" here - http://www.vimeo.com/9076775  Directed by: Arev Manoukian Cinematographer: Arev Manoukian http://www.arev.ca</video:description>
+      <video:player_loc>https://player.vimeo.com/video/9078364</video:player_loc>
+      <video:duration>281</video:duration>
+      <video:publication_date>2010-01-29</video:publication_date>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://patlau.com/media/vimeo/making-of-nuit-blanche-9076775.jpg</video:thumbnail_loc>
+      <video:title>Making Of Nuit Blanche</video:title>
+      <video:description>The making of the award winning "Nuit Blanche"  Directed by: Arev Manoukian Produced by: Stephanie Swedlove &amp; Arev Manoukian VFX by: Marc-Andre Gray Music by: Samuel Bisson Starring: Michael Coughlan &amp; Megan Lindley Cinematographer: Arev Manoukian Casting: Jeff Marshall Assistant Director: Andrew Cividino Production Designer: Arev Manoukian &amp; Marc-Andre Gray Art Director / Costumes - Dan Levy Camera Operator: Jay Pavao Camera Assistant: Max Armstrong Gaffer: Alan Poon Editor: Arev Manoukian Compositor / Animator: Marc-Andre Gray Effects Supervisors: Marc-Andre Gray &amp; Arev Manoukian Additional Compositing: Arev Manoukian Matte Painter: Pat Lau Colourist: Andre Chlebak</video:description>
+      <video:player_loc>https://player.vimeo.com/video/9076775</video:player_loc>
+      <video:duration>256</video:duration>
+      <video:publication_date>2010-01-29</video:publication_date>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://patlau.com/media/vimeo/hyundai-genesis-123069685.jpg</video:thumbnail_loc>
+      <video:title>Hyundai Genesis 2012</video:title>
+      <video:description>Matte Paintings I did for Hyundai Genesis commercial at Dashing in 2012</video:description>
+      <video:player_loc>https://player.vimeo.com/video/123069685</video:player_loc>
+      <video:duration>31</video:duration>
+      <video:publication_date>2015-03-24</video:publication_date>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://patlau.com/media/vimeo/maple-leaf-canadian-craft-171968441.jpg</video:thumbnail_loc>
+      <video:title>MapleLeaf Okanagan HD</video:title>
+      <video:description>MapleLeaf Okanagan HD</video:description>
+      <video:player_loc>https://player.vimeo.com/video/171968441</video:player_loc>
+      <video:duration>30</video:duration>
+      <video:publication_date>2016-06-23</video:publication_date>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://patlau.com/media/vimeo/meteor-project-123136125.jpg</video:thumbnail_loc>
+      <video:title>Meteor project with qEw Films Inc</video:title>
+      <video:description>Meteor project with qEw Films Inc</video:description>
+      <video:player_loc>https://player.vimeo.com/video/123136125</video:player_loc>
+      <video:duration>10</video:duration>
+      <video:publication_date>2015-03-24</video:publication_date>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://patlau.com/media/vimeo/erupt-art-of-beat-making-31743927.jpg</video:thumbnail_loc>
+      <video:title>ERUPT - Art of Beat-Making</video:title>
+      <video:description>All visual effects were done in Adobe Photoshop &amp; After Effects CS5  Directed &amp; edited by Will Cyr and produced by Renée De Sousa at Secret Level films.  I'm a Toronto based Visual Effects Supervisor / Artist. Please visit www.patlau.com for my online portfolio.</video:description>
+      <video:player_loc>https://player.vimeo.com/video/31743927</video:player_loc>
+      <video:duration>256</video:duration>
+      <video:publication_date>2011-11-07</video:publication_date>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://patlau.com/media/vimeo/concrete-city-concept-design-47680022.jpg</video:thumbnail_loc>
+      <video:title>Concept Design for untitled short film</video:title>
+      <video:description>Concept Design for untitled short film</video:description>
+      <video:player_loc>https://player.vimeo.com/video/47680022</video:player_loc>
+      <video:duration>38</video:duration>
+      <video:publication_date>2012-08-16</video:publication_date>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://patlau.com/media/vimeo/sony-3d-two-worlds-30402087.jpg</video:thumbnail_loc>
+      <video:title>Sony - Two Worlds (Director's Cut)</video:title>
+      <video:description>https://www.instagram.com/spy_films/   This is from a stereo 3D Cinema commercial - http://www.youtube.com/watch?v=9h0ZrMB1TI4  Production Company Spy Films Cinematographer	 Bojan Bazelli ASC - (Mr. &amp; Mrs. Smith, The Lone Ranger) Music Clint Mansell (Black Swan, Requiem For A Dream)  Original poem, 'That's What I Heard You Say’, written and read by Leonard Cohen  Production Company   Spy Films Director: Arev Manoukian Executive Producer	 Carlo Trulli &amp; Marcus Trulli Producer	 Marcus Trulli &amp; Peter Oad  Camera Co. 3DCC Stereographer	 William Reeves CSC Post Production	 Digital Domain (LA) Editing Company	 Will Cyr @ Creative Post Sound Design/Arrangement	Lime Studios (LA) Grand Central (London)  Agency	 Grey London Executive Creative Director Nils Leonard Creative Director Dave Monk and Matt Waller Agency Producer	 Jacqueline Dobrin Business Director Anneliese St-Amour Account Manager	 Suzi Napier</video:description>
+      <video:player_loc>https://player.vimeo.com/video/30402087</video:player_loc>
+      <video:duration>64</video:duration>
+      <video:publication_date>2011-10-11</video:publication_date>
+    </video:video>
   </url>
 </urlset>
