@@ -322,7 +322,11 @@
     document.body.style.overflow='';
     if(ui) ui.hidden=true;
     clearHash();
+    var rf=returnFocus; returnFocus=null;
+    if(rf){ try{ rf.focus({preventScroll:true}); }catch(err){} }
+    else if(document.activeElement && document.activeElement!==document.body && document.activeElement.closest && document.activeElement.closest('.shots, #lb')) document.activeElement.blur();
   }
+  var returnFocus=null;
 
   // ---- gallery model: every linked artwork inside a .shots block, in page order ----
   var IMG_RE=/\.(jpg|jpeg|png|webp)(\?|$)/i;
@@ -383,6 +387,10 @@
     if(!IMG_RE.test(href)) return;
     e.preventDefault();
     if(a.getAttribute('data-dragged')==='1'){ a.removeAttribute('data-dragged'); return; } // compare-slider drag, not a click
+    // Mouse/touch opens must not leave a focus ring on the thumbnail after closing;
+    // keyboard opens (click.detail===0) get focus handed back so tabbing continues in place.
+    returnFocus = (e.detail===0) ? a : null;
+    if(!returnFocus && a.blur) a.blur();
     openAnchor(a, e);
   });
 
@@ -554,44 +562,69 @@
   var muted=true, raf, started=false;
 
 
-  // White 1px columns packed edge-to-edge across the red square — a chaotic
-  // pixel waveform. Each column has its own random rhythm so it looks turbulent.
-  var t0=Date.now();
-  var COLS=canvas.width;          // one column per pixel of width (64) => >=25
-  var P=[];
-  for(var k=0;k<COLS;k++){
-    P.push({
-      f1: 3.0 + Math.random()*5.0,
-      f2: 9.0 + Math.random()*8.0,
-      f3: 18.0 + Math.random()*15.0,
-      ph1: Math.random()*6.28,
-      ph2: Math.random()*6.28,
-      ph3: Math.random()*6.28
-    });
+  // Smooth oscilloscope-style wave: three layered sine lines whose height follows the
+  // music (Web Audio AnalyserNode: smoothed RMS level + low-frequency energy).
+  // Idle/paused = a slow, gentle ripple. Reduced motion = no drift, still reacts to level.
+  var REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var actx=null, analyser=null, tbuf=null, fbuf=null;
+  function initAudioGraph(){
+    if(actx || !(window.AudioContext||window.webkitAudioContext)) return;
+    try{
+      actx = new (window.AudioContext||window.webkitAudioContext)();
+      var src = actx.createMediaElementSource(audio);
+      analyser = actx.createAnalyser();
+      analyser.fftSize = 512; analyser.smoothingTimeConstant = 0.85;
+      src.connect(analyser); analyser.connect(actx.destination);
+      tbuf = new Uint8Array(analyser.fftSize); fbuf = new Uint8Array(analyser.frequencyBinCount);
+    }catch(err){ actx=null; analyser=null; }
   }
-  function draw(){
-    raf = requestAnimationFrame(draw);
-    var w = canvas.width, h = canvas.height;
-    ctx.clearRect(0, 0, w, h);
-    var tt = (Date.now() - t0) / 1000;
-    var playing = audio && !audio.paused && !audio.muted;
-    var amp = playing ? 0.95 : 0.55;   // taller bounce when actually playing
-    var spd = muted ? 1.0 : 2.0;
-    var DOT = 2;                        // 2x2 px dots (was 1x1)
-    ctx.fillStyle = '#ffffff';
-    for(var x=0; x<w; x+=DOT){          // step by dot size so 2px dots don't overlap
-      var p = P[x];
-      var v = Math.sin(tt*p.f1*spd + p.ph1)*0.5
-            + Math.sin(tt*p.f2*spd + p.ph2)*0.32
-            + Math.sin(tt*p.f3*spd + p.ph3)*0.18;
-      var cy = h/2 - v*amp*(h/2);       // amp up to ~0.95 of half-height => reaches top
-      if(cy < 0) cy = 0;
-      if(cy > h-DOT) cy = h-DOT;
-      ctx.fillRect(x, cy, DOT, DOT);
+  var level=0, bass=0, phase=0, last=0, frame=0;
+  var LAYERS=[ // [cycles across box, speed, weight, alpha, line width]
+    [1.15, 1.00, 1.00, 0.95, 2.2],
+    [1.90, -0.70, 0.55, 0.45, 1.4],
+    [0.70, 0.45, 0.75, 0.30, 1.2]
+  ];
+  function measure(){
+    var tl=0, tb=0;
+    if(analyser && !audio.paused){
+      analyser.getByteTimeDomainData(tbuf);
+      var sum=0; for(var i=0;i<tbuf.length;i+=4){ var v=(tbuf[i]-128)/128; sum+=v*v; }
+      tl=Math.min(1, Math.sqrt(sum/(tbuf.length/4))*3.2);
+      analyser.getByteFrequencyData(fbuf);
+      var lo=0; for(var j=1;j<12;j++) lo+=fbuf[j]; tb=Math.min(1, lo/(11*255)*0.9);
     }
+    level += (tl-level)*0.12;   // lerp = smooth, no jitter
+    bass  += (tb-bass)*0.08;
   }
+  function draw(now){
+    raf = requestAnimationFrame(draw);
+    if(now-last < 30) return;           // ~30 fps is plenty for a 40px icon
+    var dt=Math.min(0.1,(now-(last||now))/1000); last=now;
+    measure();
+    var w=canvas.width, h=canvas.height, mid=h/2;
+    var playing = !audio.paused;
+    var amp = (playing ? 0.10 + level*0.55 + bass*0.25 : 0.10) * (h/2);
+    if(!REDUCE) phase += dt*(playing ? 1.6 + bass*3.0 : 0.7);
+    ctx.clearRect(0,0,w,h);
+    ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#ffffff';
+    for(var L=0; L<LAYERS.length; L++){
+      var c=LAYERS[L], k=c[0]*Math.PI*2/w;
+      ctx.globalAlpha=c[3]; ctx.lineWidth=c[4]; ctx.beginPath();
+      for(var x=0; x<=w; x+=2){
+        var env=Math.sin(Math.PI*x/w);        // taper to the edges: reads as a wave, not noise
+        var y=mid + Math.sin(x*k + phase*c[1] + L*1.7)*amp*c[2]*env;
+        if(x===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+    frame++;
+  }
+  window.__wave = function(){ return {frames:frame, level:level, bass:bass, analyser:!!analyser, ctxState:actx?actx.state:'none'}; };
 
   function startPlayback(){
+    initAudioGraph();                    // created on the user's click (autoplay policy)
+    if(actx && actx.state==='suspended') actx.resume();
     audio.loop=true;
     audio.volume=1;
     audio.muted=false;
@@ -619,7 +652,7 @@
   function syncPressed(){ var on=!audio.paused; player.setAttribute('aria-pressed', on?'true':'false'); player.setAttribute('aria-label', on?'Pause background music':'Play background music'); }
   audio.addEventListener('play', syncPressed); audio.addEventListener('pause', syncPressed);
 
-  draw();                 // waveform runs forever (visual only, no audio)
+  raf=requestAnimationFrame(draw);   // gentle idle wave; reacts once the music is playing
   // Audio does NOT auto-start. It plays ONLY when the user clicks the waveform.
   // Ensure it begins paused/muted so nothing leaks until the user toggles it.
   audio.pause();
