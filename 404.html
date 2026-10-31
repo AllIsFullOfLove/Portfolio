@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Scene not found (404) — The Art of Pat Lau</title>
+<meta name="robots" content="noindex, follow">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preload" href="/assets/fonts/cinzel-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<style>
+:root{--black:#0a0a0b;--ink:#121214;--paper:#e8e6e1;--seal:#9a0000;--seal-text:#e5383b;--line:#26262a}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--black);color:var(--paper);font:300 14px/1.6 'IBM Plex Mono',monospace;-webkit-font-smoothing:antialiased;overflow:hidden}
+.bg{position:fixed;inset:0;background:url(/splash07.jpg) center/cover no-repeat;opacity:.28;filter:blur(3px) grayscale(.2);transform:scale(1.06);animation:drift 30s ease-in-out infinite alternate}
+.veil{position:fixed;inset:0;background:radial-gradient(ellipse at center,rgba(10,10,11,.35) 0%,rgba(10,10,11,.92) 70%)}
+main{position:relative;z-index:1;min-height:100%;display:grid;place-items:center;text-align:center;padding:24px}
+.seal{width:64px;height:64px;margin:0 auto 28px;display:block}
+.code{font-size:12px;letter-spacing:.4em;color:var(--seal-text);text-transform:uppercase}
+h1{font-family:'Cinzel',serif;font-weight:500;font-size:clamp(28px,6vw,60px);letter-spacing:.14em;text-transform:uppercase;margin:10px 0 12px}
+p.lead{max-width:520px;margin:0 auto 34px;font-size:13px;letter-spacing:.08em;color:var(--paper);opacity:.85}
+nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+nav a{display:inline-flex;align-items:center;height:44px;padding:0 16px;border:1px solid var(--line);background:var(--ink);color:var(--paper);text-decoration:none;font-size:12px;letter-spacing:.12em;text-transform:uppercase;border-radius:3px;transition:border-color .3s,background .3s}
+nav a:hover{border-color:var(--paper)}
+nav a.home{background:var(--seal);border-color:var(--seal)}
+a:focus-visible{outline:2px solid var(--seal-text);outline-offset:3px}
+.slate{margin-top:42px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:.6}
+@keyframes drift{from{transform:scale(1.06) translateX(-1.5%)}to{transform:scale(1.12) translateX(1.5%)}}
+@media (prefers-reduced-motion:reduce){.bg{animation:none}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div><div class="veil" aria-hidden="true"></div>
+<main>
+  <div>
+    <a href="/"><img class="seal" src="/logo1.png" width="64" height="64" alt="patlau.com home"></a>
+    <p class="code">Error 404 · Scene missing</p>
+    <h1>Cut from the final edit</h1>
+    <p class="lead">The page you were looking for isn’t in this reel. It may have moved when the site was rebuilt as a single page.</p>
+    <nav aria-label="Sections">
+      <a class="home" href="/">Home</a>
+      <a href="/#matte">Matte Paintings</a>
+      <a href="/#vfx">Visual Effects</a>
+      <a href="/#concept">Concept Design</a>
+      <a href="/#storyboards">Storyboards</a>
+      <a href="/#resume">Résumé</a>
+    </nav>
+    <p class="slate">patlau.com · Toronto · Montreal · Vancouver</p>
+  </div>
+</main>
+</body>
+</html>
