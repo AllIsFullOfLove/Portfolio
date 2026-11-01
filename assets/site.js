@@ -338,7 +338,7 @@
   function updateUI(a){
     if(!ui) return;
     var art=a.closest('article'); var h=art&&art.querySelector('h3');
-    var img=a.querySelector('img.a')||a.querySelector('img');
+    var img=(a.classList.contains('show-b')&&a.querySelector('img.b'))||a.querySelector('img.a')||a.querySelector('img');
     var t=h?h.textContent:'', al=(img&&img.alt)||'';
     cap.textContent = !al ? t : (al.toLowerCase().indexOf(t.toLowerCase().slice(0,12))===0 ? al : t+' — '+al);
     cnt.textContent=(cur+1)+' / '+list.length;
@@ -352,7 +352,7 @@
   }
 
   function openAnchor(a, e){
-    var img = a.querySelector('img.a') || a.querySelector('img:not(.b)') || a.querySelector('img');
+    var img = (a.classList.contains('show-b') && a.querySelector('img.b')) || a.querySelector('img.a') || a.querySelector('img:not(.b)') || a.querySelector('img');
     var pan = a.getAttribute('data-pan') === 'true';
     var fitH = a.getAttribute('data-fit') === 'height';
     var hpan = a.getAttribute('data-hpan') === 'true';
@@ -857,6 +857,49 @@
     });
     a.addEventListener('blur',function(){ set(0,true); });
   });
+})();
+
+/* ---- ROLLOVERS (Devil's Den): final ⇄ before crossfade. Mouse: hover. Keyboard: focus. Touch: tap toggles,
+        corner button opens the lightbox. The lightbox always opens whichever image is showing. ---- */
+(function(){
+  var sw=document.querySelectorAll('a.swap[data-b]'); if(!sw.length) return;
+  var A=[], lastTouch=0;   // shared: a touch anywhere marks the next click as a tap
+  sw.forEach(function(a){
+    var b=a.querySelector('img.b'), inner=a.querySelector('.inner'); if(!b||!inner) return;
+    var hrefA=a.getAttribute('href'), hrefB=a.getAttribute('data-b');
+    var lbl=document.createElement('span'); lbl.className='swap-lbl'; lbl.setAttribute('aria-hidden','true');
+    inner.appendChild(lbl);
+    var exp=document.createElement('span'); exp.className='swap-exp'; exp.setAttribute('aria-hidden','true');
+    inner.appendChild(exp);
+    var hover=false, kfocus=false, tapped=false;
+    function sync(){
+      var on=hover||kfocus||tapped;
+      a.classList.toggle('show-b', on);
+      a.setAttribute('href', on?hrefB:hrefA);
+      lbl.innerHTML = on ? 'Before <span class="k">⇄</span> final' : 'Final <span class="k">⇄</span> before';
+    }
+    a.addEventListener('pointerenter',function(e){ if(e.pointerType==='mouse'){ load(b); hover=true; sync(); } });
+    a.addEventListener('pointerleave',function(e){ if(e.pointerType==='mouse'){ hover=false; sync(); } });
+    a.addEventListener('pointerdown',function(e){ if(e.pointerType!=='mouse') lastTouch=Date.now(); });
+    a.addEventListener('touchstart',function(){ lastTouch=Date.now(); },{passive:true});
+    a.addEventListener('focus',function(){ var fv=false; try{ fv=a.matches(':focus-visible'); }catch(err){} if(fv){ load(b); kfocus=true; sync(); } });
+    a.addEventListener('blur',function(){ kfocus=false; sync(); });
+    // touch tap on the picture toggles; tap on the corner button falls through to the lightbox
+    a.addEventListener('click',function(e){
+      if(Date.now()-lastTouch>800 || e.target===exp) return;
+      e.preventDefault(); e.stopPropagation();
+      load(b); tapped=!tapped; sync();
+      if(a.blur) a.blur();
+    });
+    sync(); A.push(b);
+  });
+  function load(img){ if(!img.getAttribute('src')){ var u=img.getAttribute('data-src'); if(u) img.setAttribute('src',u); } }
+  // warm the "before" images when the section gets near the viewport, so the first hover doesn't flash
+  if('IntersectionObserver' in window){
+    var host=sw[0].closest('.shots')||sw[0];
+    var io=new IntersectionObserver(function(es){ if(es.some(function(en){return en.isIntersecting;})){ A.forEach(load); io.disconnect(); } },{rootMargin:'800px 0px'});
+    io.observe(host);
+  } else { A.forEach(load); }
 })();
 
 /* ---- VIMEO: lightweight click-to-play posters; the Vimeo player loads only when asked ---- */
