@@ -21,6 +21,7 @@
 (function(){
   var front = document.getElementById('splashA');
   var back  = document.getElementById('splashB');
+  if(!front||!back) return;            // sub-pages (/work/…, specialty pages) have no hero
   var imgs=[], idx=0;
 
   function pad(n){ return (n<10?'0':'')+n; }
