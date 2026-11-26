@@ -85,7 +85,7 @@ img{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;display:blo
 </div>
 <script>
 (function(){
-const VERSION='v07';   // bump this for each new version
+const VERSION='v08';   // bump this for each new version
 const $=id=>document.getElementById(id);
 $('ver').textContent=VERSION;
 const KEYS=['mo','fs','bs','rt','sw','de','am','vd'];
@@ -208,8 +208,13 @@ void main(){
 intro:P+`uniform sampler2D sc;uniform float op,bl,asp,canH;uniform vec4 dts;uniform vec3 dcol;
 void main(){
  // scene blur: mip level + 8-tap ring, shrinks to an exact single tap at bl=0
- float lod=bl*5.5,r=bl*.018;vec4 c4=textureLod(sc,vUv,lod);
- if(bl>0.){vec4 s=c4;for(int i=0;i<8;i++){float a=float(i)*.785398+.3;s+=textureLod(sc,vUv+vec2(cos(a)/asp,sin(a))*r,lod);}c4=s/9.;}
+ // scene blur: 4x v07 radius (r = bl*0.072 of screen height); 24-tap golden-angle disc sampled
+ // from a mip level matched to the tap spacing, so large radii stay smooth (no blocky mips)
+ float r=bl*.072;vec4 c4=texture(sc,vUv);
+ if(bl>0.){float rpx=r*canH;float lod=max(0.,log2(rpx/6.));vec4 s=textureLod(sc,vUv,lod);
+  for(int i=1;i<24;i++){float fi=float(i);float rr=sqrt(fi/23.)*r;float a=fi*2.39996;
+   s+=textureLod(sc,vUv+vec2(cos(a)/asp,sin(a))*rr,lod);}
+  c4=s/24.;}
  vec3 c=c4.rgb;
  // dots: crisp pattern blends into its average coverage while blurred (avoids mip aliasing of 1-px patterns)
  vec2 fp=vec2(floor(gl_FragCoord.x),canH-1.-floor(gl_FragCoord.y));vec2 tp=mod(fp,dts.xy);
@@ -218,10 +223,12 @@ void main(){
  // curved lids: slit widest at center, a bit narrower at the screen edges, still edge to edge
  float x=vUv.x*2.-1.,d=abs(vUv.y-.5);
  float edge=op*.5*(1.-.28*x*x);
- float soft=.006+.10*bl;
+ float soft=.006+.40*bl;   // 4x v07 lid-edge softness at the start
  float m=smoothstep(edge+soft,edge-soft,d);
  m*=step(.0005,op);
- o=vec4(c*m,1.);
+ c*=m;
+ c+=(fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453)-.5)/255.;   // static dither: smooth soft gradients
+ o=vec4(c,1.);
 }`};
 
 function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw gl.getShaderInfoLog(o)+'\n'+s;return o;}
@@ -316,10 +323,13 @@ function resize(){const d=devicePixelRatio||1,w=Math.round(innerWidth*d),h=Math.
  if(C.width!==w||C.height!==h){C.width=w;C.height=h;init();}}
 
 // ---- blink-open intro (plays once on load) ----
-const INTRO_LEN=2.0;let introDone=false,intro0=null;
+const INTRO_HOLD=1.0,INTRO_ANIM=2.0,INTRO_SLOW=2.0;           // black hold, base blink length, slow-down factor
+const INTRO_LEN=INTRO_HOLD+INTRO_ANIM*INTRO_SLOW;              // 1 s black + 4 s blink = 5 s
+let introDone=false,intro0=null;
 const OPK=[[0,0],[.12,0],[.38,.17],[.56,.06],[1.0,1.6]];   // [t, opening]: crack open, half-blink flutter, open fully (no bars after ~1 s)
 function introOpen(t){for(let i=1;i<OPK.length;i++){const [t1,v1]=OPK[i],[t0,v0]=OPK[i-1];if(t<=t1){const u=(t-t0)/(t1-t0),e=u*u*(3-2*u);return v0+(v1-v0)*e;}}return OPK[OPK.length-1][1];}
-function introBlur(t){const u=Math.min(1,Math.max(0,t/INTRO_LEN));return Math.pow(1-u,1.7);}
+function introBlur(t){const u=Math.min(1,Math.max(0,t/INTRO_ANIM));return Math.pow(1-u,1.7);}
+function introAnimT(it){return Math.max(0,it-INTRO_HOLD)/INTRO_SLOW;}   // real time -> base blink timeline (0..INTRO_ANIM)
 let px=null,py=null,lx=null,ly=null;
 document.addEventListener('mousemove',e=>{px=e.clientX/innerWidth;py=1-e.clientY/innerHeight;ex=e.clientX/innerWidth;ey=e.clientY/innerHeight;});
 document.addEventListener('touchmove',e=>{const t=e.touches[0];px=t.clientX/innerWidth;py=1-t.clientY/innerHeight;},{passive:true});
@@ -344,7 +354,7 @@ function draw(now,it){
  if(it>=INTRO_LEN){if(!introDone){introDone=true;$('panel').classList.remove('intro');placePanel();if(scn){gl.deleteTexture(scn.t);gl.deleteFramebuffer(scn.f);scn=null;}}render(now);return;}
  if(!scn)initScene();
  render(now,scn);gl.bindTexture(gl.TEXTURE_2D,scn.t);gl.generateMipmap(gl.TEXTURE_2D);
- const bl=introBlur(it),op=introOpen(it);
+ const ta=introAnimT(it),bl=introBlur(ta),op=it<INTRO_HOLD?0:introOpen(ta);
  run('intro',null,U=>{bindT(U.sc,scn,0);gl.uniform1f(U.op,op);gl.uniform1f(U.bl,bl);gl.uniform1f(U.asp,C.width/C.height);
   gl.uniform1f(U.canH,C.height);gl.uniform4f(U.dts,V('dtw'),V('dth'),V('dbw'),V('dbh'));gl.uniform3f(U.dcol,...hex($('dcol').value));});}
 function frame(now){resize();const dt=Math.min((now-last)/1000,1/30);last=now;step(dt);
